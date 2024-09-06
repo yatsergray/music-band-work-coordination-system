@@ -1,0 +1,11 @@
+**/target/
+**/.idea/
+**/node_modules/
+**/.DS_Store
+**/*.iml
+**/HELP.md
+**/.mvn/
+**/mvnw
+**/mvnw.cmd
+**/task.txt
+

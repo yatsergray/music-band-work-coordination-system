@@ -1,0 +1,55 @@
+package ua.yatsergray.backend.controller.band;
+
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import ua.yatsergray.backend.domain.dto.band.EventDTO;
+import ua.yatsergray.backend.domain.dto.band.editable.EventEditableDTO;
+import ua.yatsergray.backend.service.band.impl.EventServiceImpl;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/events")
+public class EventController {
+    private final EventServiceImpl eventService;
+
+    @Autowired
+    public EventController(EventServiceImpl eventService) {
+        this.eventService = eventService;
+    }
+
+    @SneakyThrows
+    @PostMapping
+    public ResponseEntity<EventDTO> createEvent(@RequestBody EventEditableDTO eventEditableDTO) {
+        return ResponseEntity.ok(eventService.addEvent(eventEditableDTO));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EventDTO> readEventById(@PathVariable("id") UUID id) {
+        return eventService.getEventById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<EventDTO>> readAllEvents() {
+        return ResponseEntity.ok(eventService.getAllEvents());
+    }
+
+    @SneakyThrows
+    @PutMapping("/{id}")
+    public ResponseEntity<EventDTO> updateEventById(@PathVariable("id") UUID id, @RequestBody EventEditableDTO eventEditableDTO) {
+        return ResponseEntity.ok(eventService.modifyEventById(id, eventEditableDTO));
+    }
+
+    @SneakyThrows
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEventById(@PathVariable("id") UUID id) {
+        eventService.removeEventById(id);
+
+        return ResponseEntity.ok().build();
+    }
+}
