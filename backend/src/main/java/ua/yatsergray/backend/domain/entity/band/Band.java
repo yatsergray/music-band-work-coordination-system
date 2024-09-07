@@ -22,8 +22,8 @@ public class Band {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "image_file_url", unique = true)
-    private String imageFileURL;
+    @Column(name = "image_file_id", unique = true)
+    private UUID imageFileId;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -53,11 +53,11 @@ public class Band {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Band band)) return false;
-        return Objects.equals(id, band.id) && Objects.equals(imageFileURL, band.imageFileURL) && Objects.equals(name, band.name) && Objects.equals(chats, band.chats) && Objects.equals(events, band.events) && Objects.equals(invitations, band.invitations) && Objects.equals(bandSongVersions, band.bandSongVersions) && Objects.equals(bandUserStageRoles, band.bandUserStageRoles) && Objects.equals(bandUserAccessRoles, band.bandUserAccessRoles) && Objects.equals(users, band.users);
+        return Objects.equals(id, band.id) && Objects.equals(imageFileId, band.imageFileId) && Objects.equals(name, band.name) && Objects.equals(chats, band.chats) && Objects.equals(events, band.events) && Objects.equals(invitations, band.invitations) && Objects.equals(bandSongVersions, band.bandSongVersions) && Objects.equals(bandUserStageRoles, band.bandUserStageRoles) && Objects.equals(bandUserAccessRoles, band.bandUserAccessRoles) && Objects.equals(users, band.users);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, imageFileURL, name, chats, events, invitations, bandSongVersions, bandUserStageRoles, bandUserAccessRoles, users);
+        return Objects.hash(id, imageFileId, name, chats, events, invitations, bandSongVersions, bandUserStageRoles, bandUserAccessRoles, users);
     }
 }

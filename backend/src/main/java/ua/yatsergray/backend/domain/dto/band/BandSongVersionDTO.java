@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 public class BandSongVersionDTO {
     private UUID id;
-    private String audioFileURL;
+    private UUID audioFileId;
     private KeyDTO keyDTO;
     private SongDTO songDTO;
     private SongStructureDTO songStructureDTO;

@@ -22,8 +22,8 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "image_file_url", unique = true)
-    private String imageFileURL;
+    @Column(name = "image_file_id", unique = true)
+    private UUID imageFileId;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -45,11 +45,11 @@ public class Chat {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Chat chat)) return false;
-        return Objects.equals(id, chat.id) && Objects.equals(imageFileURL, chat.imageFileURL) && Objects.equals(name, chat.name) && Objects.equals(band, chat.band) && Objects.equals(messages, chat.messages) && Objects.equals(chatUserAccessRoles, chat.chatUserAccessRoles) && Objects.equals(users, chat.users);
+        return Objects.equals(id, chat.id) && Objects.equals(imageFileId, chat.imageFileId) && Objects.equals(name, chat.name) && Objects.equals(band, chat.band) && Objects.equals(messages, chat.messages) && Objects.equals(chatUserAccessRoles, chat.chatUserAccessRoles) && Objects.equals(users, chat.users);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, imageFileURL, name, band, messages, chatUserAccessRoles, users);
+        return Objects.hash(id, imageFileId, name, band, messages, chatUserAccessRoles, users);
     }
 }

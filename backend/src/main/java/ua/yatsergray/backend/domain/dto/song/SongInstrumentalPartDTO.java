@@ -12,8 +12,8 @@ import java.util.UUID;
 @Builder
 public class SongInstrumentalPartDTO {
     private UUID id;
-    private String audioFileURL;
-    private String videoFileURL;
-    private String tabFileURL;
+    private UUID audioFileId;
+    private UUID videoFileId;
+    private UUID tabFileId;
     private StageRoleDTO stageRoleDTO;
 }

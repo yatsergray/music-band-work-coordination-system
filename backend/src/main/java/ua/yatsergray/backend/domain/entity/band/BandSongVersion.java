@@ -24,8 +24,8 @@ public class BandSongVersion {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "audio_file_url", unique = true, nullable = false)
-    private String audioFileURL;
+    @Column(name = "audio_file_id", unique = true, nullable = false)
+    private UUID audioFileId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_key", nullable = false)
@@ -50,11 +50,11 @@ public class BandSongVersion {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BandSongVersion that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(audioFileURL, that.audioFileURL) && Objects.equals(key, that.key) && Objects.equals(band, that.band) && Objects.equals(song, that.song) && Objects.equals(songStructure, that.songStructure) && Objects.equals(eventBandSongVersions, that.eventBandSongVersions);
+        return Objects.equals(id, that.id) && Objects.equals(audioFileId, that.audioFileId) && Objects.equals(key, that.key) && Objects.equals(band, that.band) && Objects.equals(song, that.song) && Objects.equals(songStructure, that.songStructure) && Objects.equals(eventBandSongVersions, that.eventBandSongVersions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, audioFileURL, key, band, song, songStructure, eventBandSongVersions);
+        return Objects.hash(id, audioFileId, key, band, song, songStructure, eventBandSongVersions);
     }
 }

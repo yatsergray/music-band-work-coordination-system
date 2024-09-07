@@ -8,7 +8,6 @@ import lombok.*;
 @Setter
 @Builder
 public class UserEditableDTO {
-    private String imageFileName;
     private String firstName;
     private String lastName;
     private String email;

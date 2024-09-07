@@ -13,8 +13,8 @@ import java.util.UUID;
 @Builder
 public class SongDTO {
     private UUID id;
-    private String imageFileURL;
-    private String audioFileURL;
+    private UUID imageFileId;
+    private UUID audioFileId;
     private String mediaURL;
     private String name;
     private Integer bpm;

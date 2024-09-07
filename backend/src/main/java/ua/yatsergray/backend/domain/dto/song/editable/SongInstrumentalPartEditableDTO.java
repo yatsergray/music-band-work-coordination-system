@@ -10,9 +10,6 @@ import java.util.UUID;
 @Setter
 @Builder
 public class SongInstrumentalPartEditableDTO {
-    private String audioFileName;
-    private String videoFileName;
-    private String tabFileName;
     private UUID songUUID;
     private UUID stageRoleUUID;
 }

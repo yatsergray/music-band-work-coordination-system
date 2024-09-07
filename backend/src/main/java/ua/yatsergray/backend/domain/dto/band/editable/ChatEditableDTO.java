@@ -10,7 +10,6 @@ import java.util.UUID;
 @Setter
 @Builder
 public class ChatEditableDTO {
-    private String imageFileName;
     private String name;
     private UUID bandUUID;
 }

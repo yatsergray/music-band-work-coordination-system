@@ -6,18 +6,17 @@ import org.mapstruct.factory.Mappers;
 import ua.yatsergray.backend.domain.dto.song.SongDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.SongEditableDTO;
 import ua.yatsergray.backend.domain.entity.song.Song;
-import ua.yatsergray.backend.mapper.FileURLToFileNameMapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {KeyMapper.class, ArtistMapper.class, TimeSignatureMapper.class, SongStructureMapper.class, SongInstrumentalPartMapper.class, KeyMapper.class, FileURLToFileNameMapper.class})
+@Mapper(componentModel = "spring", uses = {KeyMapper.class, ArtistMapper.class, TimeSignatureMapper.class, SongStructureMapper.class, SongInstrumentalPartMapper.class, KeyMapper.class})
 public interface SongMapper {
 
     SongMapper INSTANCE = Mappers.getMapper(SongMapper.class);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "imageFileURL", ignore = true)
-    @Mapping(target = "audioFileURL", ignore = true)
+    @Mapping(target = "imageFileId", ignore = true)
+    @Mapping(target = "audioFileId", ignore = true)
     @Mapping(target = "songStructure", ignore = true)
     @Mapping(target = "key", ignore = true)
     @Mapping(target = "artist", ignore = true)
@@ -36,8 +35,6 @@ public interface SongMapper {
     @Mapping(source = "keys", target = "keyDTOList")
     SongDTO mapToSongDTO(Song song);
 
-    @Mapping(source = "imageFileURL", target = "imageFileName", qualifiedByName = "fileURLToFileName")
-    @Mapping(source = "audioFileURL", target = "audioFileName", qualifiedByName = "fileURLToFileName")
     @Mapping(source = "key.id", target = "keyUUID")
     @Mapping(source = "artist.id", target = "artistUUID")
     @Mapping(source = "timeSignature.id", target = "timeSignatureUUID")

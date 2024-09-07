@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 public class ChatDTO {
     private UUID id;
-    private String imageFileURL;
+    private UUID imageFileId;
     private String name;
     private List<MessageDTO> messageDTOList = new ArrayList<>();
     private List<UserDTO> userDTOList = new ArrayList<>();

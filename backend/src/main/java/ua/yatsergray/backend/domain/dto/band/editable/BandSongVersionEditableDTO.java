@@ -10,7 +10,6 @@ import java.util.UUID;
 @Setter
 @Builder
 public class BandSongVersionEditableDTO {
-    private String audioFileName;
     private UUID keyUUID;
     private UUID bandUUID;
     private UUID songUUID;

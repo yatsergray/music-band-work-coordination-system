@@ -20,14 +20,14 @@ public class SongInstrumentalPart {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "audio_file_url", unique = true, nullable = false)
-    private String audioFileURL;
+    @Column(name = "audio_file_id", unique = true, nullable = false)
+    private UUID audioFileId;
 
-    @Column(name = "video_file_url", unique = true)
-    private String videoFileURL;
+    @Column(name = "video_file_id", unique = true)
+    private UUID videoFileId;
 
-    @Column(name = "tab_file_url", unique = true)
-    private String tabFileURL;
+    @Column(name = "tab_file_id", unique = true)
+    private UUID tabFileId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_song", nullable = false)
@@ -41,11 +41,11 @@ public class SongInstrumentalPart {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SongInstrumentalPart that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(audioFileURL, that.audioFileURL) && Objects.equals(videoFileURL, that.videoFileURL) && Objects.equals(tabFileURL, that.tabFileURL) && Objects.equals(song, that.song) && Objects.equals(stageRole, that.stageRole);
+        return Objects.equals(id, that.id) && Objects.equals(audioFileId, that.audioFileId) && Objects.equals(videoFileId, that.videoFileId) && Objects.equals(tabFileId, that.tabFileId) && Objects.equals(song, that.song) && Objects.equals(stageRole, that.stageRole);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, audioFileURL, videoFileURL, tabFileURL, song, stageRole);
+        return Objects.hash(id, audioFileId, videoFileId, tabFileId, song, stageRole);
     }
 }
