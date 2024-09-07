@@ -11,6 +11,6 @@ import java.util.UUID;
 @Builder
 public class ArtistDTO {
     private UUID id;
-    private String imageFileURL;
+    private UUID imageFileId;
     private String name;
 }

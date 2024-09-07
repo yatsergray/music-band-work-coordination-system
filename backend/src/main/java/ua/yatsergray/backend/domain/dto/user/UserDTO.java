@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder
 public class UserDTO {
     private UUID id;
-    private String imageFileURL;
+    private UUID imageFileId;
     private String firstName;
     private String lastName;
     private String email;

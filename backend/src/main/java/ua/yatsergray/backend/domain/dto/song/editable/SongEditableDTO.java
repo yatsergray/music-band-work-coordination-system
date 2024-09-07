@@ -10,8 +10,6 @@ import java.util.UUID;
 @Setter
 @Builder
 public class SongEditableDTO {
-    private String imageFileName;
-    private String audioFileName;
     private String mediaURL;
     private String name;
     private Integer bpm;

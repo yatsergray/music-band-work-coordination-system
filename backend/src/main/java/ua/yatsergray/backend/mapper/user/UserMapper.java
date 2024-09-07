@@ -6,20 +6,19 @@ import org.mapstruct.factory.Mappers;
 import ua.yatsergray.backend.domain.dto.user.UserDTO;
 import ua.yatsergray.backend.domain.dto.user.editable.UserEditableDTO;
 import ua.yatsergray.backend.domain.entity.user.User;
-import ua.yatsergray.backend.mapper.FileURLToFileNameMapper;
 import ua.yatsergray.backend.mapper.band.BandAccessRoleMapper;
 import ua.yatsergray.backend.mapper.band.ChatAccessRoleMapper;
 import ua.yatsergray.backend.mapper.band.StageRoleMapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {RoleMapper.class, BandAccessRoleMapper.class, StageRoleMapper.class, ChatAccessRoleMapper.class, FileURLToFileNameMapper.class})
+@Mapper(componentModel = "spring", uses = {RoleMapper.class, BandAccessRoleMapper.class, StageRoleMapper.class, ChatAccessRoleMapper.class})
 public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "imageFileURL", ignore = true)
+    @Mapping(target = "imageFileId", ignore = true)
     @Mapping(target = "messages", ignore = true)
     @Mapping(target = "eventUsers", ignore = true)
     @Mapping(target = "bandUserAccessRoles", ignore = true)
@@ -36,7 +35,6 @@ public interface UserMapper {
 //    @Mapping(source = "chatUserAccessRoles", target = "chatUserAccessRoleDTOList")
     UserDTO mapToUserDTO(User user);
 
-    @Mapping(source = "imageFileURL", target = "imageFileName", qualifiedByName = "fileURLToFileName")
     UserEditableDTO mapToUserEditableDTO(UserDTO userDTO);
 
     List<UserDTO> mapAllToUserDTOList(List<User> users);

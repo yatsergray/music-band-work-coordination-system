@@ -22,11 +22,11 @@ public class Song {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "image_file_url", unique = true)
-    private String imageFileURL;
+    @Column(name = "image_file_id", unique = true)
+    private UUID imageFileId;
 
-    @Column(name = "audio_file_url", unique = true, nullable = false)
-    private String audioFileURL;
+    @Column(name = "audio_file_id", unique = true, nullable = false)
+    private UUID audioFileId;
 
     @Column(name = "media_url", unique = true)
     private String mediaURL;
@@ -69,11 +69,11 @@ public class Song {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Song song)) return false;
-        return Objects.equals(id, song.id) && Objects.equals(imageFileURL, song.imageFileURL) && Objects.equals(audioFileURL, song.audioFileURL) && Objects.equals(mediaURL, song.mediaURL) && Objects.equals(name, song.name) && Objects.equals(bpm, song.bpm) && Objects.equals(songStructure, song.songStructure) && Objects.equals(key, song.key) && Objects.equals(artist, song.artist) && Objects.equals(timeSignature, song.timeSignature) && Objects.equals(songParts, song.songParts) && Objects.equals(bandSongVersions, song.bandSongVersions) && Objects.equals(songInstrumentalParts, song.songInstrumentalParts) && Objects.equals(keys, song.keys);
+        return Objects.equals(id, song.id) && Objects.equals(imageFileId, song.imageFileId) && Objects.equals(audioFileId, song.audioFileId) && Objects.equals(mediaURL, song.mediaURL) && Objects.equals(name, song.name) && Objects.equals(bpm, song.bpm) && Objects.equals(songStructure, song.songStructure) && Objects.equals(key, song.key) && Objects.equals(artist, song.artist) && Objects.equals(timeSignature, song.timeSignature) && Objects.equals(songParts, song.songParts) && Objects.equals(bandSongVersions, song.bandSongVersions) && Objects.equals(songInstrumentalParts, song.songInstrumentalParts) && Objects.equals(keys, song.keys);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, imageFileURL, audioFileURL, mediaURL, name, bpm, songStructure, key, artist, timeSignature, songParts, bandSongVersions, songInstrumentalParts, keys);
+        return Objects.hash(id, imageFileId, audioFileId, mediaURL, name, bpm, songStructure, key, artist, timeSignature, songParts, bandSongVersions, songInstrumentalParts, keys);
     }
 }

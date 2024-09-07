@@ -22,8 +22,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "image_file_url", unique = true, nullable = false)
-    private String imageFileURL;
+    @Column(name = "image_file_id", unique = true, nullable = false)
+    private UUID imageFileId;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -75,11 +75,11 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User user)) return false;
-        return Objects.equals(id, user.id) && Objects.equals(imageFileURL, user.imageFileURL) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(messages, user.messages) && Objects.equals(eventUsers, user.eventUsers) && Objects.equals(bandUserStageRoles, user.bandUserStageRoles) && Objects.equals(bandUserAccessRoles, user.bandUserAccessRoles) && Objects.equals(roles, user.roles) && Objects.equals(bands, user.bands) && Objects.equals(chats, user.chats);
+        return Objects.equals(id, user.id) && Objects.equals(imageFileId, user.imageFileId) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(messages, user.messages) && Objects.equals(eventUsers, user.eventUsers) && Objects.equals(bandUserStageRoles, user.bandUserStageRoles) && Objects.equals(bandUserAccessRoles, user.bandUserAccessRoles) && Objects.equals(roles, user.roles) && Objects.equals(bands, user.bands) && Objects.equals(chats, user.chats);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, imageFileURL, firstName, lastName, email, password, messages, eventUsers, bandUserStageRoles, bandUserAccessRoles, roles, bands, chats);
+        return Objects.hash(id, imageFileId, firstName, lastName, email, password, messages, eventUsers, bandUserStageRoles, bandUserAccessRoles, roles, bands, chats);
     }
 }

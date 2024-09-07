@@ -20,8 +20,8 @@ public class Artist {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "image_file_url", unique = true)
-    private String imageFileURL;
+    @Column(name = "image_file_id", unique = true)
+    private UUID imageFileId;
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;

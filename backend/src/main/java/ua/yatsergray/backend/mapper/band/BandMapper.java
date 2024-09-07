@@ -6,18 +6,17 @@ import org.mapstruct.factory.Mappers;
 import ua.yatsergray.backend.domain.dto.band.BandDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.BandEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.Band;
-import ua.yatsergray.backend.mapper.FileURLToFileNameMapper;
 import ua.yatsergray.backend.mapper.user.UserMapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {ChatMapper.class, EventMapper.class, InvitationMapper.class, BandSongVersionMapper.class, UserMapper.class, FileURLToFileNameMapper.class})
+@Mapper(componentModel = "spring", uses = {ChatMapper.class, EventMapper.class, InvitationMapper.class, BandSongVersionMapper.class, UserMapper.class})
 public interface BandMapper {
 
     BandMapper INSTANCE = Mappers.getMapper(BandMapper.class);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "imageFileURL", ignore = true)
+    @Mapping(target = "imageFileId", ignore = true)
     @Mapping(target = "chats", ignore = true)
     @Mapping(target = "events", ignore = true)
     @Mapping(target = "invitations", ignore = true)
@@ -34,7 +33,6 @@ public interface BandMapper {
     @Mapping(source = "users", target = "userDTOList")
     BandDTO mapToBandDTO(Band band);
 
-    @Mapping(source = "imageFileURL", target = "imageFileName", qualifiedByName = "fileURLToFileName")
     BandEditableDTO mapToBandEditableDTO(Band band);
 
     List<BandDTO> mapAllToBandDTOList(List<Band> bands);

@@ -6,14 +6,13 @@ import org.mapstruct.factory.Mappers;
 import ua.yatsergray.backend.domain.dto.band.BandSongVersionDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.BandSongVersionEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.BandSongVersion;
-import ua.yatsergray.backend.mapper.FileURLToFileNameMapper;
 import ua.yatsergray.backend.mapper.song.KeyMapper;
 import ua.yatsergray.backend.mapper.song.SongMapper;
 import ua.yatsergray.backend.mapper.song.SongStructureMapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {KeyMapper.class, SongMapper.class, SongStructureMapper.class, FileURLToFileNameMapper.class})
+@Mapper(componentModel = "spring", uses = {KeyMapper.class, SongMapper.class, SongStructureMapper.class})
 public interface BandSongVersionMapper {
 
     BandSongVersionMapper INSTANCE = Mappers.getMapper(BandSongVersionMapper.class);
@@ -32,7 +31,6 @@ public interface BandSongVersionMapper {
     @Mapping(source = "songStructure", target = "songStructureDTO")
     BandSongVersionDTO mapToBandSongVersionDTO(BandSongVersion bandSongVersion);
 
-    @Mapping(source = "audioFileURL", target = "audioFileName", qualifiedByName = "fileURLToFileName")
     @Mapping(source = "key.id", target = "keyUUID")
     @Mapping(source = "band.id", target = "bandUUID")
     @Mapping(source = "song.id", target = "songUUID")

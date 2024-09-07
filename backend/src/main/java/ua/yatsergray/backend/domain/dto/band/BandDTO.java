@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 public class BandDTO {
     private UUID id;
-    private String imageFileURL;
+    private UUID imageFileId;
     private String name;
     private List<ChatDTO> chatDTOList = new ArrayList<>();
     private List<EventDTO> eventDTOList = new ArrayList<>();

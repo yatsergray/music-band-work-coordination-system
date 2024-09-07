@@ -8,6 +8,5 @@ import lombok.*;
 @Setter
 @Builder
 public class BandEditableDTO {
-    private String imageFileName;
     private String name;
 }
