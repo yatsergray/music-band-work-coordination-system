@@ -27,12 +27,7 @@ public class BandServiceImpl implements BandService {
 
     @Override
     public BandDTO addBand(BandEditableDTO bandEditableDTO) {
-//        String imageFileName = bandEditableDTO.getImageFileName();
-        Band band = bandMapper.mapToBand(bandEditableDTO);
-
-//        band.setImageFileURL(imageFileName);
-
-        return bandMapper.mapToBandDTO(bandRepository.save(band));
+        return bandMapper.mapToBandDTO(bandRepository.save(bandMapper.mapToBand(bandEditableDTO)));
     }
 
     @Override
@@ -49,10 +44,7 @@ public class BandServiceImpl implements BandService {
     public BandDTO modifyBandById(UUID id, BandEditableDTO bandEditableDTO) throws NoSuchBandException {
         return bandRepository.findById(id)
                 .map(band -> {
-//                    String imageFileName = bandEditableDTO.getImageFileName();
-
                     band.setName(bandEditableDTO.getName());
-//                    band.setImageFileURL(imageFileName);
 
                     return bandMapper.mapToBandDTO(bandRepository.save(band));
                 })

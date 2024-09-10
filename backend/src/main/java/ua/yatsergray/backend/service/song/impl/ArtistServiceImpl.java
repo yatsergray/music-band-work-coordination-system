@@ -27,13 +27,7 @@ public class ArtistServiceImpl implements ArtistService {
 
     @Override
     public ArtistDTO addArtist(ArtistEditableDTO artistEditableDTO) {
-//        String imageFileName = artistEditableDTO.getImageFileName();
-
-        Artist artist = artistMapper.mapToArtist(artistEditableDTO);
-
-//        artist.setImageFileURL(imageFileName);
-
-        return artistMapper.mapToArtistDTO(artistRepository.save(artist));
+        return artistMapper.mapToArtistDTO(artistRepository.save(artistMapper.mapToArtist(artistEditableDTO)));
     }
 
     @Override

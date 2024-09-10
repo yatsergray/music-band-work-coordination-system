@@ -42,7 +42,6 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
 
     @Override
     public BandSongVersionDTO addBandSongVersion(BandSongVersionEditableDTO bandSongVersionEditableDTO) throws NoSuchKeyException, NoSuchBandException, NoSuchSongException {
-//        String audioFileName = bandSongVersionEditableDTO.getAudioFileName();
         Key key = keyRepository.findById(bandSongVersionEditableDTO.getKeyUUID())
                 .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", bandSongVersionEditableDTO.getKeyUUID())));
         Band band = bandRepository.findById(bandSongVersionEditableDTO.getBandUUID())
@@ -52,7 +51,6 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
 
         BandSongVersion bandSongVersion = new BandSongVersion();
 
-//        bandSongVersion.setAudioFileURL(audioFileName);
         bandSongVersion.setKey(key);
         bandSongVersion.setBand(band);
         bandSongVersion.setSong(song);
@@ -75,7 +73,6 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
         BandSongVersion bandSongVersion = bandSongVersionRepository.findById(id)
                 .orElseThrow(() -> new NoSuchBandSongVersionException(String.format("Band song version does not exist with id=%s", id)));
 
-//        String audioFileName = bandSongVersionEditableDTO.getAudioFileName();
         Key key = keyRepository.findById(bandSongVersionEditableDTO.getKeyUUID())
                 .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", bandSongVersionEditableDTO.getKeyUUID())));
         Band band = bandRepository.findById(bandSongVersionEditableDTO.getBandUUID())
@@ -83,7 +80,6 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
         Song song = songRepository.findById(bandSongVersionEditableDTO.getSongUUID())
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", bandSongVersionEditableDTO.getSongUUID())));
 
-//        bandSongVersion.setAudioFileURL(audioFileName);
         bandSongVersion.setKey(key);
         bandSongVersion.setBand(band);
         bandSongVersion.setSong(song);

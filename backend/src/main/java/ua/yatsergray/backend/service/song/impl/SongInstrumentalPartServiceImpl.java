@@ -41,15 +41,9 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", songInstrumentalPartEditableDTO.getSongUUID())));
         StageRole stageRole = stageRoleRepository.findById(songInstrumentalPartEditableDTO.getStageRoleUUID())
                 .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role does not exist with id=%s", songInstrumentalPartEditableDTO.getStageRoleUUID())));
-//        String audioFileName = songInstrumentalPartEditableDTO.getAudioFileName();
-//        String videoFileName = songInstrumentalPartEditableDTO.getVideoFileName();
-//        String tabFileName = songInstrumentalPartEditableDTO.getTabFileName();
 
         SongInstrumentalPart songInstrumentalPart = new SongInstrumentalPart();
 
-//        songInstrumentalPart.setAudioFileURL(audioFileName);
-//        songInstrumentalPart.setVideoFileURL(videoFileName);
-//        songInstrumentalPart.setTabFileURL(tabFileName);
         songInstrumentalPart.setSong(song);
         songInstrumentalPart.setStageRole(stageRole);
 

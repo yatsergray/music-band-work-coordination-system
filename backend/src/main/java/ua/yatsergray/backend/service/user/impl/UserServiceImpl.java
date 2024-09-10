@@ -27,13 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO addUser(UserEditableDTO userEditableDTO) {
-//        String imageFileName = userEditableDTO.getImageFileName();
-
-        User user = userMapper.mapToUser(userEditableDTO);
-
-//        user.setImageFileURL(imageFileName);
-
-        return userMapper.mapToUserDTO(userRepository.save(user));
+        return userMapper.mapToUserDTO(userRepository.save(userMapper.mapToUser(userEditableDTO)));
     }
 
     @Override
@@ -48,12 +42,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO modifyUserById(UUID id, UserEditableDTO userEditableDTO) throws NoSuchUserException {
-        //        String imageFileName = userEditableDTO.getImageFileName();
-
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchUserException(String.format("User does not exist with id=%s", id)));
 
-//        user.setImageFileURL(imageFileName);
         user.setFirstName(userEditableDTO.getFirstName());
         user.setLastName(userEditableDTO.getLastName());
         user.setEmail(userEditableDTO.getEmail());

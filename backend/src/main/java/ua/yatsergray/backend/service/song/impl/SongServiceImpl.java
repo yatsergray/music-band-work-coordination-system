@@ -48,13 +48,9 @@ public class SongServiceImpl implements SongService {
                 .orElseThrow(() -> new NoSuchArtistException(String.format("Artist does not exist with id=%s", songEditableDTO.getArtistUUID())));
         TimeSignature timeSignature = timeSignatureRepository.findById(songEditableDTO.getTimeSignatureUUID())
                 .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature does not exist with id=%s", songEditableDTO.getTimeSignatureUUID())));
-//        String imageFileName = songEditableDTO.getImageFileName();
-//        String audioFileName = songEditableDTO.getAudioFileName();
 
         Song song = songMapper.mapToSong(songEditableDTO);
 
-//        song.setImageFileURL(imageFileName);
-//        song.setAudioFileURL(audioFileName);
         song.setKey(key);
         song.setArtist(artist);
         song.setTimeSignature(timeSignature);
