@@ -21,7 +21,7 @@ public class SongDTO {
     private KeyDTO keyDTO;
     private ArtistDTO artistDTO;
     private TimeSignatureDTO timeSignatureDTO;
-    private SongStructureDTO songStructureDTO;
+    private List<SongPartDetailsDTO> songPartDetailsDTOList = new ArrayList<>();
     private List<SongInstrumentalPartDTO> songInstrumentalPartDTOList = new ArrayList<>();
     private List<KeyDTO> keyDTOList = new ArrayList<>();
 }

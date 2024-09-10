@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import ua.yatsergray.backend.domain.entity.song.Key;
 import ua.yatsergray.backend.domain.entity.song.Song;
-import ua.yatsergray.backend.domain.entity.song.SongStructure;
+import ua.yatsergray.backend.domain.entity.song.SongPartDetails;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -39,9 +39,8 @@ public class BandSongVersion {
     @JoinColumn(name = "id_song", nullable = false)
     private Song song;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_song_structure", nullable = false)
-    private SongStructure songStructure;
+    @OneToMany(mappedBy = "bandSongVersion")
+    private Set<SongPartDetails> songPartDetailsSet = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "bandSongVersion")
     private Set<EventBandSongVersion> eventBandSongVersions = new LinkedHashSet<>();
@@ -50,11 +49,11 @@ public class BandSongVersion {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BandSongVersion that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(audioFileId, that.audioFileId) && Objects.equals(key, that.key) && Objects.equals(band, that.band) && Objects.equals(song, that.song) && Objects.equals(songStructure, that.songStructure) && Objects.equals(eventBandSongVersions, that.eventBandSongVersions);
+        return Objects.equals(id, that.id) && Objects.equals(audioFileId, that.audioFileId) && Objects.equals(key, that.key) && Objects.equals(band, that.band) && Objects.equals(song, that.song) && Objects.equals(songPartDetailsSet, that.songPartDetailsSet) && Objects.equals(eventBandSongVersions, that.eventBandSongVersions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, audioFileId, key, band, song, songStructure, eventBandSongVersions);
+        return Objects.hash(id, audioFileId, key, band, song, songPartDetailsSet, eventBandSongVersions);
     }
 }

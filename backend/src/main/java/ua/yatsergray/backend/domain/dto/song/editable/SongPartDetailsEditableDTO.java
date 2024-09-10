@@ -9,9 +9,10 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class SongPartStructureDetailsEditableDTO {
+public class SongPartDetailsEditableDTO {
     private Integer sequenceNumber;
     private Integer repeatNumber;
     private UUID songPartUUID;
-    private UUID songStructureUUID;
+    private UUID songUUID;
+    private UUID bandSongVersionUUID;
 }

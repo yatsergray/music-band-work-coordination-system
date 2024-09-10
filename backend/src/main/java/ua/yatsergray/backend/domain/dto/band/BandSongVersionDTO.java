@@ -3,8 +3,10 @@ package ua.yatsergray.backend.domain.dto.band;
 import lombok.*;
 import ua.yatsergray.backend.domain.dto.song.KeyDTO;
 import ua.yatsergray.backend.domain.dto.song.SongDTO;
-import ua.yatsergray.backend.domain.dto.song.SongStructureDTO;
+import ua.yatsergray.backend.domain.dto.song.SongPartDetailsDTO;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -17,5 +19,5 @@ public class BandSongVersionDTO {
     private UUID audioFileId;
     private KeyDTO keyDTO;
     private SongDTO songDTO;
-    private SongStructureDTO songStructureDTO;
+    private List<SongPartDetailsDTO> songPartDetailsDTOList = new ArrayList<>();
 }

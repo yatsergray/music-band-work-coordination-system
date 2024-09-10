@@ -37,10 +37,6 @@ public class Song {
     @Column(name = "bpm", nullable = false)
     private Integer bpm;
 
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "id_song_structure", referencedColumnName = "id")
-    private SongStructure songStructure;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_key", nullable = false)
     private Key key;
@@ -60,6 +56,9 @@ public class Song {
     private Set<BandSongVersion> bandSongVersions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "song")
+    private Set<SongPartDetails> songPartDetailsSet = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "song")
     private Set<SongInstrumentalPart> songInstrumentalParts = new LinkedHashSet<>();
 
     @ManyToMany(mappedBy = "songs")
@@ -69,11 +68,11 @@ public class Song {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Song song)) return false;
-        return Objects.equals(id, song.id) && Objects.equals(imageFileId, song.imageFileId) && Objects.equals(audioFileId, song.audioFileId) && Objects.equals(mediaURL, song.mediaURL) && Objects.equals(name, song.name) && Objects.equals(bpm, song.bpm) && Objects.equals(songStructure, song.songStructure) && Objects.equals(key, song.key) && Objects.equals(artist, song.artist) && Objects.equals(timeSignature, song.timeSignature) && Objects.equals(songParts, song.songParts) && Objects.equals(bandSongVersions, song.bandSongVersions) && Objects.equals(songInstrumentalParts, song.songInstrumentalParts) && Objects.equals(keys, song.keys);
+        return Objects.equals(id, song.id) && Objects.equals(imageFileId, song.imageFileId) && Objects.equals(audioFileId, song.audioFileId) && Objects.equals(mediaURL, song.mediaURL) && Objects.equals(name, song.name) && Objects.equals(bpm, song.bpm) && Objects.equals(key, song.key) && Objects.equals(artist, song.artist) && Objects.equals(timeSignature, song.timeSignature) && Objects.equals(songParts, song.songParts) && Objects.equals(bandSongVersions, song.bandSongVersions) && Objects.equals(songPartDetailsSet, song.songPartDetailsSet) && Objects.equals(songInstrumentalParts, song.songInstrumentalParts) && Objects.equals(keys, song.keys);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, imageFileId, audioFileId, mediaURL, name, bpm, songStructure, key, artist, timeSignature, songParts, bandSongVersions, songInstrumentalParts, keys);
+        return Objects.hash(id, imageFileId, audioFileId, mediaURL, name, bpm, key, artist, timeSignature, songParts, bandSongVersions, songPartDetailsSet, songInstrumentalParts, keys);
     }
 }

@@ -18,7 +18,7 @@ public interface SongPartMapper {
     @Mapping(target = "song", ignore = true)
     @Mapping(target = "songPartCategory", ignore = true)
     @Mapping(target = "songPartKeyChords", ignore = true)
-    @Mapping(target = "songPartStructureDetailsSet", ignore = true)
+    @Mapping(target = "songPartDetailsSet", ignore = true)
     SongPart mapToSongPart(SongPartEditableDTO songPartEditableDTO);
 
     @Mapping(source = "songPartCategory", target = "songPartCategoryDTO")

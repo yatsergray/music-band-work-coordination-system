@@ -42,17 +42,17 @@ public class SongPart {
     private Set<SongPartKeyChord> songPartKeyChords = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "songPart")
-    private Set<SongPartStructureDetails> songPartStructureDetailsSet = new LinkedHashSet<>();
+    private Set<SongPartDetails> songPartDetailsSet = new LinkedHashSet<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof SongPart songPart)) return false;
-        return Objects.equals(id, songPart.id) && Objects.equals(text, songPart.text) && Objects.equals(typeNumber, songPart.typeNumber) && Objects.equals(measuresNumber, songPart.measuresNumber) && Objects.equals(song, songPart.song) && Objects.equals(songPartCategory, songPart.songPartCategory) && Objects.equals(songPartKeyChords, songPart.songPartKeyChords) && Objects.equals(songPartStructureDetailsSet, songPart.songPartStructureDetailsSet);
+        return Objects.equals(id, songPart.id) && Objects.equals(text, songPart.text) && Objects.equals(typeNumber, songPart.typeNumber) && Objects.equals(measuresNumber, songPart.measuresNumber) && Objects.equals(song, songPart.song) && Objects.equals(songPartCategory, songPart.songPartCategory) && Objects.equals(songPartKeyChords, songPart.songPartKeyChords) && Objects.equals(songPartDetailsSet, songPart.songPartDetailsSet);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, text, typeNumber, measuresNumber, song, songPartCategory, songPartKeyChords, songPartStructureDetailsSet);
+        return Objects.hash(id, text, typeNumber, measuresNumber, song, songPartCategory, songPartKeyChords, songPartDetailsSet);
     }
 }

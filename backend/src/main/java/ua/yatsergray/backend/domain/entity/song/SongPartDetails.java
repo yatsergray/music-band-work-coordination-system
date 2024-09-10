@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.song;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ua.yatsergray.backend.domain.entity.band.BandSongVersion;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -12,8 +13,8 @@ import java.util.UUID;
 @Setter
 @Builder
 @Entity
-@Table(name = "song_part_structure_details")
-public class SongPartStructureDetails {
+@Table(name = "song_part_details")
+public class SongPartDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,18 +31,22 @@ public class SongPartStructureDetails {
     private SongPart songPart;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_song_structure", nullable = false)
-    private SongStructure songStructure;
+    @JoinColumn(name = "id_song", nullable = false)
+    private Song song;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_band_song_version", nullable = false)
+    private BandSongVersion bandSongVersion;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SongPartStructureDetails that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(sequenceNumber, that.sequenceNumber) && Objects.equals(repeatNumber, that.repeatNumber) && Objects.equals(songPart, that.songPart) && Objects.equals(songStructure, that.songStructure);
+        if (!(o instanceof SongPartDetails that)) return false;
+        return Objects.equals(id, that.id) && Objects.equals(sequenceNumber, that.sequenceNumber) && Objects.equals(repeatNumber, that.repeatNumber) && Objects.equals(songPart, that.songPart) && Objects.equals(song, that.song) && Objects.equals(bandSongVersion, that.bandSongVersion);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, sequenceNumber, repeatNumber, songPart, songStructure);
+        return Objects.hash(id, sequenceNumber, repeatNumber, songPart, song, bandSongVersion);
     }
 }

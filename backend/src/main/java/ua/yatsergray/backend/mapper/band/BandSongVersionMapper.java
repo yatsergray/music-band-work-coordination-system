@@ -8,11 +8,11 @@ import ua.yatsergray.backend.domain.dto.band.editable.BandSongVersionEditableDTO
 import ua.yatsergray.backend.domain.entity.band.BandSongVersion;
 import ua.yatsergray.backend.mapper.song.KeyMapper;
 import ua.yatsergray.backend.mapper.song.SongMapper;
-import ua.yatsergray.backend.mapper.song.SongStructureMapper;
+import ua.yatsergray.backend.mapper.song.SongPartDetailsMapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {KeyMapper.class, SongMapper.class, SongStructureMapper.class})
+@Mapper(componentModel = "spring", uses = {KeyMapper.class, SongMapper.class, SongPartDetailsMapper.class})
 public interface BandSongVersionMapper {
 
     BandSongVersionMapper INSTANCE = Mappers.getMapper(BandSongVersionMapper.class);
@@ -28,13 +28,12 @@ public interface BandSongVersionMapper {
 
     @Mapping(source = "key", target = "keyDTO")
     @Mapping(source = "song", target = "songDTO")
-    @Mapping(source = "songStructure", target = "songStructureDTO")
+    @Mapping(source = "songPartDetailsSet", target = "songPartDetailsDTOList")
     BandSongVersionDTO mapToBandSongVersionDTO(BandSongVersion bandSongVersion);
 
     @Mapping(source = "key.id", target = "keyUUID")
     @Mapping(source = "band.id", target = "bandUUID")
     @Mapping(source = "song.id", target = "songUUID")
-    @Mapping(source = "songStructure.id", target = "songStructureUUID")
     BandSongVersionEditableDTO mapToBandSongVersionEditableDTO(BandSongVersion bandSongVersion);
 
     List<BandSongVersionDTO> mapAllToBandSongVersionDTOList(List<BandSongVersion> bandSongVersions);

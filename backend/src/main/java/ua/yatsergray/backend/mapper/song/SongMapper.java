@@ -9,7 +9,7 @@ import ua.yatsergray.backend.domain.entity.song.Song;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {KeyMapper.class, ArtistMapper.class, TimeSignatureMapper.class, SongStructureMapper.class, SongInstrumentalPartMapper.class, KeyMapper.class})
+@Mapper(componentModel = "spring", uses = {KeyMapper.class, ArtistMapper.class, TimeSignatureMapper.class, SongPartDetailsMapper.class, SongInstrumentalPartMapper.class, KeyMapper.class})
 public interface SongMapper {
 
     SongMapper INSTANCE = Mappers.getMapper(SongMapper.class);
@@ -17,12 +17,12 @@ public interface SongMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "imageFileId", ignore = true)
     @Mapping(target = "audioFileId", ignore = true)
-    @Mapping(target = "songStructure", ignore = true)
     @Mapping(target = "key", ignore = true)
     @Mapping(target = "artist", ignore = true)
     @Mapping(target = "timeSignature", ignore = true)
     @Mapping(target = "songParts", ignore = true)
     @Mapping(target = "bandSongVersions", ignore = true)
+    @Mapping(target = "songPartDetailsSet", ignore = true)
     @Mapping(target = "songInstrumentalParts", ignore = true)
     @Mapping(target = "keys", ignore = true)
     Song mapToSong(SongEditableDTO songEditableDTO);
@@ -30,7 +30,7 @@ public interface SongMapper {
     @Mapping(source = "key", target = "keyDTO")
     @Mapping(source = "artist", target = "artistDTO")
     @Mapping(source = "timeSignature", target = "timeSignatureDTO")
-    @Mapping(source = "songStructure", target = "songStructureDTO")
+    @Mapping(source = "songPartDetailsSet", target = "songPartDetailsDTOList")
     @Mapping(source = "songInstrumentalParts", target = "songInstrumentalPartDTOList")
     @Mapping(source = "keys", target = "keyDTOList")
     SongDTO mapToSongDTO(Song song);

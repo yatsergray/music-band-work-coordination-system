@@ -13,5 +13,4 @@ public class BandSongVersionEditableDTO {
     private UUID keyUUID;
     private UUID bandUUID;
     private UUID songUUID;
-    private UUID songStructureUUID;
 }

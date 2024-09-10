@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class SongPartStructureDetailsDTO {
+public class SongPartDetailsDTO {
     private UUID id;
     private Integer sequenceNumber;
     private Integer repeatNumber;
