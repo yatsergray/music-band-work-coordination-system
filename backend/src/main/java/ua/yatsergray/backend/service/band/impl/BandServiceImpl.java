@@ -27,7 +27,11 @@ public class BandServiceImpl implements BandService {
 
     @Override
     public BandDTO addBand(BandEditableDTO bandEditableDTO) {
-        return bandMapper.mapToBandDTO(bandRepository.save(bandMapper.mapToBand(bandEditableDTO)));
+        Band band = Band.builder()
+                .name(bandEditableDTO.getName())
+                .build();
+
+        return bandMapper.mapToBandDTO(bandRepository.save(band));
     }
 
     @Override

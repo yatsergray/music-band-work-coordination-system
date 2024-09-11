@@ -27,7 +27,11 @@ public class ArtistServiceImpl implements ArtistService {
 
     @Override
     public ArtistDTO addArtist(ArtistEditableDTO artistEditableDTO) {
-        return artistMapper.mapToArtistDTO(artistRepository.save(artistMapper.mapToArtist(artistEditableDTO)));
+        Artist artist = Artist.builder()
+                .name(artistEditableDTO.getName())
+                .build();
+
+        return artistMapper.mapToArtistDTO(artistRepository.save(artist));
     }
 
     @Override
@@ -45,9 +49,6 @@ public class ArtistServiceImpl implements ArtistService {
         Artist artist = artistRepository.findById(id)
                 .orElseThrow(() -> new NoSuchArtistException(String.format("Artist does not exist with id=%s", id)));
 
-//        String imageFileName = artistEditableDTO.getImageFileName();
-
-//        artist.setImageFileURL(imageFileName);
         artist.setName(artistEditableDTO.getName());
 
         return artistMapper.mapToArtistDTO(artistRepository.save(artist));

@@ -43,10 +43,11 @@ public class EventBandSongVersionServiceImpl implements EventBandSongVersionServ
         BandSongVersion bandSongVersion = bandSongVersionRepository.findById(eventBandSongVersionEditableDTO.getBandSongVersionUUID())
                 .orElseThrow(() -> new NoSuchBandSongVersionException(String.format("Band song version does not exist with id=%s", eventBandSongVersionEditableDTO.getBandSongVersionUUID())));
 
-        EventBandSongVersion eventBandSongVersion = eventBandSongVersionMapper.mapToEventBandSongVersion(eventBandSongVersionEditableDTO);
-
-        eventBandSongVersion.setEvent(event);
-        eventBandSongVersion.setBandSongVersion(bandSongVersion);
+        EventBandSongVersion eventBandSongVersion = EventBandSongVersion.builder()
+                .sequenceNumber(eventBandSongVersionEditableDTO.getSequenceNumber())
+                .event(event)
+                .bandSongVersion(bandSongVersion)
+                .build();
 
         return eventBandSongVersionMapper.mapToEventBandSongVersionDTO(eventBandSongVersionRepository.save(eventBandSongVersion));
     }

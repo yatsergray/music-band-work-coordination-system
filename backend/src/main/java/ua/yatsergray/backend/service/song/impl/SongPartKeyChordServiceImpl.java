@@ -49,11 +49,12 @@ public class SongPartKeyChordServiceImpl implements SongPartKeyChordService {
         SongPart songPart = songPartRepository.findById(songPartKeyChordEditableDTO.getSongPartUUID())
                 .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part does not exist with id=%s", songPartKeyChordEditableDTO.getSongPartUUID())));
 
-        SongPartKeyChord songPartKeyChord = songPartKeyChordMapper.mapToSongPartKeyChord(songPartKeyChordEditableDTO);
-
-        songPartKeyChord.setKey(key);
-        songPartKeyChord.setChord(chord);
-        songPartKeyChord.setSongPart(songPart);
+        SongPartKeyChord songPartKeyChord = SongPartKeyChord.builder()
+                .sequenceNumber(songPartKeyChordEditableDTO.getSequenceNumber())
+                .key(key)
+                .chord(chord)
+                .songPart(songPart)
+                .build();
 
         return songPartKeyChordMapper.mapToSongPartKeyChordDTO(songPartKeyChordRepository.save(songPartKeyChord));
     }

@@ -42,10 +42,14 @@ public class MessageServiceImpl implements MessageService {
         User user = userRepository.findById(messageEditableDTO.getUserUUID())
                 .orElseThrow(() -> new NoSuchUserException(String.format("User does not exist with id=%s", messageEditableDTO.getUserUUID())));
 
-        Message message = messageMapper.mapToMessage(messageEditableDTO);
-
-        message.setChat(chat);
-        message.setUser(user);
+        Message message = Message.builder()
+                .text(messageEditableDTO.getText())
+                .date(messageEditableDTO.getDate())
+                .time(messageEditableDTO.getTime())
+                .edited(messageEditableDTO.getEdited())
+                .chat(chat)
+                .user(user)
+                .build();
 
         return messageMapper.mapToMessageDTO(messageRepository.save(message));
     }

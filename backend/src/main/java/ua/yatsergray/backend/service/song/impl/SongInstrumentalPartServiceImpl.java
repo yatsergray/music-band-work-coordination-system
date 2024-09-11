@@ -42,10 +42,10 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
         StageRole stageRole = stageRoleRepository.findById(songInstrumentalPartEditableDTO.getStageRoleUUID())
                 .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role does not exist with id=%s", songInstrumentalPartEditableDTO.getStageRoleUUID())));
 
-        SongInstrumentalPart songInstrumentalPart = new SongInstrumentalPart();
-
-        songInstrumentalPart.setSong(song);
-        songInstrumentalPart.setStageRole(stageRole);
+        SongInstrumentalPart songInstrumentalPart = SongInstrumentalPart.builder()
+                .song(song)
+                .stageRole(stageRole)
+                .build();
 
         return songInstrumentalPartMapper.mapToSongInstrumentalPartDTO(songInstrumentalPartRepository.save(songInstrumentalPart));
     }

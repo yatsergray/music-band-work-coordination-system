@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.SongPartCategoryDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.SongPartCategoryEditableDTO;
+import ua.yatsergray.backend.domain.entity.song.SongPartCategory;
 import ua.yatsergray.backend.exception.song.NoSuchSongPartCategoryException;
 import ua.yatsergray.backend.mapper.song.SongPartCategoryMapper;
 import ua.yatsergray.backend.repository.song.SongPartCategoryRepository;
@@ -26,7 +27,12 @@ public class SongPartCategoryServiceImpl implements SongPartCategoryService {
 
     @Override
     public SongPartCategoryDTO addSongPartCategory(SongPartCategoryEditableDTO songPartCategoryEditableDTO) {
-        return songPartCategoryMapper.mapToSongPartCategoryDTO(songPartCategoryRepository.save(songPartCategoryMapper.mapToSongPartCategory(songPartCategoryEditableDTO)));
+        SongPartCategory songPartCategory = SongPartCategory.builder()
+                .name(songPartCategoryEditableDTO.getName())
+                .type(songPartCategoryEditableDTO.getType())
+                .build();
+
+        return songPartCategoryMapper.mapToSongPartCategoryDTO(songPartCategoryRepository.save(songPartCategory));
     }
 
     @Override

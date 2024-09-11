@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.TimeSignatureDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.TimeSignatureEditableDTO;
+import ua.yatsergray.backend.domain.entity.song.TimeSignature;
 import ua.yatsergray.backend.exception.song.NoSuchTimeSignatureException;
 import ua.yatsergray.backend.mapper.song.TimeSignatureMapper;
 import ua.yatsergray.backend.repository.song.TimeSignatureRepository;
@@ -26,7 +27,12 @@ public class TimeSignatureServiceImpl implements TimeSignatureService {
 
     @Override
     public TimeSignatureDTO addTimeSignature(TimeSignatureEditableDTO timeSignatureEditableDTO) {
-        return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(timeSignatureMapper.mapToTimeSignature(timeSignatureEditableDTO)));
+        TimeSignature timeSignature = TimeSignature.builder()
+                .beats(timeSignatureEditableDTO.getBeats())
+                .duration(timeSignatureEditableDTO.getDuration())
+                .build();
+
+        return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(timeSignature));
     }
 
     @Override

@@ -42,10 +42,13 @@ public class EventServiceImpl implements EventService {
         EventCategory eventCategory = eventCategoryRepository.findById(eventEditableDTO.getEventCategoryUUID())
                 .orElseThrow(() -> new NoSuchEventCategoryException(String.format("Event category does not exist with id=%s", eventEditableDTO.getEventCategoryUUID())));
 
-        Event event = eventMapper.mapToEvent(eventEditableDTO);
-
-        event.setBand(band);
-        event.setEventCategory(eventCategory);
+        Event event = Event.builder()
+                .date(eventEditableDTO.getDate())
+                .startTime(eventEditableDTO.getStartTime())
+                .endTime(eventEditableDTO.getEndTime())
+                .band(band)
+                .eventCategory(eventCategory)
+                .build();
 
         return eventMapper.mapToEventDTO(eventRepository.save(event));
     }

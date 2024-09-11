@@ -49,11 +49,11 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
         Song song = songRepository.findById(bandSongVersionEditableDTO.getSongUUID())
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", bandSongVersionEditableDTO.getSongUUID())));
 
-        BandSongVersion bandSongVersion = new BandSongVersion();
-
-        bandSongVersion.setKey(key);
-        bandSongVersion.setBand(band);
-        bandSongVersion.setSong(song);
+        BandSongVersion bandSongVersion = BandSongVersion.builder()
+                .key(key)
+                .band(band)
+                .song(song)
+                .build();
 
         return bandSongVersionMapper.mapToBandSongVersionDTO(bandSongVersionRepository.save(bandSongVersion));
     }

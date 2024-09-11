@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.KeyDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.KeyEditableDTO;
+import ua.yatsergray.backend.domain.entity.song.Key;
 import ua.yatsergray.backend.exception.song.NoSuchKeyException;
 import ua.yatsergray.backend.mapper.song.KeyMapper;
 import ua.yatsergray.backend.repository.song.KeyRepository;
@@ -26,7 +27,11 @@ public class KeyServiceImpl implements KeyService {
 
     @Override
     public KeyDTO addKey(KeyEditableDTO keyEditableDTO) {
-        return keyMapper.mapToKeyDTO(keyRepository.save(keyMapper.mapToKey(keyEditableDTO)));
+        Key key = Key.builder()
+                .name(keyEditableDTO.getName())
+                .build();
+
+        return keyMapper.mapToKeyDTO(keyRepository.save(key));
     }
 
     @Override

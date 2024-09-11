@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.EventCategoryDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.EventCategoryEditableDTO;
+import ua.yatsergray.backend.domain.entity.band.EventCategory;
 import ua.yatsergray.backend.exception.band.NoSuchEventCategoryException;
 import ua.yatsergray.backend.mapper.band.EventCategoryMapper;
 import ua.yatsergray.backend.repository.band.EventCategoryRepository;
@@ -26,7 +27,12 @@ public class EventCategoryServiceImpl implements EventCategoryService {
 
     @Override
     public EventCategoryDTO addEventCategory(EventCategoryEditableDTO eventCategoryEditableDTO) {
-        return eventCategoryMapper.mapToEventCategoryDTO(eventCategoryRepository.save(eventCategoryMapper.mapToEventCategory(eventCategoryEditableDTO)));
+        EventCategory eventCategory = EventCategory.builder()
+                .name(eventCategoryEditableDTO.getName())
+                .type(eventCategoryEditableDTO.getType())
+                .build();
+
+        return eventCategoryMapper.mapToEventCategoryDTO(eventCategoryRepository.save(eventCategory));
     }
 
     @Override

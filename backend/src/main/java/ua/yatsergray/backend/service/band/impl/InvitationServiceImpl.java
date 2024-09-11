@@ -42,10 +42,12 @@ public class InvitationServiceImpl implements InvitationService {
         ParticipationStatus participationStatus = participationStatusRepository.findById(invitationEditableDTO.getParticipationStatusUUID())
                 .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=%s", invitationEditableDTO.getParticipationStatusUUID())));
 
-        Invitation invitation = invitationMapper.mapToInvitation(invitationEditableDTO);
-
-        invitation.setBand(band);
-        invitation.setParticipationStatus(participationStatus);
+        Invitation invitation = Invitation.builder()
+                .email(invitationEditableDTO.getEmail())
+                .token(invitationEditableDTO.getToken())
+                .band(band)
+                .participationStatus(participationStatus)
+                .build();
 
         return invitationMapper.mapToInvitationDTO(invitationRepository.save(invitation));
     }

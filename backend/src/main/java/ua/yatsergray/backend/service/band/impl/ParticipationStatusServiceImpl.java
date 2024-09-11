@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.ParticipationStatusDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.ParticipationStatusEditableDTO;
+import ua.yatsergray.backend.domain.entity.band.ParticipationStatus;
 import ua.yatsergray.backend.exception.band.NoSuchParticipationStatusException;
 import ua.yatsergray.backend.mapper.band.ParticipationStatusMapper;
 import ua.yatsergray.backend.repository.band.ParticipationStatusRepository;
@@ -26,7 +27,12 @@ public class ParticipationStatusServiceImpl implements ParticipationStatusServic
 
     @Override
     public ParticipationStatusDTO addParticipationStatus(ParticipationStatusEditableDTO participationStatusEditableDTO) {
-        return participationStatusMapper.mapToParticipationStatusDTO(participationStatusRepository.save(participationStatusMapper.mapToParticipationStatus(participationStatusEditableDTO)));
+        ParticipationStatus participationStatus = ParticipationStatus.builder()
+                .name(participationStatusEditableDTO.getName())
+                .type(participationStatusEditableDTO.getType())
+                .build();
+
+        return participationStatusMapper.mapToParticipationStatusDTO(participationStatusRepository.save(participationStatus));
     }
 
     @Override

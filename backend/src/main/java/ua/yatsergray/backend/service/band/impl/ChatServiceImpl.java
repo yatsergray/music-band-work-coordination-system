@@ -35,9 +35,10 @@ public class ChatServiceImpl implements ChatService {
         Band band = bandRepository.findById(chatEditableDTO.getBandUUID())
                 .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", chatEditableDTO.getBandUUID())));
 
-        Chat chat = chatMapper.mapToChat(chatEditableDTO);
-
-        chat.setBand(band);
+        Chat chat = Chat.builder()
+                .name(chatEditableDTO.getName())
+                .band(band)
+                .build();
 
         return chatMapper.mapToChatDTO(chatRepository.save(chat));
     }
@@ -58,9 +59,7 @@ public class ChatServiceImpl implements ChatService {
                 .orElseThrow(() -> new NoSuchChatException(String.format("Chat does not exist with id=%s", id)));
         Band band = bandRepository.findById(chatEditableDTO.getBandUUID())
                 .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", id)));
-//        String imageFileName = chatEditableDTO.getImageFileName();
 
-//        chat.setImageFileURL(imageFileName);
         chat.setName(chatEditableDTO.getName());
         chat.setBand(band);
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.ChatAccessRoleDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.ChatAccessRoleEditableDTO;
+import ua.yatsergray.backend.domain.entity.band.ChatAccessRole;
 import ua.yatsergray.backend.exception.band.NoSuchChatAccessRoleException;
 import ua.yatsergray.backend.mapper.band.ChatAccessRoleMapper;
 import ua.yatsergray.backend.repository.band.ChatAccessRoleRepository;
@@ -26,7 +27,12 @@ public class ChatAccessRoleServiceImpl implements ChatAccessRoleService {
 
     @Override
     public ChatAccessRoleDTO addChatAccessRole(ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) {
-        return chatAccessRoleMapper.mapToChatAccessRoleDTO(chatAccessRoleRepository.save(chatAccessRoleMapper.mapToChatAccessRole(chatAccessRoleEditableDTO)));
+        ChatAccessRole chatAccessRole = ChatAccessRole.builder()
+                .name(chatAccessRoleEditableDTO.getName())
+                .type(chatAccessRoleEditableDTO.getType())
+                .build();
+
+        return chatAccessRoleMapper.mapToChatAccessRoleDTO(chatAccessRoleRepository.save(chatAccessRole));
     }
 
     @Override

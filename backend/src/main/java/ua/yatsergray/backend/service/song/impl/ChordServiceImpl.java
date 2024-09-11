@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.ChordDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.ChordEditableDTO;
+import ua.yatsergray.backend.domain.entity.song.Chord;
 import ua.yatsergray.backend.exception.song.NoSuchChordException;
 import ua.yatsergray.backend.mapper.song.ChordMapper;
 import ua.yatsergray.backend.repository.band.ChordRepository;
@@ -26,7 +27,11 @@ public class ChordServiceImpl implements ChordService {
 
     @Override
     public ChordDTO addChord(ChordEditableDTO chordEditableDTO) {
-        return chordMapper.mapToChordDTO(chordRepository.save(chordMapper.mapToChord(chordEditableDTO)));
+        Chord chord = Chord.builder()
+                .name(chordEditableDTO.getName())
+                .build();
+
+        return chordMapper.mapToChordDTO(chordRepository.save(chord));
     }
 
     @Override

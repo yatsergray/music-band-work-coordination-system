@@ -27,7 +27,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO addUser(UserEditableDTO userEditableDTO) {
-        return userMapper.mapToUserDTO(userRepository.save(userMapper.mapToUser(userEditableDTO)));
+        User user = User.builder()
+                .firstName(userEditableDTO.getFirstName())
+                .lastName(userEditableDTO.getLastName())
+                .email(userEditableDTO.getEmail())
+                .password(userEditableDTO.getPassword())
+                .build();
+
+        return userMapper.mapToUserDTO(userRepository.save(user));
     }
 
     @Override

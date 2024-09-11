@@ -49,11 +49,14 @@ public class SongServiceImpl implements SongService {
         TimeSignature timeSignature = timeSignatureRepository.findById(songEditableDTO.getTimeSignatureUUID())
                 .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature does not exist with id=%s", songEditableDTO.getTimeSignatureUUID())));
 
-        Song song = songMapper.mapToSong(songEditableDTO);
-
-        song.setKey(key);
-        song.setArtist(artist);
-        song.setTimeSignature(timeSignature);
+        Song song = Song.builder()
+                .mediaURL(songEditableDTO.getMediaURL())
+                .name(songEditableDTO.getName())
+                .bpm(songEditableDTO.getBpm())
+                .key(key)
+                .artist(artist)
+                .timeSignature(timeSignature)
+                .build();
 
         return songMapper.mapToSongDTO(songRepository.save(song));
     }

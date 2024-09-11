@@ -56,12 +56,12 @@ public class EventUserServiceImpl implements EventUserService {
         ParticipationStatus participationStatus = participationStatusRepository.findById(eventUserEditableDTO.getParticipationStatusUUID())
                 .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=%s", eventUserEditableDTO.getParticipationStatusUUID())));
 
-        EventUser eventUser = new EventUser();
-
-        eventUser.setUser(user);
-        eventUser.setEvent(event);
-        eventUser.setStageRole(stageRole);
-        eventUser.setParticipationStatus(participationStatus);
+        EventUser eventUser = EventUser.builder()
+                .user(user)
+                .event(event)
+                .stageRole(stageRole)
+                .participationStatus(participationStatus)
+                .build();
 
         return eventUserMapper.mapToEventUserDTO(eventUserRepository.save(eventUser));
     }

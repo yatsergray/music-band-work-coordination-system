@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.StageRoleDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.StageRoleEditableDTO;
+import ua.yatsergray.backend.domain.entity.band.StageRole;
 import ua.yatsergray.backend.exception.band.NoSuchStageRoleException;
 import ua.yatsergray.backend.mapper.band.StageRoleMapper;
 import ua.yatsergray.backend.repository.band.StageRoleRepository;
@@ -26,7 +27,12 @@ public class StageRoleServiceImpl implements StageRoleService {
 
     @Override
     public StageRoleDTO addStageRole(StageRoleEditableDTO stageRoleEditableDTO) {
-        return stageRoleMapper.mapToStageRoleDTO(stageRoleRepository.save(stageRoleMapper.mapToStageRole(stageRoleEditableDTO)));
+        StageRole stageRole = StageRole.builder()
+                .name(stageRoleEditableDTO.getName())
+                .type(stageRoleEditableDTO.getType())
+                .build();
+
+        return stageRoleMapper.mapToStageRoleDTO(stageRoleRepository.save(stageRole));
     }
 
     @Override

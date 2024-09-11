@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.BandAccessRoleDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.BandAccessRoleEditableDTO;
+import ua.yatsergray.backend.domain.entity.band.BandAccessRole;
 import ua.yatsergray.backend.exception.band.NoSuchBandAccessRoleException;
 import ua.yatsergray.backend.mapper.band.BandAccessRoleMapper;
 import ua.yatsergray.backend.repository.band.BandAccessRoleRepository;
@@ -26,7 +27,12 @@ public class BandAccessRoleServiceImpl implements BandAccessRoleService {
 
     @Override
     public BandAccessRoleDTO addBandAccessRole(BandAccessRoleEditableDTO bandAccessRoleEditableDTO) {
-        return bandAccessRoleMapper.mapToBandAccessRoleDTO(bandAccessRoleRepository.save(bandAccessRoleMapper.mapToBandAccessRole(bandAccessRoleEditableDTO)));
+        BandAccessRole bandAccessRole = BandAccessRole.builder()
+                .name(bandAccessRoleEditableDTO.getName())
+                .type(bandAccessRoleEditableDTO.getType())
+                .build();
+
+        return bandAccessRoleMapper.mapToBandAccessRoleDTO(bandAccessRoleRepository.save(bandAccessRole));
     }
 
     @Override

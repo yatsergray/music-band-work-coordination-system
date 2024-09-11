@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.user.RoleDTO;
 import ua.yatsergray.backend.domain.dto.user.editable.RoleEditableDTO;
+import ua.yatsergray.backend.domain.entity.user.Role;
 import ua.yatsergray.backend.exception.user.NoSuchRoleException;
 import ua.yatsergray.backend.mapper.user.RoleMapper;
 import ua.yatsergray.backend.repository.user.RoleRepository;
@@ -26,7 +27,12 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleDTO addRole(RoleEditableDTO roleEditableDTO) {
-        return roleMapper.mapToRoleDTO(roleRepository.save(roleMapper.mapToRole(roleEditableDTO)));
+        Role role = Role.builder()
+                .name(roleEditableDTO.getName())
+                .type(roleEditableDTO.getType())
+                .build();
+
+        return roleMapper.mapToRoleDTO(roleRepository.save(role));
     }
 
     @Override

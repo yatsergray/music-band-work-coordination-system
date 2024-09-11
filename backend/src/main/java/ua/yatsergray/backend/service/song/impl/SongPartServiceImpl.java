@@ -42,10 +42,13 @@ public class SongPartServiceImpl implements SongPartService {
         SongPartCategory songPartCategory = songPartCategoryRepository.findById(songPartEditableDTO.getSongPartCategoryUUID())
                 .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category does not exist with id=%s", songPartEditableDTO.getSongPartCategoryUUID())));
 
-        SongPart songPart = songPartMapper.mapToSongPart(songPartEditableDTO);
-
-        songPart.setSong(song);
-        songPart.setSongPartCategory(songPartCategory);
+        SongPart songPart = SongPart.builder()
+                .text(songPartEditableDTO.getText())
+                .typeNumber(songPartEditableDTO.getTypeNumber())
+                .measuresNumber(songPartEditableDTO.getMeasuresNumber())
+                .song(song)
+                .songPartCategory(songPartCategory)
+                .build();
 
         return songPartMapper.mapToSongPartDTO(songPartRepository.save(songPart));
     }
