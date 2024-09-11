@@ -12,11 +12,11 @@ public interface ChordService {
 
     ChordDTO addChord(ChordEditableDTO chordEditableDTO);
 
-    Optional<ChordDTO> getChordById(UUID id);
+    Optional<ChordDTO> getChordById(UUID chordId);
 
     List<ChordDTO> getAllChords();
 
-    ChordDTO modifyChordById(UUID id, ChordEditableDTO chordEditableDTO) throws NoSuchChordException;
+    ChordDTO modifyChordById(UUID chordId, ChordEditableDTO chordEditableDTO) throws NoSuchChordException;
 
-    void removeChordById(UUID id) throws NoSuchChordException;
+    void removeChordById(UUID chordId) throws NoSuchChordException;
 }

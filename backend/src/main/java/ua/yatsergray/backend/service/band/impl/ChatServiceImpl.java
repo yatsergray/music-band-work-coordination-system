@@ -44,8 +44,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Optional<ChatDTO> getChatById(UUID id) {
-        return chatRepository.findById(id).map(chatMapper::mapToChatDTO);
+    public Optional<ChatDTO> getChatById(UUID chatId) {
+        return chatRepository.findById(chatId).map(chatMapper::mapToChatDTO);
     }
 
     @Override
@@ -54,11 +54,11 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatDTO modifyChatById(UUID id, ChatEditableDTO chatEditableDTO) throws NoSuchChatException, NoSuchBandException {
-        Chat chat = chatRepository.findById(id)
-                .orElseThrow(() -> new NoSuchChatException(String.format("Chat does not exist with id=%s", id)));
+    public ChatDTO modifyChatById(UUID chatId, ChatEditableDTO chatEditableDTO) throws NoSuchChatException, NoSuchBandException {
+        Chat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new NoSuchChatException(String.format("Chat does not exist with id=%s", chatId)));
         Band band = bandRepository.findById(chatEditableDTO.getBandUUID())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", chatId)));
 
         chat.setName(chatEditableDTO.getName());
         chat.setBand(band);
@@ -67,11 +67,11 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public void removeChatById(UUID id) throws NoSuchChatException {
-        if (!chatRepository.existsById(id)) {
-            throw new NoSuchChatException(String.format("Chat does not exist with id=%s", id));
+    public void removeChatById(UUID chatId) throws NoSuchChatException {
+        if (!chatRepository.existsById(chatId)) {
+            throw new NoSuchChatException(String.format("Chat does not exist with id=%s", chatId));
         }
 
-        chatRepository.deleteById(id);
+        chatRepository.deleteById(chatId);
     }
 }

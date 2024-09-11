@@ -36,8 +36,8 @@ public class ParticipationStatusServiceImpl implements ParticipationStatusServic
     }
 
     @Override
-    public Optional<ParticipationStatusDTO> getParticipationStatusById(UUID id) {
-        return participationStatusRepository.findById(id).map(participationStatusMapper::mapToParticipationStatusDTO);
+    public Optional<ParticipationStatusDTO> getParticipationStatusById(UUID participationStatusId) {
+        return participationStatusRepository.findById(participationStatusId).map(participationStatusMapper::mapToParticipationStatusDTO);
     }
 
     @Override
@@ -46,23 +46,23 @@ public class ParticipationStatusServiceImpl implements ParticipationStatusServic
     }
 
     @Override
-    public ParticipationStatusDTO modifyParticipationStatusById(UUID id, ParticipationStatusEditableDTO participationStatusEditableDTO) throws NoSuchParticipationStatusException {
-        return participationStatusRepository.findById(id)
+    public ParticipationStatusDTO modifyParticipationStatusById(UUID participationStatusId, ParticipationStatusEditableDTO participationStatusEditableDTO) throws NoSuchParticipationStatusException {
+        return participationStatusRepository.findById(participationStatusId)
                 .map(participationStatus -> {
                     participationStatus.setName(participationStatusEditableDTO.getName());
                     participationStatus.setType(participationStatusEditableDTO.getType());
 
                     return participationStatusMapper.mapToParticipationStatusDTO(participationStatusRepository.save(participationStatus));
                 })
-                .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=%s", participationStatusId)));
     }
 
     @Override
-    public void removeParticipationStatusById(UUID id) throws NoSuchParticipationStatusException {
-        if (!participationStatusRepository.existsById(id)) {
-            throw new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=%s", id));
+    public void removeParticipationStatusById(UUID participationStatusId) throws NoSuchParticipationStatusException {
+        if (!participationStatusRepository.existsById(participationStatusId)) {
+            throw new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=%s", participationStatusId));
         }
 
-        participationStatusRepository.deleteById(id);
+        participationStatusRepository.deleteById(participationStatusId);
     }
 }

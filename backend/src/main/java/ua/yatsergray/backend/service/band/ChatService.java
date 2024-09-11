@@ -13,11 +13,11 @@ public interface ChatService {
 
     ChatDTO addChat(ChatEditableDTO chatEditableDTO) throws NoSuchBandException;
 
-    Optional<ChatDTO> getChatById(UUID id);
+    Optional<ChatDTO> getChatById(UUID chatId);
 
     List<ChatDTO> getAllChats();
 
-    ChatDTO modifyChatById(UUID id, ChatEditableDTO chatEditableDTO) throws NoSuchChatException, NoSuchBandException;
+    ChatDTO modifyChatById(UUID chatId, ChatEditableDTO chatEditableDTO) throws NoSuchChatException, NoSuchBandException;
 
-    void removeChatById(UUID id) throws NoSuchChatException;
+    void removeChatById(UUID chatId) throws NoSuchChatException;
 }

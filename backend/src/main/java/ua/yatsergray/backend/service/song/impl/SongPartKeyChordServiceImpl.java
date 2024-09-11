@@ -60,8 +60,8 @@ public class SongPartKeyChordServiceImpl implements SongPartKeyChordService {
     }
 
     @Override
-    public Optional<SongPartKeyChordDTO> getSongPartKeyChordById(UUID id) {
-        return songPartKeyChordRepository.findById(id).map(songPartKeyChordMapper::mapToSongPartKeyChordDTO);
+    public Optional<SongPartKeyChordDTO> getSongPartKeyChordById(UUID songPartKeyChordId) {
+        return songPartKeyChordRepository.findById(songPartKeyChordId).map(songPartKeyChordMapper::mapToSongPartKeyChordDTO);
     }
 
     @Override
@@ -70,9 +70,9 @@ public class SongPartKeyChordServiceImpl implements SongPartKeyChordService {
     }
 
     @Override
-    public SongPartKeyChordDTO modifySongPartKeyChordById(UUID id, SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) throws NoSuchSongPartKeyChordException, NoSuchKeyException, NoSuchChordException, NoSuchSongPartException {
-        SongPartKeyChord songPartKeyChord = songPartKeyChordRepository.findById(id)
-                .orElseThrow(() -> new NoSuchSongPartKeyChordException(String.format("Song part key chord does not exist with id=%s", id)));
+    public SongPartKeyChordDTO modifySongPartKeyChordById(UUID songPartKeyChordId, SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) throws NoSuchSongPartKeyChordException, NoSuchKeyException, NoSuchChordException, NoSuchSongPartException {
+        SongPartKeyChord songPartKeyChord = songPartKeyChordRepository.findById(songPartKeyChordId)
+                .orElseThrow(() -> new NoSuchSongPartKeyChordException(String.format("Song part key chord does not exist with id=%s", songPartKeyChordId)));
         Key key = keyRepository.findById(songPartKeyChordEditableDTO.getKeyUUID())
                 .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", songPartKeyChordEditableDTO.getKeyUUID())));
         Chord chord = chordRepository.findById(songPartKeyChordEditableDTO.getChordUUID())
@@ -89,11 +89,11 @@ public class SongPartKeyChordServiceImpl implements SongPartKeyChordService {
     }
 
     @Override
-    public void removeSongPartKeyChordById(UUID id) throws NoSuchSongPartKeyChordException {
-        if (!songPartKeyChordRepository.existsById(id)) {
-            throw new NoSuchSongPartKeyChordException(String.format("Song part key chord does not exist with id=%s", id));
+    public void removeSongPartKeyChordById(UUID songPartKeyChordId) throws NoSuchSongPartKeyChordException {
+        if (!songPartKeyChordRepository.existsById(songPartKeyChordId)) {
+            throw new NoSuchSongPartKeyChordException(String.format("Song part key chord does not exist with id=%s", songPartKeyChordId));
         }
 
-        songPartKeyChordRepository.deleteById(id);
+        songPartKeyChordRepository.deleteById(songPartKeyChordId);
     }
 }

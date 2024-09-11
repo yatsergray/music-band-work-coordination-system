@@ -26,9 +26,9 @@ public class BandController {
         return ResponseEntity.ok(bandService.addBand(bandEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BandDTO> readBandById(@PathVariable("id") UUID id) {
-        return bandService.getBandById(id)
+    @GetMapping("/{bandId}")
+    public ResponseEntity<BandDTO> readBandById(@PathVariable("bandId") UUID bandId) {
+        return bandService.getBandById(bandId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class BandController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<BandDTO> updateBandById(@PathVariable("id") UUID id, @RequestBody BandEditableDTO bandEditableDTO) {
-        return ResponseEntity.ok(bandService.modifyBandById(id, bandEditableDTO));
+    @PutMapping("/{bandId}")
+    public ResponseEntity<BandDTO> updateBandById(@PathVariable("bandId") UUID bandId, @RequestBody BandEditableDTO bandEditableDTO) {
+        return ResponseEntity.ok(bandService.modifyBandById(bandId, bandEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBandById(@PathVariable("id") UUID id) {
-        bandService.removeBandById(id);
+    @DeleteMapping("/{bandId}")
+    public ResponseEntity<Void> deleteBandById(@PathVariable("bandId") UUID bandId) {
+        bandService.removeBandById(bandId);
 
         return ResponseEntity.ok().build();
     }

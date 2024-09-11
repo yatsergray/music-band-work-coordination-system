@@ -36,8 +36,8 @@ public class EventCategoryServiceImpl implements EventCategoryService {
     }
 
     @Override
-    public Optional<EventCategoryDTO> getEventCategoryById(UUID id) {
-        return eventCategoryRepository.findById(id).map(eventCategoryMapper::mapToEventCategoryDTO);
+    public Optional<EventCategoryDTO> getEventCategoryById(UUID eventCategoryId) {
+        return eventCategoryRepository.findById(eventCategoryId).map(eventCategoryMapper::mapToEventCategoryDTO);
     }
 
     @Override
@@ -46,23 +46,23 @@ public class EventCategoryServiceImpl implements EventCategoryService {
     }
 
     @Override
-    public EventCategoryDTO modifyEventCategoryById(UUID id, EventCategoryEditableDTO eventCategoryEditableDTO) throws NoSuchEventCategoryException {
-        return eventCategoryRepository.findById(id)
+    public EventCategoryDTO modifyEventCategoryById(UUID eventCategoryId, EventCategoryEditableDTO eventCategoryEditableDTO) throws NoSuchEventCategoryException {
+        return eventCategoryRepository.findById(eventCategoryId)
                 .map(eventCategory -> {
                     eventCategory.setName(eventCategoryEditableDTO.getName());
                     eventCategory.setType(eventCategoryEditableDTO.getType());
 
                     return eventCategoryMapper.mapToEventCategoryDTO(eventCategoryRepository.save(eventCategory));
                 })
-                .orElseThrow(() -> new NoSuchEventCategoryException(String.format("Event category does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchEventCategoryException(String.format("Event category does not exist with id=%s", eventCategoryId)));
     }
 
     @Override
-    public void removeEventCategoryById(UUID id) throws NoSuchEventCategoryException {
-        if (!eventCategoryRepository.existsById(id)) {
-            throw new NoSuchEventCategoryException(String.format("Event category does not exist with id=%s", id));
+    public void removeEventCategoryById(UUID eventCategoryId) throws NoSuchEventCategoryException {
+        if (!eventCategoryRepository.existsById(eventCategoryId)) {
+            throw new NoSuchEventCategoryException(String.format("Event category does not exist with id=%s", eventCategoryId));
         }
 
-        eventCategoryRepository.deleteById(id);
+        eventCategoryRepository.deleteById(eventCategoryId);
     }
 }

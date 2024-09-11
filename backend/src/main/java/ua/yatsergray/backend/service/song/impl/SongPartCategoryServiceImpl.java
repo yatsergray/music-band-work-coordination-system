@@ -36,8 +36,8 @@ public class SongPartCategoryServiceImpl implements SongPartCategoryService {
     }
 
     @Override
-    public Optional<SongPartCategoryDTO> getSongPartCategoryById(UUID id) {
-        return songPartCategoryRepository.findById(id).map(songPartCategoryMapper::mapToSongPartCategoryDTO);
+    public Optional<SongPartCategoryDTO> getSongPartCategoryById(UUID songPartCategoryId) {
+        return songPartCategoryRepository.findById(songPartCategoryId).map(songPartCategoryMapper::mapToSongPartCategoryDTO);
     }
 
     @Override
@@ -46,23 +46,23 @@ public class SongPartCategoryServiceImpl implements SongPartCategoryService {
     }
 
     @Override
-    public SongPartCategoryDTO modifySongPartCategoryById(UUID id, SongPartCategoryEditableDTO songPartCategoryEditableDTO) throws NoSuchSongPartCategoryException {
-        return songPartCategoryRepository.findById(id)
+    public SongPartCategoryDTO modifySongPartCategoryById(UUID songPartCategoryId, SongPartCategoryEditableDTO songPartCategoryEditableDTO) throws NoSuchSongPartCategoryException {
+        return songPartCategoryRepository.findById(songPartCategoryId)
                 .map(songPartCategory -> {
                     songPartCategory.setName(songPartCategoryEditableDTO.getName());
                     songPartCategory.setType(songPartCategoryEditableDTO.getType());
 
                     return songPartCategoryMapper.mapToSongPartCategoryDTO(songPartCategoryRepository.save(songPartCategory));
                 })
-                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category does not exist with id=%s", songPartCategoryId)));
     }
 
     @Override
-    public void removeSongPartCategoryById(UUID id) throws NoSuchSongPartCategoryException {
-        if (songPartCategoryRepository.existsById(id)) {
-            throw new NoSuchSongPartCategoryException(String.format("Song part category does not exist with id=%s", id));
+    public void removeSongPartCategoryById(UUID songPartCategoryId) throws NoSuchSongPartCategoryException {
+        if (songPartCategoryRepository.existsById(songPartCategoryId)) {
+            throw new NoSuchSongPartCategoryException(String.format("Song part category does not exist with id=%s", songPartCategoryId));
         }
 
-        songPartCategoryRepository.deleteById(id);
+        songPartCategoryRepository.deleteById(songPartCategoryId);
     }
 }

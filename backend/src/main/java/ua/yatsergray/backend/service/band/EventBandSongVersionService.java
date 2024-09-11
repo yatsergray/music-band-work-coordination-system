@@ -14,11 +14,11 @@ public interface EventBandSongVersionService {
 
     EventBandSongVersionDTO addEventBandSongVersion(EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) throws NoSuchEventException, NoSuchBandSongVersionException;
 
-    Optional<EventBandSongVersionDTO> getEventBandSongVersionById(UUID id);
+    Optional<EventBandSongVersionDTO> getEventBandSongVersionById(UUID eventBandSongVersionId);
 
     List<EventBandSongVersionDTO> getAllEventBandSongVersions();
 
-    EventBandSongVersionDTO modifyEventBandSongVersionById(UUID id, EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) throws NoSuchEventBandSongVersionException, NoSuchEventException, NoSuchBandSongVersionException;
+    EventBandSongVersionDTO modifyEventBandSongVersionById(UUID eventBandSongVersionId, EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) throws NoSuchEventBandSongVersionException, NoSuchEventException, NoSuchBandSongVersionException;
 
-    void removeEventBandSongVersionById(UUID id) throws NoSuchEventBandSongVersionException;
+    void removeEventBandSongVersionById(UUID eventBandSongVersionId) throws NoSuchEventBandSongVersionException;
 }

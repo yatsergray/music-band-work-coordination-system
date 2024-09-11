@@ -51,8 +51,8 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
     }
 
     @Override
-    public Optional<SongInstrumentalPartDTO> getSongInstrumentalPartById(UUID id) {
-        return songInstrumentalPartRepository.findById(id).map(songInstrumentalPartMapper::mapToSongInstrumentalPartDTO);
+    public Optional<SongInstrumentalPartDTO> getSongInstrumentalPartById(UUID songInstrumentalPartId) {
+        return songInstrumentalPartRepository.findById(songInstrumentalPartId).map(songInstrumentalPartMapper::mapToSongInstrumentalPartDTO);
     }
 
     @Override
@@ -61,9 +61,9 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
     }
 
     @Override
-    public SongInstrumentalPartDTO modifySongInstrumentalPartById(UUID id, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongInstrumentalPartException, NoSuchSongException, NoSuchStageRoleException {
-        SongInstrumentalPart songInstrumentalPart = songInstrumentalPartRepository.findById(id)
-                .orElseThrow(() -> new NoSuchSongInstrumentalPartException(String.format("Song instrumental part does not exist with id=%s", id)));
+    public SongInstrumentalPartDTO modifySongInstrumentalPartById(UUID songInstrumentalPartId, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongInstrumentalPartException, NoSuchSongException, NoSuchStageRoleException {
+        SongInstrumentalPart songInstrumentalPart = songInstrumentalPartRepository.findById(songInstrumentalPartId)
+                .orElseThrow(() -> new NoSuchSongInstrumentalPartException(String.format("Song instrumental part does not exist with id=%s", songInstrumentalPartId)));
         Song song = songRepository.findById(songInstrumentalPartEditableDTO.getSongUUID())
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", songInstrumentalPartEditableDTO.getSongUUID())));
         StageRole stageRole = stageRoleRepository.findById(songInstrumentalPartEditableDTO.getStageRoleUUID())
@@ -82,11 +82,11 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
     }
 
     @Override
-    public void removeSongInstrumentalPartById(UUID id) throws NoSuchSongInstrumentalPartException {
-        if (songInstrumentalPartRepository.existsById(id)) {
-            throw new NoSuchSongInstrumentalPartException(String.format("Song instrumental part does not exist with id=%s", id));
+    public void removeSongInstrumentalPartById(UUID songInstrumentalPartId) throws NoSuchSongInstrumentalPartException {
+        if (songInstrumentalPartRepository.existsById(songInstrumentalPartId)) {
+            throw new NoSuchSongInstrumentalPartException(String.format("Song instrumental part does not exist with id=%s", songInstrumentalPartId));
         }
 
-        songInstrumentalPartRepository.deleteById(id);
+        songInstrumentalPartRepository.deleteById(songInstrumentalPartId);
     }
 }

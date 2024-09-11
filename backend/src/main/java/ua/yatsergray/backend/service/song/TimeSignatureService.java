@@ -12,11 +12,11 @@ public interface TimeSignatureService {
 
     TimeSignatureDTO addTimeSignature(TimeSignatureEditableDTO timeSignatureEditableDTO);
 
-    Optional<TimeSignatureDTO> getTimeSignatureById(UUID id);
+    Optional<TimeSignatureDTO> getTimeSignatureById(UUID timeSignatureId);
 
     List<TimeSignatureDTO> getAllTimeSignatures();
 
-    TimeSignatureDTO modifyTimeSignatureById(UUID id, TimeSignatureEditableDTO timeSignatureEditableDTO) throws NoSuchTimeSignatureException;
+    TimeSignatureDTO modifyTimeSignatureById(UUID timeSignatureId, TimeSignatureEditableDTO timeSignatureEditableDTO) throws NoSuchTimeSignatureException;
 
-    void removeTimeSignatureById(UUID id) throws NoSuchTimeSignatureException;
+    void removeTimeSignatureById(UUID timeSignatureId) throws NoSuchTimeSignatureException;
 }

@@ -12,11 +12,11 @@ public interface BandService {
 
     BandDTO addBand(BandEditableDTO bandEditableDTO);
 
-    Optional<BandDTO> getBandById(UUID id);
+    Optional<BandDTO> getBandById(UUID bandId);
 
     List<BandDTO> getAllBands();
 
-    BandDTO modifyBandById(UUID id, BandEditableDTO bandEditableDTO) throws NoSuchBandException;
+    BandDTO modifyBandById(UUID bandId, BandEditableDTO bandEditableDTO) throws NoSuchBandException;
 
-    void removeBandById(UUID id) throws NoSuchBandException;
+    void removeBandById(UUID bandId) throws NoSuchBandException;
 }

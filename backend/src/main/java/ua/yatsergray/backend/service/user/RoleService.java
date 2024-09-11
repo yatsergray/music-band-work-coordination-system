@@ -12,11 +12,11 @@ public interface RoleService {
 
     RoleDTO addRole(RoleEditableDTO roleEditableDTO);
 
-    Optional<RoleDTO> getRoleById(UUID id);
+    Optional<RoleDTO> getRoleById(UUID roleId);
 
     List<RoleDTO> getAllRoles();
 
-    RoleDTO modifyRoleById(UUID id, RoleEditableDTO roleEditableDTO) throws NoSuchRoleException;
+    RoleDTO modifyRoleById(UUID roleId, RoleEditableDTO roleEditableDTO) throws NoSuchRoleException;
 
-    void removeRoleById(UUID id) throws NoSuchRoleException;
+    void removeRoleById(UUID roleId) throws NoSuchRoleException;
 }

@@ -14,11 +14,11 @@ public interface SongPartDetailsService {
 
     SongPartDetailsDTO addSongPartDetails(SongPartDetailsEditableDTO songPartDetailsEditableDTO) throws NoSuchSongPartException, SongPartDetailsConflictException;
 
-    Optional<SongPartDetailsDTO> getSongPartDetailsById(UUID id);
+    Optional<SongPartDetailsDTO> getSongPartDetailsById(UUID songPartDetailsId);
 
     List<SongPartDetailsDTO> getAllSongPartDetails();
 
-    SongPartDetailsDTO modifySongPartDetailsById(UUID id, SongPartDetailsEditableDTO songPartDetailsEditableDTO) throws NoSuchSongPartDetailsException, NoSuchSongPartException, SongPartDetailsConflictException;
+    SongPartDetailsDTO modifySongPartDetailsById(UUID songPartCategoryId, SongPartDetailsEditableDTO songPartDetailsEditableDTO) throws NoSuchSongPartDetailsException, NoSuchSongPartException, SongPartDetailsConflictException;
 
-    void removeSongPartDetailsById(UUID id) throws NoSuchSongPartDetailsException;
+    void removeSongPartDetailsById(UUID songPartCategoryId) throws NoSuchSongPartDetailsException;
 }

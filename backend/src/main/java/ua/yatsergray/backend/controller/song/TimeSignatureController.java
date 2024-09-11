@@ -26,9 +26,9 @@ public class TimeSignatureController {
         return ResponseEntity.ok(timeSignatureService.addTimeSignature(timeSignatureEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TimeSignatureDTO> readTimeSignatureById(@PathVariable("id") UUID id) {
-        return timeSignatureService.getTimeSignatureById(id)
+    @GetMapping("/{timeSignatureId}")
+    public ResponseEntity<TimeSignatureDTO> readTimeSignatureById(@PathVariable("timeSignatureId") UUID timeSignatureId) {
+        return timeSignatureService.getTimeSignatureById(timeSignatureId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class TimeSignatureController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<TimeSignatureDTO> updateTimeSignatureById(@PathVariable("id") UUID id, @RequestBody TimeSignatureEditableDTO timeSignatureEditableDTO) {
-        return ResponseEntity.ok(timeSignatureService.modifyTimeSignatureById(id, timeSignatureEditableDTO));
+    @PutMapping("/{timeSignatureId}")
+    public ResponseEntity<TimeSignatureDTO> updateTimeSignatureById(@PathVariable("timeSignatureId") UUID timeSignatureId, @RequestBody TimeSignatureEditableDTO timeSignatureEditableDTO) {
+        return ResponseEntity.ok(timeSignatureService.modifyTimeSignatureById(timeSignatureId, timeSignatureEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTimeSignatureById(@PathVariable("id") UUID id) {
-        timeSignatureService.removeTimeSignatureById(id);
+    @DeleteMapping("/{timeSignatureId}")
+    public ResponseEntity<Void> deleteTimeSignatureById(@PathVariable("timeSignatureId") UUID timeSignatureId) {
+        timeSignatureService.removeTimeSignatureById(timeSignatureId);
 
         return ResponseEntity.ok().build();
     }

@@ -36,8 +36,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Optional<RoleDTO> getRoleById(UUID id) {
-        return roleRepository.findById(id).map(roleMapper::mapToRoleDTO);
+    public Optional<RoleDTO> getRoleById(UUID roleId) {
+        return roleRepository.findById(roleId).map(roleMapper::mapToRoleDTO);
     }
 
     @Override
@@ -46,23 +46,23 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleDTO modifyRoleById(UUID id, RoleEditableDTO roleEditableDTO) throws NoSuchRoleException {
-        return roleRepository.findById(id)
+    public RoleDTO modifyRoleById(UUID roleId, RoleEditableDTO roleEditableDTO) throws NoSuchRoleException {
+        return roleRepository.findById(roleId)
                 .map(role -> {
                     role.setName(roleEditableDTO.getName());
                     role.setType(roleEditableDTO.getType());
 
                     return roleMapper.mapToRoleDTO(roleRepository.save(role));
                 })
-                .orElseThrow(() -> new NoSuchRoleException(String.format("Role does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchRoleException(String.format("Role does not exist with id=%s", roleId)));
     }
 
     @Override
-    public void removeRoleById(UUID id) throws NoSuchRoleException {
-        if (!roleRepository.existsById(id)) {
-            throw new NoSuchRoleException(String.format("Role does not exist with id=%s", id));
+    public void removeRoleById(UUID roleId) throws NoSuchRoleException {
+        if (!roleRepository.existsById(roleId)) {
+            throw new NoSuchRoleException(String.format("Role does not exist with id=%s", roleId));
         }
 
-        roleRepository.deleteById(id);
+        roleRepository.deleteById(roleId);
     }
 }

@@ -27,9 +27,9 @@ public class MessageController {
         return ResponseEntity.ok(messageService.addMessage(messageEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MessageDTO> readMessageById(@PathVariable("id") UUID id) {
-        return messageService.getMessageById(id)
+    @GetMapping("/{messageId}")
+    public ResponseEntity<MessageDTO> readMessageById(@PathVariable("messageId") UUID messageId) {
+        return messageService.getMessageById(messageId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -40,15 +40,15 @@ public class MessageController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<MessageDTO> updateMessageById(@PathVariable("id") UUID id, @RequestBody MessageEditableDTO messageEditableDTO) {
-        return ResponseEntity.ok(messageService.modifyMessageById(id, messageEditableDTO));
+    @PutMapping("/{messageId}")
+    public ResponseEntity<MessageDTO> updateMessageById(@PathVariable("messageId") UUID messageId, @RequestBody MessageEditableDTO messageEditableDTO) {
+        return ResponseEntity.ok(messageService.modifyMessageById(messageId, messageEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMessageById(@PathVariable("id") UUID id) {
-        messageService.removeMessageById(id);
+    @DeleteMapping("/{messageId}")
+    public ResponseEntity<Void> deleteMessageById(@PathVariable("messageId") UUID messageId) {
+        messageService.removeMessageById(messageId);
 
         return ResponseEntity.ok().build();
     }

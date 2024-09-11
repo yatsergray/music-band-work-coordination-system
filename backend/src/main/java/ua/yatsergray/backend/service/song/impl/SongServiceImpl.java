@@ -62,8 +62,8 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Optional<SongDTO> getSongById(UUID id) {
-        return songRepository.findById(id).map(songMapper::mapToSongDTO);
+    public Optional<SongDTO> getSongById(UUID songId) {
+        return songRepository.findById(songId).map(songMapper::mapToSongDTO);
     }
 
     @Override
@@ -72,9 +72,9 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDTO modifySongById(UUID id, SongEditableDTO songEditableDTO) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException {
-        Song song = songRepository.findById(id)
-                .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", id)));
+    public SongDTO modifySongById(UUID songId, SongEditableDTO songEditableDTO) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException {
+        Song song = songRepository.findById(songId)
+                .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", songId)));
         Key key = keyRepository.findById(songEditableDTO.getKeyUUID())
                 .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", songEditableDTO.getKeyUUID())));
         Artist artist = artistRepository.findById(songEditableDTO.getArtistUUID())
@@ -97,11 +97,11 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public void removeSongById(UUID id) throws NoSuchSongException {
-        if (!songRepository.existsById(id)) {
-            throw new NoSuchSongException(String.format("Song does not exist with id=%s", id));
+    public void removeSongById(UUID songId) throws NoSuchSongException {
+        if (!songRepository.existsById(songId)) {
+            throw new NoSuchSongException(String.format("Song does not exist with id=%s", songId));
         }
 
-        songRepository.deleteById(id);
+        songRepository.deleteById(songId);
     }
 }

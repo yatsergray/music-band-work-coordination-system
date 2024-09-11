@@ -59,8 +59,8 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
     }
 
     @Override
-    public Optional<BandSongVersionDTO> getBandSongVersionById(UUID id) {
-        return bandSongVersionRepository.findById(id).map(bandSongVersionMapper::mapToBandSongVersionDTO);
+    public Optional<BandSongVersionDTO> getBandSongVersionById(UUID bandSongVersionId) {
+        return bandSongVersionRepository.findById(bandSongVersionId).map(bandSongVersionMapper::mapToBandSongVersionDTO);
     }
 
     @Override
@@ -69,9 +69,9 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
     }
 
     @Override
-    public BandSongVersionDTO modifyBandSongVersionById(UUID id, BandSongVersionEditableDTO bandSongVersionEditableDTO) throws NoSuchBandSongVersionException, NoSuchKeyException, NoSuchBandException, NoSuchSongException {
-        BandSongVersion bandSongVersion = bandSongVersionRepository.findById(id)
-                .orElseThrow(() -> new NoSuchBandSongVersionException(String.format("Band song version does not exist with id=%s", id)));
+    public BandSongVersionDTO modifyBandSongVersionById(UUID bandSongVersionId, BandSongVersionEditableDTO bandSongVersionEditableDTO) throws NoSuchBandSongVersionException, NoSuchKeyException, NoSuchBandException, NoSuchSongException {
+        BandSongVersion bandSongVersion = bandSongVersionRepository.findById(bandSongVersionId)
+                .orElseThrow(() -> new NoSuchBandSongVersionException(String.format("Band song version does not exist with id=%s", bandSongVersionId)));
 
         Key key = keyRepository.findById(bandSongVersionEditableDTO.getKeyUUID())
                 .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", bandSongVersionEditableDTO.getKeyUUID())));
@@ -88,11 +88,11 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
     }
 
     @Override
-    public void removeBandSongVersionById(UUID id) throws NoSuchBandSongVersionException {
-        if (!bandSongVersionRepository.existsById(id)) {
-            throw new NoSuchBandSongVersionException(String.format("Band song version does not exist with id=%s", id));
+    public void removeBandSongVersionById(UUID bandSongVersionId) throws NoSuchBandSongVersionException {
+        if (!bandSongVersionRepository.existsById(bandSongVersionId)) {
+            throw new NoSuchBandSongVersionException(String.format("Band song version does not exist with id=%s", bandSongVersionId));
         }
 
-        bandSongVersionRepository.deleteById(id);
+        bandSongVersionRepository.deleteById(bandSongVersionId);
     }
 }

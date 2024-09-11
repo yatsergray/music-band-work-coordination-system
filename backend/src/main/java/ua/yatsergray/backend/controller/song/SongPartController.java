@@ -27,9 +27,9 @@ public class SongPartController {
         return ResponseEntity.ok(songPartService.addSongPart(songPartEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SongPartDTO> readSongPartById(@PathVariable("id") UUID id) {
-        return songPartService.getSongPartById(id)
+    @GetMapping("/{songPartId}")
+    public ResponseEntity<SongPartDTO> readSongPartById(@PathVariable("songPartId") UUID songPartId) {
+        return songPartService.getSongPartById(songPartId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -40,15 +40,15 @@ public class SongPartController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<SongPartDTO> updateSongPartById(@PathVariable("id") UUID id, @RequestBody SongPartEditableDTO songPartEditableDTO) {
-        return ResponseEntity.ok(songPartService.modifySongPartById(id, songPartEditableDTO));
+    @PutMapping("/{songPartId}")
+    public ResponseEntity<SongPartDTO> updateSongPartById(@PathVariable("songPartId") UUID songPartId, @RequestBody SongPartEditableDTO songPartEditableDTO) {
+        return ResponseEntity.ok(songPartService.modifySongPartById(songPartId, songPartEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSongPartById(@PathVariable("id") UUID id) {
-        songPartService.removeSongPartById(id);
+    @DeleteMapping("/{songPartId}")
+    public ResponseEntity<Void> deleteSongPartById(@PathVariable("songPartId") UUID songPartId) {
+        songPartService.removeSongPartById(songPartId);
 
         return ResponseEntity.ok().build();
     }

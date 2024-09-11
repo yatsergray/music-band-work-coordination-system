@@ -14,11 +14,11 @@ public interface InvitationService {
 
     InvitationDTO addInvitation(InvitationEditableDTO invitationEditableDTO) throws NoSuchBandException, NoSuchParticipationStatusException;
 
-    Optional<InvitationDTO> getInvitationById(UUID id);
+    Optional<InvitationDTO> getInvitationById(UUID invitationId);
 
     List<InvitationDTO> getAllInvitations();
 
-    InvitationDTO modifyInvitationById(UUID id, InvitationEditableDTO invitationEditableDTO) throws NoSuchInvitationException, NoSuchBandException, NoSuchParticipationStatusException;
+    InvitationDTO modifyInvitationById(UUID invitationId, InvitationEditableDTO invitationEditableDTO) throws NoSuchInvitationException, NoSuchBandException, NoSuchParticipationStatusException;
 
-    void removeInvitationById(UUID id) throws NoSuchInvitationException;
+    void removeInvitationById(UUID invitationId) throws NoSuchInvitationException;
 }

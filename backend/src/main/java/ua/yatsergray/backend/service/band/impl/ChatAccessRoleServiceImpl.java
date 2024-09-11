@@ -36,8 +36,8 @@ public class ChatAccessRoleServiceImpl implements ChatAccessRoleService {
     }
 
     @Override
-    public Optional<ChatAccessRoleDTO> getChatAccessRoleById(UUID id) {
-        return chatAccessRoleRepository.findById(id).map(chatAccessRoleMapper::mapToChatAccessRoleDTO);
+    public Optional<ChatAccessRoleDTO> getChatAccessRoleById(UUID chatAccessRoleId) {
+        return chatAccessRoleRepository.findById(chatAccessRoleId).map(chatAccessRoleMapper::mapToChatAccessRoleDTO);
     }
 
     @Override
@@ -46,23 +46,23 @@ public class ChatAccessRoleServiceImpl implements ChatAccessRoleService {
     }
 
     @Override
-    public ChatAccessRoleDTO modifyChatAccessRoleById(UUID id, ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) throws NoSuchChatAccessRoleException {
-        return chatAccessRoleRepository.findById(id)
+    public ChatAccessRoleDTO modifyChatAccessRoleById(UUID chatAccessRoleId, ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) throws NoSuchChatAccessRoleException {
+        return chatAccessRoleRepository.findById(chatAccessRoleId)
                 .map(chatAccessRole -> {
                     chatAccessRole.setName(chatAccessRoleEditableDTO.getName());
                     chatAccessRole.setType(chatAccessRoleEditableDTO.getType());
 
                     return chatAccessRoleMapper.mapToChatAccessRoleDTO(chatAccessRoleRepository.save(chatAccessRole));
                 })
-                .orElseThrow(() -> new NoSuchChatAccessRoleException(String.format("Chat access role does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchChatAccessRoleException(String.format("Chat access role does not exist with id=%s", chatAccessRoleId)));
     }
 
     @Override
-    public void removeChatAccessRoleById(UUID id) throws NoSuchChatAccessRoleException {
-        if (!chatAccessRoleRepository.existsById(id)) {
-            throw new NoSuchChatAccessRoleException(String.format("Chat access role does not exist with id=%s", id));
+    public void removeChatAccessRoleById(UUID chatAccessRoleId) throws NoSuchChatAccessRoleException {
+        if (!chatAccessRoleRepository.existsById(chatAccessRoleId)) {
+            throw new NoSuchChatAccessRoleException(String.format("Chat access role does not exist with id=%s", chatAccessRoleId));
         }
 
-        chatAccessRoleRepository.deleteById(id);
+        chatAccessRoleRepository.deleteById(chatAccessRoleId);
     }
 }

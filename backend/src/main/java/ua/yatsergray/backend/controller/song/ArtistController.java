@@ -26,9 +26,9 @@ public class ArtistController {
         return ResponseEntity.ok(artistService.addArtist(artistEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ArtistDTO> readArtistById(@PathVariable("id") UUID id) {
-        return artistService.getArtistById(id)
+    @GetMapping("/{artistId}")
+    public ResponseEntity<ArtistDTO> readArtistById(@PathVariable("artistId") UUID artistId) {
+        return artistService.getArtistById(artistId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class ArtistController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<ArtistDTO> updateArtistById(@PathVariable("id") UUID id, @RequestBody ArtistEditableDTO artistEditableDTO) {
-        return ResponseEntity.ok(artistService.modifyArtistById(id, artistEditableDTO));
+    @PutMapping("/{artistId}")
+    public ResponseEntity<ArtistDTO> updateArtistById(@PathVariable("artistId") UUID artistId, @RequestBody ArtistEditableDTO artistEditableDTO) {
+        return ResponseEntity.ok(artistService.modifyArtistById(artistId, artistEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteArtistById(@PathVariable("id") UUID id) {
-        artistService.removeArtistById(id);
+    @DeleteMapping("/{artistId}")
+    public ResponseEntity<Void> deleteArtistById(@PathVariable("artistId") UUID artistId) {
+        artistService.removeArtistById(artistId);
 
         return ResponseEntity.ok().build();
     }

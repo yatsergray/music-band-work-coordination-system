@@ -26,9 +26,9 @@ public class ParticipationStatusController {
         return ResponseEntity.ok(participationStatusService.addParticipationStatus(participationStatusEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ParticipationStatusDTO> readParticipationStatusById(@PathVariable("id") UUID id) {
-        return participationStatusService.getParticipationStatusById(id)
+    @GetMapping("/{participationStatusId}")
+    public ResponseEntity<ParticipationStatusDTO> readParticipationStatusById(@PathVariable("participationStatusId") UUID participationStatusId) {
+        return participationStatusService.getParticipationStatusById(participationStatusId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class ParticipationStatusController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<ParticipationStatusDTO> updateParticipationStatusById(@PathVariable("id") UUID id, @RequestBody ParticipationStatusEditableDTO participationStatusEditableDTO) {
-        return ResponseEntity.ok(participationStatusService.modifyParticipationStatusById(id, participationStatusEditableDTO));
+    @PutMapping("/{participationStatusId}")
+    public ResponseEntity<ParticipationStatusDTO> updateParticipationStatusById(@PathVariable("participationStatusId") UUID participationStatusId, @RequestBody ParticipationStatusEditableDTO participationStatusEditableDTO) {
+        return ResponseEntity.ok(participationStatusService.modifyParticipationStatusById(participationStatusId, participationStatusEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteParticipationStatusById(@PathVariable("id") UUID id) {
-        participationStatusService.removeParticipationStatusById(id);
+    @DeleteMapping("/{participationStatusId}")
+    public ResponseEntity<Void> deleteParticipationStatusById(@PathVariable("participationStatusId") UUID participationStatusId) {
+        participationStatusService.removeParticipationStatusById(participationStatusId);
 
         return ResponseEntity.ok().build();
     }

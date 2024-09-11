@@ -14,11 +14,11 @@ public interface SongInstrumentalPartService {
 
     SongInstrumentalPartDTO addSongInstrumentalPart(SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongException, NoSuchStageRoleException;
 
-    Optional<SongInstrumentalPartDTO> getSongInstrumentalPartById(UUID id);
+    Optional<SongInstrumentalPartDTO> getSongInstrumentalPartById(UUID songInstrumentalPartId);
 
     List<SongInstrumentalPartDTO> getAllSongInstrumentalParts();
 
-    SongInstrumentalPartDTO modifySongInstrumentalPartById(UUID id, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongInstrumentalPartException, NoSuchSongException, NoSuchStageRoleException;
+    SongInstrumentalPartDTO modifySongInstrumentalPartById(UUID songInstrumentalPartId, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongInstrumentalPartException, NoSuchSongException, NoSuchStageRoleException;
 
-    void removeSongInstrumentalPartById(UUID id) throws NoSuchSongInstrumentalPartException;
+    void removeSongInstrumentalPartById(UUID songInstrumentalPartId) throws NoSuchSongInstrumentalPartException;
 }

@@ -26,9 +26,9 @@ public class ChordController {
         return ResponseEntity.ok(chordService.addChord(chordEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ChordDTO> readChordById(@PathVariable("id") UUID id) {
-        return chordService.getChordById(id)
+    @GetMapping("/{chordId}")
+    public ResponseEntity<ChordDTO> readChordById(@PathVariable("chordId") UUID chordId) {
+        return chordService.getChordById(chordId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class ChordController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<ChordDTO> updateChordById(@PathVariable("id") UUID id, @RequestBody ChordEditableDTO chordEditableDTO) {
-        return ResponseEntity.ok(chordService.modifyChordById(id, chordEditableDTO));
+    @PutMapping("/{chordId}")
+    public ResponseEntity<ChordDTO> updateChordById(@PathVariable("chordId") UUID chordId, @RequestBody ChordEditableDTO chordEditableDTO) {
+        return ResponseEntity.ok(chordService.modifyChordById(chordId, chordEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteChordById(@PathVariable("id") UUID id) {
-        chordService.removeChordById(id);
+    @DeleteMapping("/{chordId}")
+    public ResponseEntity<Void> deleteChordById(@PathVariable("chordId") UUID chordId) {
+        chordService.removeChordById(chordId);
 
         return ResponseEntity.ok().build();
     }

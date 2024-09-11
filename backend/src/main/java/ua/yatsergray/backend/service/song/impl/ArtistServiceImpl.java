@@ -35,8 +35,8 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public Optional<ArtistDTO> getArtistById(UUID id) {
-        return artistRepository.findById(id).map(artistMapper::mapToArtistDTO);
+    public Optional<ArtistDTO> getArtistById(UUID artistId) {
+        return artistRepository.findById(artistId).map(artistMapper::mapToArtistDTO);
     }
 
     @Override
@@ -45,9 +45,9 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public ArtistDTO modifyArtistById(UUID id, ArtistEditableDTO artistEditableDTO) throws NoSuchArtistException {
-        Artist artist = artistRepository.findById(id)
-                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist does not exist with id=%s", id)));
+    public ArtistDTO modifyArtistById(UUID artistId, ArtistEditableDTO artistEditableDTO) throws NoSuchArtistException {
+        Artist artist = artistRepository.findById(artistId)
+                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist does not exist with id=%s", artistId)));
 
         artist.setName(artistEditableDTO.getName());
 
@@ -55,11 +55,11 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public void removeArtistById(UUID id) throws NoSuchArtistException {
-        if (!artistRepository.existsById(id)) {
-            throw new NoSuchArtistException(String.format("Artist does not exist with id=%s", id));
+    public void removeArtistById(UUID artistId) throws NoSuchArtistException {
+        if (!artistRepository.existsById(artistId)) {
+            throw new NoSuchArtistException(String.format("Artist does not exist with id=%s", artistId));
         }
 
-        artistRepository.deleteById(id);
+        artistRepository.deleteById(artistId);
     }
 }

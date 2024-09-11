@@ -26,9 +26,9 @@ public class UserController {
         return ResponseEntity.ok(userService.addUser(userEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> readUserById(@PathVariable("id") UUID id) {
-        return userService.getUserById(id)
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDTO> readUserById(@PathVariable("userId") UUID userId) {
+        return userService.getUserById(userId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class UserController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUserById(@PathVariable("id") UUID id, @RequestBody UserEditableDTO userEditableDTO) {
-        return ResponseEntity.ok(userService.modifyUserById(id, userEditableDTO));
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserDTO> updateUserById(@PathVariable("userId") UUID userId, @RequestBody UserEditableDTO userEditableDTO) {
+        return ResponseEntity.ok(userService.modifyUserById(userId, userEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserById(@PathVariable("id") UUID id) {
-        userService.removeUserById(id);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable("userId") UUID userId) {
+        userService.removeUserById(userId);
 
         return ResponseEntity.ok().build();
     }

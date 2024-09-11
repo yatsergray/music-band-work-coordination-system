@@ -26,9 +26,9 @@ public class RoleController {
         return ResponseEntity.ok(roleService.addRole(roleEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<RoleDTO> readRoleById(@PathVariable("id") UUID id) {
-        return roleService.getRoleById(id)
+    @GetMapping("/{roleId}")
+    public ResponseEntity<RoleDTO> readRoleById(@PathVariable("roleId") UUID roleId) {
+        return roleService.getRoleById(roleId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class RoleController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<RoleDTO> updateRoleById(@PathVariable("id") UUID id, @RequestBody RoleEditableDTO roleEditableDTO) {
-        return ResponseEntity.ok(roleService.modifyRoleById(id, roleEditableDTO));
+    @PutMapping("/{roleId}")
+    public ResponseEntity<RoleDTO> updateRoleById(@PathVariable("roleId") UUID roleId, @RequestBody RoleEditableDTO roleEditableDTO) {
+        return ResponseEntity.ok(roleService.modifyRoleById(roleId, roleEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRoleById(@PathVariable("id") UUID id) {
-        roleService.removeRoleById(id);
+    @DeleteMapping("/{roleId}")
+    public ResponseEntity<Void> deleteRoleById(@PathVariable("roleId") UUID roleId) {
+        roleService.removeRoleById(roleId);
 
         return ResponseEntity.ok().build();
     }

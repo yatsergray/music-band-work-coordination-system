@@ -14,11 +14,11 @@ public interface EventService {
 
     EventDTO addEvent(EventEditableDTO eventEditableDTO) throws NoSuchBandException, NoSuchEventCategoryException;
 
-    Optional<EventDTO> getEventById(UUID id);
+    Optional<EventDTO> getEventById(UUID eventId);
 
     List<EventDTO> getAllEvents();
 
-    EventDTO modifyEventById(UUID id, EventEditableDTO eventEditableDTO) throws NoSuchEventException, NoSuchBandException, NoSuchEventCategoryException;
+    EventDTO modifyEventById(UUID eventId, EventEditableDTO eventEditableDTO) throws NoSuchEventException, NoSuchBandException, NoSuchEventCategoryException;
 
-    void removeEventById(UUID id) throws NoSuchEventException;
+    void removeEventById(UUID eventId) throws NoSuchEventException;
 }

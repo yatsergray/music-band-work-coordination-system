@@ -27,9 +27,9 @@ public class EventController {
         return ResponseEntity.ok(eventService.addEvent(eventEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EventDTO> readEventById(@PathVariable("id") UUID id) {
-        return eventService.getEventById(id)
+    @GetMapping("/{eventId}")
+    public ResponseEntity<EventDTO> readEventById(@PathVariable("eventId") UUID eventId) {
+        return eventService.getEventById(eventId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -40,15 +40,15 @@ public class EventController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<EventDTO> updateEventById(@PathVariable("id") UUID id, @RequestBody EventEditableDTO eventEditableDTO) {
-        return ResponseEntity.ok(eventService.modifyEventById(id, eventEditableDTO));
+    @PutMapping("/{eventId}")
+    public ResponseEntity<EventDTO> updateEventById(@PathVariable("eventId") UUID eventId, @RequestBody EventEditableDTO eventEditableDTO) {
+        return ResponseEntity.ok(eventService.modifyEventById(eventId, eventEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEventById(@PathVariable("id") UUID id) {
-        eventService.removeEventById(id);
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<Void> deleteEventById(@PathVariable("eventId") UUID eventId) {
+        eventService.removeEventById(eventId);
 
         return ResponseEntity.ok().build();
     }

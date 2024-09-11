@@ -12,11 +12,11 @@ public interface EventCategoryService {
 
     EventCategoryDTO addEventCategory(EventCategoryEditableDTO eventCategoryEditableDTO);
 
-    Optional<EventCategoryDTO> getEventCategoryById(UUID id);
+    Optional<EventCategoryDTO> getEventCategoryById(UUID eventCategoryId);
 
     List<EventCategoryDTO> getAllEventCategories();
 
-    EventCategoryDTO modifyEventCategoryById(UUID id, EventCategoryEditableDTO eventCategoryEditableDTO) throws NoSuchEventCategoryException;
+    EventCategoryDTO modifyEventCategoryById(UUID eventCategoryId, EventCategoryEditableDTO eventCategoryEditableDTO) throws NoSuchEventCategoryException;
 
-    void removeEventCategoryById(UUID id) throws NoSuchEventCategoryException;
+    void removeEventCategoryById(UUID eventCategoryId) throws NoSuchEventCategoryException;
 }

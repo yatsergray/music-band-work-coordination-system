@@ -26,9 +26,9 @@ public class EventCategoryController {
         return ResponseEntity.ok(eventCategoryService.addEventCategory(eventCategoryEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EventCategoryDTO> readEventCategoryById(@PathVariable("id") UUID id) {
-        return eventCategoryService.getEventCategoryById(id)
+    @GetMapping("/{eventCategoryId}")
+    public ResponseEntity<EventCategoryDTO> readEventCategoryById(@PathVariable("eventCategoryId") UUID eventCategoryId) {
+        return eventCategoryService.getEventCategoryById(eventCategoryId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class EventCategoryController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<EventCategoryDTO> updateEventCategoryById(@PathVariable("id") UUID id, @RequestBody EventCategoryEditableDTO eventCategoryEditableDTO) {
-        return ResponseEntity.ok(eventCategoryService.modifyEventCategoryById(id, eventCategoryEditableDTO));
+    @PutMapping("/{eventCategoryId}")
+    public ResponseEntity<EventCategoryDTO> updateEventCategoryById(@PathVariable("eventCategoryId") UUID eventCategoryId, @RequestBody EventCategoryEditableDTO eventCategoryEditableDTO) {
+        return ResponseEntity.ok(eventCategoryService.modifyEventCategoryById(eventCategoryId, eventCategoryEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEventCategoryById(@PathVariable("id") UUID id) {
-        eventCategoryService.removeEventCategoryById(id);
+    @DeleteMapping("/{eventCategoryId}")
+    public ResponseEntity<Void> deleteEventCategoryById(@PathVariable("eventCategoryId") UUID eventCategoryId) {
+        eventCategoryService.removeEventCategoryById(eventCategoryId);
 
         return ResponseEntity.ok().build();
     }

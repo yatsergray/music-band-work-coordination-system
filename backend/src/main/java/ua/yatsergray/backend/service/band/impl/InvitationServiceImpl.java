@@ -53,8 +53,8 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public Optional<InvitationDTO> getInvitationById(UUID id) {
-        return invitationRepository.findById(id).map(invitationMapper::mapToInvitationDTO);
+    public Optional<InvitationDTO> getInvitationById(UUID invitationId) {
+        return invitationRepository.findById(invitationId).map(invitationMapper::mapToInvitationDTO);
     }
 
     @Override
@@ -63,9 +63,9 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public InvitationDTO modifyInvitationById(UUID id, InvitationEditableDTO invitationEditableDTO) throws NoSuchInvitationException, NoSuchBandException, NoSuchParticipationStatusException {
-        Invitation invitation = invitationRepository.findById(id)
-                .orElseThrow(() -> new NoSuchInvitationException(String.format("Invitation does not exist with id=%s", id)));
+    public InvitationDTO modifyInvitationById(UUID invitationId, InvitationEditableDTO invitationEditableDTO) throws NoSuchInvitationException, NoSuchBandException, NoSuchParticipationStatusException {
+        Invitation invitation = invitationRepository.findById(invitationId)
+                .orElseThrow(() -> new NoSuchInvitationException(String.format("Invitation does not exist with id=%s", invitationId)));
         Band band = bandRepository.findById(invitationEditableDTO.getBandUUID())
                 .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", invitationEditableDTO.getBandUUID())));
         ParticipationStatus participationStatus = participationStatusRepository.findById(invitationEditableDTO.getParticipationStatusUUID())
@@ -80,11 +80,11 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public void removeInvitationById(UUID id) throws NoSuchInvitationException {
-        if (!invitationRepository.existsById(id)) {
-            throw new NoSuchInvitationException(String.format("Invitation does not exist with id=%s", id));
+    public void removeInvitationById(UUID invitationId) throws NoSuchInvitationException {
+        if (!invitationRepository.existsById(invitationId)) {
+            throw new NoSuchInvitationException(String.format("Invitation does not exist with id=%s", invitationId));
         }
 
-        invitationRepository.deleteById(id);
+        invitationRepository.deleteById(invitationId);
     }
 }

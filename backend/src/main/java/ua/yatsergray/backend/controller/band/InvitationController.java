@@ -27,9 +27,9 @@ public class InvitationController {
         return ResponseEntity.ok(invitationService.addInvitation(invitationEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<InvitationDTO> readInvitationById(@PathVariable("id") UUID id) {
-        return invitationService.getInvitationById(id)
+    @GetMapping("/{invitationId}")
+    public ResponseEntity<InvitationDTO> readInvitationById(@PathVariable("invitationId") UUID invitationId) {
+        return invitationService.getInvitationById(invitationId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -40,15 +40,15 @@ public class InvitationController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<InvitationDTO> updateInvitationById(@PathVariable("id") UUID id, @RequestBody InvitationEditableDTO invitationEditableDTO) {
-        return ResponseEntity.ok(invitationService.modifyInvitationById(id, invitationEditableDTO));
+    @PutMapping("/{invitationId}")
+    public ResponseEntity<InvitationDTO> updateInvitationById(@PathVariable("invitationId") UUID invitationId, @RequestBody InvitationEditableDTO invitationEditableDTO) {
+        return ResponseEntity.ok(invitationService.modifyInvitationById(invitationId, invitationEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteInvitationById(@PathVariable("id") UUID id) {
-        invitationService.removeInvitationById(id);
+    @DeleteMapping("/{invitationId}")
+    public ResponseEntity<Void> deleteInvitationById(@PathVariable("invitationId") UUID invitationId) {
+        invitationService.removeInvitationById(invitationId);
 
         return ResponseEntity.ok().build();
     }

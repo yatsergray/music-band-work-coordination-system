@@ -35,8 +35,8 @@ public class KeyServiceImpl implements KeyService {
     }
 
     @Override
-    public Optional<KeyDTO> getKeyById(UUID id) {
-        return keyRepository.findById(id).map(keyMapper::mapToKeyDTO);
+    public Optional<KeyDTO> getKeyById(UUID keyId) {
+        return keyRepository.findById(keyId).map(keyMapper::mapToKeyDTO);
     }
 
     @Override
@@ -45,22 +45,22 @@ public class KeyServiceImpl implements KeyService {
     }
 
     @Override
-    public KeyDTO modifyKeyById(UUID id, KeyEditableDTO keyEditableDTO) throws NoSuchKeyException {
-        return keyRepository.findById(id)
+    public KeyDTO modifyKeyById(UUID keyId, KeyEditableDTO keyEditableDTO) throws NoSuchKeyException {
+        return keyRepository.findById(keyId)
                 .map(key -> {
                     key.setName(keyEditableDTO.getName());
 
                     return keyMapper.mapToKeyDTO(keyRepository.save(key));
                 })
-                .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", keyId)));
     }
 
     @Override
-    public void removeKeyById(UUID id) throws NoSuchKeyException {
-        if (!keyRepository.existsById(id)) {
-            throw new NoSuchKeyException(String.format("Key does not exist with id=%s", id));
+    public void removeKeyById(UUID keyId) throws NoSuchKeyException {
+        if (!keyRepository.existsById(keyId)) {
+            throw new NoSuchKeyException(String.format("Key does not exist with id=%s", keyId));
         }
 
-        keyRepository.deleteById(id);
+        keyRepository.deleteById(keyId);
     }
 }

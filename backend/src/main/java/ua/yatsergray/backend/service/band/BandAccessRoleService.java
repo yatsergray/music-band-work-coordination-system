@@ -12,11 +12,11 @@ public interface BandAccessRoleService {
 
     BandAccessRoleDTO addBandAccessRole(BandAccessRoleEditableDTO bandAccessRoleEditableDTO);
 
-    Optional<BandAccessRoleDTO> getBandAccessRoleById(UUID id);
+    Optional<BandAccessRoleDTO> getBandAccessRoleById(UUID bandAccessRoleId);
 
     List<BandAccessRoleDTO> getAllBandAccessRoles();
 
-    BandAccessRoleDTO modifyBandAccessRoleById(UUID id, BandAccessRoleEditableDTO bandAccessRoleEditableDTO) throws NoSuchBandAccessRoleException;
+    BandAccessRoleDTO modifyBandAccessRoleById(UUID bandAccessRoleId, BandAccessRoleEditableDTO bandAccessRoleEditableDTO) throws NoSuchBandAccessRoleException;
 
-    void removeBandAccessRoleById(UUID id) throws NoSuchBandAccessRoleException;
+    void removeBandAccessRoleById(UUID bandAccessRoleId) throws NoSuchBandAccessRoleException;
 }

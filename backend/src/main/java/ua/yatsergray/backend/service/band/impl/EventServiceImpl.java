@@ -54,8 +54,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Optional<EventDTO> getEventById(UUID id) {
-        return eventRepository.findById(id).map(eventMapper::mapToEventDTO);
+    public Optional<EventDTO> getEventById(UUID eventId) {
+        return eventRepository.findById(eventId).map(eventMapper::mapToEventDTO);
     }
 
     @Override
@@ -64,9 +64,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDTO modifyEventById(UUID id, EventEditableDTO eventEditableDTO) throws NoSuchEventException, NoSuchBandException, NoSuchEventCategoryException {
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new NoSuchEventException(String.format("Event does not exist with id=%s", id)));
+    public EventDTO modifyEventById(UUID eventId, EventEditableDTO eventEditableDTO) throws NoSuchEventException, NoSuchBandException, NoSuchEventCategoryException {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NoSuchEventException(String.format("Event does not exist with id=%s", eventId)));
         Band band = bandRepository.findById(eventEditableDTO.getBandUUID())
                 .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", eventEditableDTO.getBandUUID())));
         EventCategory eventCategory = eventCategoryRepository.findById(eventEditableDTO.getEventCategoryUUID())
@@ -82,11 +82,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void removeEventById(UUID id) throws NoSuchEventException {
-        if (!eventRepository.existsById(id)) {
-            throw new NoSuchEventException(String.format("Event does not exist with id=%s", id));
+    public void removeEventById(UUID eventId) throws NoSuchEventException {
+        if (!eventRepository.existsById(eventId)) {
+            throw new NoSuchEventException(String.format("Event does not exist with id=%s", eventId));
         }
 
-        eventRepository.deleteById(id);
+        eventRepository.deleteById(eventId);
     }
 }

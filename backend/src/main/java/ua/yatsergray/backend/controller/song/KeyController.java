@@ -26,9 +26,9 @@ public class KeyController {
         return ResponseEntity.ok(keyService.addKey(keyEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<KeyDTO> readKeyById(@PathVariable("id") UUID id) {
-        return keyService.getKeyById(id)
+    @GetMapping("/{keyId}")
+    public ResponseEntity<KeyDTO> readKeyById(@PathVariable("keyId") UUID keyId) {
+        return keyService.getKeyById(keyId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class KeyController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<KeyDTO> updateKeyById(@PathVariable("id") UUID id, @RequestBody KeyEditableDTO keyEditableDTO) {
-        return ResponseEntity.ok(keyService.modifyKeyById(id, keyEditableDTO));
+    @PutMapping("/{keyId}")
+    public ResponseEntity<KeyDTO> updateKeyById(@PathVariable("keyId") UUID keyId, @RequestBody KeyEditableDTO keyEditableDTO) {
+        return ResponseEntity.ok(keyService.modifyKeyById(keyId, keyEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteKeyById(@PathVariable("id") UUID id) {
-        keyService.removeKeyById(id);
+    @DeleteMapping("/{keyId}")
+    public ResponseEntity<Void> deleteKeyById(@PathVariable("keyId") UUID keyId) {
+        keyService.removeKeyById(keyId);
 
         return ResponseEntity.ok().build();
     }

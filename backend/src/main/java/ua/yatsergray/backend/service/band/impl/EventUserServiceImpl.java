@@ -67,8 +67,8 @@ public class EventUserServiceImpl implements EventUserService {
     }
 
     @Override
-    public Optional<EventUserDTO> getEventUserById(UUID id) {
-        return eventUserRepository.findById(id).map(eventUserMapper::mapToEventUserDTO);
+    public Optional<EventUserDTO> getEventUserById(UUID eventUserId) {
+        return eventUserRepository.findById(eventUserId).map(eventUserMapper::mapToEventUserDTO);
     }
 
     @Override
@@ -77,9 +77,9 @@ public class EventUserServiceImpl implements EventUserService {
     }
 
     @Override
-    public EventUserDTO modifyEventUserById(UUID id, EventUserEditableDTO eventUserEditableDTO) throws NoSuchEventUserException, NoSuchUserException, NoSuchEventException, NoSuchStageRoleException, NoSuchParticipationStatusException {
-        EventUser eventUser = eventUserRepository.findById(id)
-                .orElseThrow(() -> new NoSuchEventUserException(String.format("Event user does not exist with id=%s", id)));
+    public EventUserDTO modifyEventUserById(UUID eventUserId, EventUserEditableDTO eventUserEditableDTO) throws NoSuchEventUserException, NoSuchUserException, NoSuchEventException, NoSuchStageRoleException, NoSuchParticipationStatusException {
+        EventUser eventUser = eventUserRepository.findById(eventUserId)
+                .orElseThrow(() -> new NoSuchEventUserException(String.format("Event user does not exist with id=%s", eventUserId)));
         User user = userRepository.findById(eventUserEditableDTO.getEventUUID())
                 .orElseThrow(() -> new NoSuchUserException(String.format("User does not exist with id=%s", eventUserEditableDTO.getEventUUID())));
         Event event = eventRepository.findById(eventUserEditableDTO.getEventUUID())
@@ -98,11 +98,11 @@ public class EventUserServiceImpl implements EventUserService {
     }
 
     @Override
-    public void removeEventUserById(UUID id) throws NoSuchEventUserException {
-        if (!eventUserRepository.existsById(id)) {
-            throw new NoSuchEventUserException(String.format("Event user does not exist with id=%s", id));
+    public void removeEventUserById(UUID eventUserId) throws NoSuchEventUserException {
+        if (!eventUserRepository.existsById(eventUserId)) {
+            throw new NoSuchEventUserException(String.format("Event user does not exist with id=%s", eventUserId));
         }
 
-        eventUserRepository.deleteById(id);
+        eventUserRepository.deleteById(eventUserId);
     }
 }

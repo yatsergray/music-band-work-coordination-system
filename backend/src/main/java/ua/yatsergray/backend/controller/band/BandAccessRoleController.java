@@ -26,9 +26,9 @@ public class BandAccessRoleController {
         return ResponseEntity.ok(bandAccessRoleService.addBandAccessRole(bandAccessRoleEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<BandAccessRoleDTO> readBandAccessRoleById(@PathVariable("id") UUID id) {
-        return bandAccessRoleService.getBandAccessRoleById(id)
+    @GetMapping("/{bandAccessRoleId}")
+    public ResponseEntity<BandAccessRoleDTO> readBandAccessRoleById(@PathVariable("bandAccessRoleId") UUID bandAccessRoleId) {
+        return bandAccessRoleService.getBandAccessRoleById(bandAccessRoleId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class BandAccessRoleController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<BandAccessRoleDTO> updateBandAccessRoleById(@PathVariable("id") UUID id, @RequestBody BandAccessRoleEditableDTO bandAccessRoleEditableDTO) {
-        return ResponseEntity.ok(bandAccessRoleService.modifyBandAccessRoleById(id, bandAccessRoleEditableDTO));
+    @PutMapping("/{bandAccessRoleId}")
+    public ResponseEntity<BandAccessRoleDTO> updateBandAccessRoleById(@PathVariable("bandAccessRoleId") UUID bandAccessRoleId, @RequestBody BandAccessRoleEditableDTO bandAccessRoleEditableDTO) {
+        return ResponseEntity.ok(bandAccessRoleService.modifyBandAccessRoleById(bandAccessRoleId, bandAccessRoleEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBandAccessRoleById(@PathVariable("id") UUID id) {
-        bandAccessRoleService.removeBandAccessRoleById(id);
+    @DeleteMapping("/{bandAccessRoleId}")
+    public ResponseEntity<Void> deleteBandAccessRoleById(@PathVariable("bandAccessRoleId") UUID bandAccessRoleId) {
+        bandAccessRoleService.removeBandAccessRoleById(bandAccessRoleId);
 
         return ResponseEntity.ok().build();
     }

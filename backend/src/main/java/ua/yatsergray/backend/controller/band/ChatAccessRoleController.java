@@ -26,9 +26,9 @@ public class ChatAccessRoleController {
         return ResponseEntity.ok(chatAccessRoleService.addChatAccessRole(chatAccessRoleEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ChatAccessRoleDTO> readChatAccessRoleById(@PathVariable("id") UUID id) {
-        return chatAccessRoleService.getChatAccessRoleById(id)
+    @GetMapping("/{chatAccessRoleId}")
+    public ResponseEntity<ChatAccessRoleDTO> readChatAccessRoleById(@PathVariable("chatAccessRoleId") UUID chatAccessRoleId) {
+        return chatAccessRoleService.getChatAccessRoleById(chatAccessRoleId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -39,15 +39,15 @@ public class ChatAccessRoleController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<ChatAccessRoleDTO> updateChatAccessRoleById(@PathVariable("id") UUID id, @RequestBody ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) {
-        return ResponseEntity.ok(chatAccessRoleService.modifyChatAccessRoleById(id, chatAccessRoleEditableDTO));
+    @PutMapping("/{chatAccessRoleId}")
+    public ResponseEntity<ChatAccessRoleDTO> updateChatAccessRoleById(@PathVariable("chatAccessRoleId") UUID chatAccessRoleId, @RequestBody ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) {
+        return ResponseEntity.ok(chatAccessRoleService.modifyChatAccessRoleById(chatAccessRoleId, chatAccessRoleEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteChatAccessRoleById(@PathVariable("id") UUID id) {
-        chatAccessRoleService.removeChatAccessRoleById(id);
+    @DeleteMapping("/{chatAccessRoleId}")
+    public ResponseEntity<Void> deleteChatAccessRoleById(@PathVariable("chatAccessRoleId") UUID chatAccessRoleId) {
+        chatAccessRoleService.removeChatAccessRoleById(chatAccessRoleId);
 
         return ResponseEntity.ok().build();
     }

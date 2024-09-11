@@ -35,8 +35,8 @@ public class ChordServiceImpl implements ChordService {
     }
 
     @Override
-    public Optional<ChordDTO> getChordById(UUID id) {
-        return chordRepository.findById(id).map(chordMapper::mapToChordDTO);
+    public Optional<ChordDTO> getChordById(UUID chordId) {
+        return chordRepository.findById(chordId).map(chordMapper::mapToChordDTO);
     }
 
     @Override
@@ -45,22 +45,22 @@ public class ChordServiceImpl implements ChordService {
     }
 
     @Override
-    public ChordDTO modifyChordById(UUID id, ChordEditableDTO chordEditableDTO) throws NoSuchChordException {
-        return chordRepository.findById(id)
+    public ChordDTO modifyChordById(UUID chordId, ChordEditableDTO chordEditableDTO) throws NoSuchChordException {
+        return chordRepository.findById(chordId)
                 .map(chord -> {
                     chord.setName(chordEditableDTO.getName());
 
                     return chordMapper.mapToChordDTO(chordRepository.save(chord));
                 })
-                .orElseThrow(() -> new NoSuchChordException(String.format("Chord does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchChordException(String.format("Chord does not exist with id=%s", chordId)));
     }
 
     @Override
-    public void removeChordById(UUID id) throws NoSuchChordException {
-        if (!chordRepository.existsById(id)) {
-            throw new NoSuchChordException(String.format("Chord does not exist with id=%s", id));
+    public void removeChordById(UUID chordId) throws NoSuchChordException {
+        if (!chordRepository.existsById(chordId)) {
+            throw new NoSuchChordException(String.format("Chord does not exist with id=%s", chordId));
         }
 
-        chordRepository.deleteById(id);
+        chordRepository.deleteById(chordId);
     }
 }

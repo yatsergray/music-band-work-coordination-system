@@ -12,11 +12,11 @@ public interface ChatAccessRoleService {
 
     ChatAccessRoleDTO addChatAccessRole(ChatAccessRoleEditableDTO chatAccessRoleEditableDTO);
 
-    Optional<ChatAccessRoleDTO> getChatAccessRoleById(UUID id);
+    Optional<ChatAccessRoleDTO> getChatAccessRoleById(UUID chatAccessRoleId);
 
     List<ChatAccessRoleDTO> getAllChatAccessRoles();
 
-    ChatAccessRoleDTO modifyChatAccessRoleById(UUID id, ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) throws NoSuchChatAccessRoleException;
+    ChatAccessRoleDTO modifyChatAccessRoleById(UUID chatAccessRoleId, ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) throws NoSuchChatAccessRoleException;
 
-    void removeChatAccessRoleById(UUID id) throws NoSuchChatAccessRoleException;
+    void removeChatAccessRoleById(UUID chatAccessRoleId) throws NoSuchChatAccessRoleException;
 }

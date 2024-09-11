@@ -12,11 +12,11 @@ public interface StageRoleService {
 
     StageRoleDTO addStageRole(StageRoleEditableDTO stageRoleEditableDTO);
 
-    Optional<StageRoleDTO> getStageRoleById(UUID id);
+    Optional<StageRoleDTO> getStageRoleById(UUID stageRoleId);
 
     List<StageRoleDTO> getAllStageRoles();
 
-    StageRoleDTO modifyStageRoleById(UUID id, StageRoleEditableDTO stageRoleEditableDTO) throws NoSuchStageRoleException;
+    StageRoleDTO modifyStageRoleById(UUID stageRoleId, StageRoleEditableDTO stageRoleEditableDTO) throws NoSuchStageRoleException;
 
-    void removeStageRoleById(UUID id) throws NoSuchStageRoleException;
+    void removeStageRoleById(UUID stageRoleId) throws NoSuchStageRoleException;
 }

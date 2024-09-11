@@ -12,11 +12,11 @@ public interface KeyService {
 
     KeyDTO addKey(KeyEditableDTO keyEditableDTO);
 
-    Optional<KeyDTO> getKeyById(UUID id);
+    Optional<KeyDTO> getKeyById(UUID keyId);
 
     List<KeyDTO> getAllKeys();
 
-    KeyDTO modifyKeyById(UUID id, KeyEditableDTO keyEditableDTO) throws NoSuchKeyException;
+    KeyDTO modifyKeyById(UUID keyId, KeyEditableDTO keyEditableDTO) throws NoSuchKeyException;
 
-    void removeKeyById(UUID id) throws NoSuchKeyException;
+    void removeKeyById(UUID keyId) throws NoSuchKeyException;
 }

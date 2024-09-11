@@ -53,8 +53,8 @@ public class EventBandSongVersionServiceImpl implements EventBandSongVersionServ
     }
 
     @Override
-    public Optional<EventBandSongVersionDTO> getEventBandSongVersionById(UUID id) {
-        return eventBandSongVersionRepository.findById(id).map(eventBandSongVersionMapper::mapToEventBandSongVersionDTO);
+    public Optional<EventBandSongVersionDTO> getEventBandSongVersionById(UUID eventBandSongVersionId) {
+        return eventBandSongVersionRepository.findById(eventBandSongVersionId).map(eventBandSongVersionMapper::mapToEventBandSongVersionDTO);
     }
 
     @Override
@@ -63,9 +63,9 @@ public class EventBandSongVersionServiceImpl implements EventBandSongVersionServ
     }
 
     @Override
-    public EventBandSongVersionDTO modifyEventBandSongVersionById(UUID id, EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) throws NoSuchEventBandSongVersionException, NoSuchEventException, NoSuchBandSongVersionException {
-        EventBandSongVersion eventBandSongVersion = eventBandSongVersionRepository.findById(id)
-                .orElseThrow(() -> new NoSuchEventBandSongVersionException(String.format("Event band song version does not exist with id=%s", id)));
+    public EventBandSongVersionDTO modifyEventBandSongVersionById(UUID eventBandSongVersionId, EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) throws NoSuchEventBandSongVersionException, NoSuchEventException, NoSuchBandSongVersionException {
+        EventBandSongVersion eventBandSongVersion = eventBandSongVersionRepository.findById(eventBandSongVersionId)
+                .orElseThrow(() -> new NoSuchEventBandSongVersionException(String.format("Event band song version does not exist with id=%s", eventBandSongVersionId)));
         Event event = eventRepository.findById(eventBandSongVersionEditableDTO.getEventUUID())
                 .orElseThrow(() -> new NoSuchEventException(String.format("Event does not exist with id=%s", eventBandSongVersionEditableDTO.getEventUUID())));
         BandSongVersion bandSongVersion = bandSongVersionRepository.findById(eventBandSongVersionEditableDTO.getBandSongVersionUUID())
@@ -79,11 +79,11 @@ public class EventBandSongVersionServiceImpl implements EventBandSongVersionServ
     }
 
     @Override
-    public void removeEventBandSongVersionById(UUID id) throws NoSuchEventBandSongVersionException {
-        if (!eventBandSongVersionRepository.existsById(id)) {
-            throw new NoSuchEventBandSongVersionException(String.format("Event band song version does not exist with id=%s", id));
+    public void removeEventBandSongVersionById(UUID eventBandSongVersionId) throws NoSuchEventBandSongVersionException {
+        if (!eventBandSongVersionRepository.existsById(eventBandSongVersionId)) {
+            throw new NoSuchEventBandSongVersionException(String.format("Event band song version does not exist with id=%s", eventBandSongVersionId));
         }
 
-        eventBandSongVersionRepository.deleteById(id);
+        eventBandSongVersionRepository.deleteById(eventBandSongVersionId);
     }
 }

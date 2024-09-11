@@ -27,9 +27,9 @@ public class EventBandSongVersionController {
         return ResponseEntity.ok(eventBandSongVersionService.addEventBandSongVersion(eventBandSongVersionEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EventBandSongVersionDTO> readEventBandSongVersionById(@PathVariable("id") UUID id) {
-        return eventBandSongVersionService.getEventBandSongVersionById(id)
+    @GetMapping("/{eventBandSongVersionId}")
+    public ResponseEntity<EventBandSongVersionDTO> readEventBandSongVersionById(@PathVariable("eventBandSongVersionId") UUID eventBandSongVersionId) {
+        return eventBandSongVersionService.getEventBandSongVersionById(eventBandSongVersionId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -40,15 +40,15 @@ public class EventBandSongVersionController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<EventBandSongVersionDTO> updateEventBandSongVersionById(@PathVariable("id") UUID id, @RequestBody EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) {
-        return ResponseEntity.ok(eventBandSongVersionService.modifyEventBandSongVersionById(id, eventBandSongVersionEditableDTO));
+    @PutMapping("/{eventBandSongVersionId}")
+    public ResponseEntity<EventBandSongVersionDTO> updateEventBandSongVersionById(@PathVariable("eventBandSongVersionId") UUID eventBandSongVersionId, @RequestBody EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) {
+        return ResponseEntity.ok(eventBandSongVersionService.modifyEventBandSongVersionById(eventBandSongVersionId, eventBandSongVersionEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEventBandSongVersionById(@PathVariable("id") UUID id) {
-        eventBandSongVersionService.removeEventBandSongVersionById(id);
+    @DeleteMapping("/{eventBandSongVersionId}")
+    public ResponseEntity<Void> deleteEventBandSongVersionById(@PathVariable("eventBandSongVersionId") UUID eventBandSongVersionId) {
+        eventBandSongVersionService.removeEventBandSongVersionById(eventBandSongVersionId);
 
         return ResponseEntity.ok().build();
     }

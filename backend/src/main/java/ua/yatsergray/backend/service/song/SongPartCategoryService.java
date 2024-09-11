@@ -12,11 +12,11 @@ public interface SongPartCategoryService {
 
     SongPartCategoryDTO addSongPartCategory(SongPartCategoryEditableDTO songPartCategoryEditableDTO);
 
-    Optional<SongPartCategoryDTO> getSongPartCategoryById(UUID id);
+    Optional<SongPartCategoryDTO> getSongPartCategoryById(UUID songPartCategoryId);
 
     List<SongPartCategoryDTO> getAllSongPartCategories();
 
-    SongPartCategoryDTO modifySongPartCategoryById(UUID id, SongPartCategoryEditableDTO songPartCategoryEditableDTO) throws NoSuchSongPartCategoryException;
+    SongPartCategoryDTO modifySongPartCategoryById(UUID songPartCategoryId, SongPartCategoryEditableDTO songPartCategoryEditableDTO) throws NoSuchSongPartCategoryException;
 
-    void removeSongPartCategoryById(UUID id) throws NoSuchSongPartCategoryException;
+    void removeSongPartCategoryById(UUID songPartCategoryId) throws NoSuchSongPartCategoryException;
 }

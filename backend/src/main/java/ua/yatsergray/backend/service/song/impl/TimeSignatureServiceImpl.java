@@ -36,8 +36,8 @@ public class TimeSignatureServiceImpl implements TimeSignatureService {
     }
 
     @Override
-    public Optional<TimeSignatureDTO> getTimeSignatureById(UUID id) {
-        return timeSignatureRepository.findById(id).map(timeSignatureMapper::mapToTimeSignatureDTO);
+    public Optional<TimeSignatureDTO> getTimeSignatureById(UUID timeSignatureId) {
+        return timeSignatureRepository.findById(timeSignatureId).map(timeSignatureMapper::mapToTimeSignatureDTO);
     }
 
     @Override
@@ -46,23 +46,23 @@ public class TimeSignatureServiceImpl implements TimeSignatureService {
     }
 
     @Override
-    public TimeSignatureDTO modifyTimeSignatureById(UUID id, TimeSignatureEditableDTO timeSignatureEditableDTO) throws NoSuchTimeSignatureException {
-        return timeSignatureRepository.findById(id)
+    public TimeSignatureDTO modifyTimeSignatureById(UUID timeSignatureId, TimeSignatureEditableDTO timeSignatureEditableDTO) throws NoSuchTimeSignatureException {
+        return timeSignatureRepository.findById(timeSignatureId)
                 .map(timeSignature -> {
                     timeSignature.setBeats(timeSignatureEditableDTO.getBeats());
                     timeSignature.setDuration(timeSignatureEditableDTO.getDuration());
 
                     return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(timeSignature));
                 })
-                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature does not exist with id=%s", timeSignatureId)));
     }
 
     @Override
-    public void removeTimeSignatureById(UUID id) throws NoSuchTimeSignatureException {
-        if (!timeSignatureRepository.existsById(id)) {
-            throw new NoSuchTimeSignatureException(String.format("Time signature does not exist with id=%s", id));
+    public void removeTimeSignatureById(UUID timeSignatureId) throws NoSuchTimeSignatureException {
+        if (!timeSignatureRepository.existsById(timeSignatureId)) {
+            throw new NoSuchTimeSignatureException(String.format("Time signature does not exist with id=%s", timeSignatureId));
         }
 
-        timeSignatureRepository.deleteById(id);
+        timeSignatureRepository.deleteById(timeSignatureId);
     }
 }

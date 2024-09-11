@@ -16,11 +16,11 @@ public interface EventUserService {
 
     EventUserDTO addEventUser(EventUserEditableDTO eventUserEditableDTO) throws NoSuchUserException, NoSuchEventException, NoSuchStageRoleException, NoSuchParticipationStatusException;
 
-    Optional<EventUserDTO> getEventUserById(UUID id);
+    Optional<EventUserDTO> getEventUserById(UUID eventUserId);
 
     List<EventUserDTO> getAllEventUsers();
 
-    EventUserDTO modifyEventUserById(UUID id, EventUserEditableDTO eventUserEditableDTO) throws NoSuchEventUserException, NoSuchUserException, NoSuchEventException, NoSuchStageRoleException, NoSuchParticipationStatusException;
+    EventUserDTO modifyEventUserById(UUID eventUserId, EventUserEditableDTO eventUserEditableDTO) throws NoSuchEventUserException, NoSuchUserException, NoSuchEventException, NoSuchStageRoleException, NoSuchParticipationStatusException;
 
-    void removeEventUserById(UUID id) throws NoSuchEventUserException;
+    void removeEventUserById(UUID eventUserId) throws NoSuchEventUserException;
 }

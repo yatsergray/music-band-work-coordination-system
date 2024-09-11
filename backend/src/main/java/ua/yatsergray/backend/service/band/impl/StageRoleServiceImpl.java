@@ -36,8 +36,8 @@ public class StageRoleServiceImpl implements StageRoleService {
     }
 
     @Override
-    public Optional<StageRoleDTO> getStageRoleById(UUID id) {
-        return stageRoleRepository.findById(id).map(stageRoleMapper::mapToStageRoleDTO);
+    public Optional<StageRoleDTO> getStageRoleById(UUID stageRoleId) {
+        return stageRoleRepository.findById(stageRoleId).map(stageRoleMapper::mapToStageRoleDTO);
     }
 
     @Override
@@ -46,23 +46,23 @@ public class StageRoleServiceImpl implements StageRoleService {
     }
 
     @Override
-    public StageRoleDTO modifyStageRoleById(UUID id, StageRoleEditableDTO stageRoleEditableDTO) throws NoSuchStageRoleException {
-        return stageRoleRepository.findById(id)
+    public StageRoleDTO modifyStageRoleById(UUID stageRoleId, StageRoleEditableDTO stageRoleEditableDTO) throws NoSuchStageRoleException {
+        return stageRoleRepository.findById(stageRoleId)
                 .map(stageRole -> {
                     stageRole.setName(stageRoleEditableDTO.getName());
                     stageRole.setType(stageRoleEditableDTO.getType());
 
                     return stageRoleMapper.mapToStageRoleDTO(stageRoleRepository.save(stageRole));
                 })
-                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role does not exist with id=%s", stageRoleId)));
     }
 
     @Override
-    public void removeStageRoleById(UUID id) throws NoSuchStageRoleException {
-        if (!stageRoleRepository.existsById(id)) {
-            throw new NoSuchStageRoleException(String.format("Stage role does not exist with id=%s", id));
+    public void removeStageRoleById(UUID stageRoleId) throws NoSuchStageRoleException {
+        if (!stageRoleRepository.existsById(stageRoleId)) {
+            throw new NoSuchStageRoleException(String.format("Stage role does not exist with id=%s", stageRoleId));
         }
 
-        stageRoleRepository.deleteById(id);
+        stageRoleRepository.deleteById(stageRoleId);
     }
 }

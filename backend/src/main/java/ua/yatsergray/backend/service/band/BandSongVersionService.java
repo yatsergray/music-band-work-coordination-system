@@ -15,11 +15,11 @@ public interface BandSongVersionService {
 
     BandSongVersionDTO addBandSongVersion(BandSongVersionEditableDTO bandSongVersionEditableDTO) throws NoSuchBandException, NoSuchSongException, NoSuchKeyException;
 
-    Optional<BandSongVersionDTO> getBandSongVersionById(UUID id);
+    Optional<BandSongVersionDTO> getBandSongVersionById(UUID bandSongVersionId);
 
     List<BandSongVersionDTO> getAllBandSongVersions();
 
-    BandSongVersionDTO modifyBandSongVersionById(UUID id, BandSongVersionEditableDTO bandSongVersionEditableDTO) throws NoSuchBandSongVersionException, NoSuchBandException, NoSuchSongException, NoSuchKeyException;
+    BandSongVersionDTO modifyBandSongVersionById(UUID bandSongVersionId, BandSongVersionEditableDTO bandSongVersionEditableDTO) throws NoSuchBandSongVersionException, NoSuchBandException, NoSuchSongException, NoSuchKeyException;
 
-    void removeBandSongVersionById(UUID id) throws NoSuchBandSongVersionException;
+    void removeBandSongVersionById(UUID bandSongVersionId) throws NoSuchBandSongVersionException;
 }

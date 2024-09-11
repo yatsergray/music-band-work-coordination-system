@@ -38,8 +38,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDTO> getUserById(UUID id) {
-        return userRepository.findById(id).map(userMapper::mapToUserDTO);
+    public Optional<UserDTO> getUserById(UUID userId) {
+        return userRepository.findById(userId).map(userMapper::mapToUserDTO);
     }
 
     @Override
@@ -48,9 +48,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO modifyUserById(UUID id, UserEditableDTO userEditableDTO) throws NoSuchUserException {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchUserException(String.format("User does not exist with id=%s", id)));
+    public UserDTO modifyUserById(UUID userId, UserEditableDTO userEditableDTO) throws NoSuchUserException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchUserException(String.format("User does not exist with id=%s", userId)));
 
         user.setFirstName(userEditableDTO.getFirstName());
         user.setLastName(userEditableDTO.getLastName());
@@ -61,11 +61,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void removeUserById(UUID id) throws NoSuchUserException {
-        if (!userRepository.existsById(id)) {
-            throw new NoSuchUserException(String.format("User does not exist with id=%s", id));
+    public void removeUserById(UUID userId) throws NoSuchUserException {
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchUserException(String.format("User does not exist with id=%s", userId));
         }
 
-        userRepository.deleteById(id);
+        userRepository.deleteById(userId);
     }
 }

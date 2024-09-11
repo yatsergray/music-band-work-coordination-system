@@ -14,11 +14,11 @@ public interface MessageService {
 
     MessageDTO addMessage(MessageEditableDTO messageEditableDTO) throws NoSuchChatException, NoSuchUserException;
 
-    Optional<MessageDTO> getMessageById(UUID id);
+    Optional<MessageDTO> getMessageById(UUID messageId);
 
     List<MessageDTO> getAllMessages();
 
-    MessageDTO modifyMessageById(UUID id, MessageEditableDTO messageEditableDTO) throws NoSuchMessageException, NoSuchChatException, NoSuchUserException;
+    MessageDTO modifyMessageById(UUID messageId, MessageEditableDTO messageEditableDTO) throws NoSuchMessageException, NoSuchChatException, NoSuchUserException;
 
-    void removeMessageById(UUID id) throws NoSuchMessageException;
+    void removeMessageById(UUID messageId) throws NoSuchMessageException;
 }

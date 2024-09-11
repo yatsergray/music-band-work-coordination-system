@@ -12,11 +12,11 @@ public interface ParticipationStatusService {
 
     ParticipationStatusDTO addParticipationStatus(ParticipationStatusEditableDTO participationStatusEditableDTO);
 
-    Optional<ParticipationStatusDTO> getParticipationStatusById(UUID id);
+    Optional<ParticipationStatusDTO> getParticipationStatusById(UUID participationStatusId);
 
     List<ParticipationStatusDTO> getAllParticipationStatuses();
 
-    ParticipationStatusDTO modifyParticipationStatusById(UUID id, ParticipationStatusEditableDTO participationStatusEditableDTO) throws NoSuchParticipationStatusException;
+    ParticipationStatusDTO modifyParticipationStatusById(UUID participationStatusId, ParticipationStatusEditableDTO participationStatusEditableDTO) throws NoSuchParticipationStatusException;
 
-    void removeParticipationStatusById(UUID id) throws NoSuchParticipationStatusException;
+    void removeParticipationStatusById(UUID participationStatusId) throws NoSuchParticipationStatusException;
 }

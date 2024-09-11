@@ -27,9 +27,9 @@ public class SongInstrumentalPartController {
         return ResponseEntity.ok(songInstrumentalPartService.addSongInstrumentalPart(songInstrumentalPartEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SongInstrumentalPartDTO> readSongInstrumentalPartById(@PathVariable("id") UUID id) {
-        return songInstrumentalPartService.getSongInstrumentalPartById(id)
+    @GetMapping("/{songInstrumentalPartId}")
+    public ResponseEntity<SongInstrumentalPartDTO> readSongInstrumentalPartById(@PathVariable("songInstrumentalPartId") UUID songInstrumentalPartId) {
+        return songInstrumentalPartService.getSongInstrumentalPartById(songInstrumentalPartId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -40,15 +40,15 @@ public class SongInstrumentalPartController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<SongInstrumentalPartDTO> updateSongInstrumentalPartById(@PathVariable("id") UUID id, @RequestBody SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) {
-        return ResponseEntity.ok(songInstrumentalPartService.modifySongInstrumentalPartById(id, songInstrumentalPartEditableDTO));
+    @PutMapping("/{songInstrumentalPartId}")
+    public ResponseEntity<SongInstrumentalPartDTO> updateSongInstrumentalPartById(@PathVariable("songInstrumentalPartId") UUID songInstrumentalPartId, @RequestBody SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) {
+        return ResponseEntity.ok(songInstrumentalPartService.modifySongInstrumentalPartById(songInstrumentalPartId, songInstrumentalPartEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSongInstrumentalPartById(@PathVariable("id") UUID id) {
-        songInstrumentalPartService.removeSongInstrumentalPartById(id);
+    @DeleteMapping("/{songInstrumentalPartId}")
+    public ResponseEntity<Void> deleteSongInstrumentalPartById(@PathVariable("songInstrumentalPartId") UUID songInstrumentalPartId) {
+        songInstrumentalPartService.removeSongInstrumentalPartById(songInstrumentalPartId);
 
         return ResponseEntity.ok().build();
     }

@@ -12,11 +12,11 @@ public interface ArtistService {
 
     ArtistDTO addArtist(ArtistEditableDTO artistEditableDTO);
 
-    Optional<ArtistDTO> getArtistById(UUID id);
+    Optional<ArtistDTO> getArtistById(UUID artistId);
 
     List<ArtistDTO> getAllArtists();
 
-    ArtistDTO modifyArtistById(UUID id, ArtistEditableDTO artistEditableDTO) throws NoSuchArtistException;
+    ArtistDTO modifyArtistById(UUID artistId, ArtistEditableDTO artistEditableDTO) throws NoSuchArtistException;
 
-    void removeArtistById(UUID id) throws NoSuchArtistException;
+    void removeArtistById(UUID artistId) throws NoSuchArtistException;
 }

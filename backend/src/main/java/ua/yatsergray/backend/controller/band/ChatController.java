@@ -27,9 +27,9 @@ public class ChatController {
         return ResponseEntity.ok(chatService.addChat(chatEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ChatDTO> readChatById(@PathVariable("id") UUID id) {
-        return chatService.getChatById(id)
+    @GetMapping("/{chatId}")
+    public ResponseEntity<ChatDTO> readChatById(@PathVariable("chatId") UUID chatId) {
+        return chatService.getChatById(chatId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -40,15 +40,15 @@ public class ChatController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<ChatDTO> updateChatById(@PathVariable("id") UUID id, @RequestBody ChatEditableDTO chatEditableDTO) {
-        return ResponseEntity.ok(chatService.modifyChatById(id, chatEditableDTO));
+    @PutMapping("/{chatId}")
+    public ResponseEntity<ChatDTO> updateChatById(@PathVariable("chatId") UUID chatId, @RequestBody ChatEditableDTO chatEditableDTO) {
+        return ResponseEntity.ok(chatService.modifyChatById(chatId, chatEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteChatById(@PathVariable("id") UUID id) {
-        chatService.removeChatById(id);
+    @DeleteMapping("/{chatId}")
+    public ResponseEntity<Void> deleteChatById(@PathVariable("chatId") UUID chatId) {
+        chatService.removeChatById(chatId);
 
         return ResponseEntity.ok().build();
     }

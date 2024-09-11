@@ -27,9 +27,9 @@ public class SongPartKeyChordController {
         return ResponseEntity.ok(songPartKeyChordService.addSongPartKeyChord(songPartKeyChordEditableDTO));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SongPartKeyChordDTO> readSongPartKeyChordById(@PathVariable("id") UUID id) {
-        return songPartKeyChordService.getSongPartKeyChordById(id)
+    @GetMapping("/{songPartKeyChordId}")
+    public ResponseEntity<SongPartKeyChordDTO> readSongPartKeyChordById(@PathVariable("songPartKeyChordId") UUID songPartKeyChordId) {
+        return songPartKeyChordService.getSongPartKeyChordById(songPartKeyChordId)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -40,15 +40,15 @@ public class SongPartKeyChordController {
     }
 
     @SneakyThrows
-    @PutMapping("/{id}")
-    public ResponseEntity<SongPartKeyChordDTO> updateSongPartKeyChordById(@PathVariable("id") UUID id, @RequestBody SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) {
-        return ResponseEntity.ok(songPartKeyChordService.modifySongPartKeyChordById(id, songPartKeyChordEditableDTO));
+    @PutMapping("/{songPartKeyChordId}")
+    public ResponseEntity<SongPartKeyChordDTO> updateSongPartKeyChordById(@PathVariable("songPartKeyChordId") UUID songPartKeyChordId, @RequestBody SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) {
+        return ResponseEntity.ok(songPartKeyChordService.modifySongPartKeyChordById(songPartKeyChordId, songPartKeyChordEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSongPartKeyChordById(@PathVariable("id") UUID id) {
-        songPartKeyChordService.removeSongPartKeyChordById(id);
+    @DeleteMapping("/{songPartKeyChordId}")
+    public ResponseEntity<Void> deleteSongPartKeyChordById(@PathVariable("songPartKeyChordId") UUID songPartKeyChordId) {
+        songPartKeyChordService.removeSongPartKeyChordById(songPartKeyChordId);
 
         return ResponseEntity.ok().build();
     }

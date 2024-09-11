@@ -12,11 +12,11 @@ public interface UserService {
 
     UserDTO addUser(UserEditableDTO userEditableDTO);
 
-    Optional<UserDTO> getUserById(UUID id);
+    Optional<UserDTO> getUserById(UUID userId);
 
     List<UserDTO> getAllUsers();
 
-    UserDTO modifyUserById(UUID id, UserEditableDTO userEditableDTO) throws NoSuchUserException;
+    UserDTO modifyUserById(UUID userId, UserEditableDTO userEditableDTO) throws NoSuchUserException;
 
-    void removeUserById(UUID id) throws NoSuchUserException;
+    void removeUserById(UUID userId) throws NoSuchUserException;
 }

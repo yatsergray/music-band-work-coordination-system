@@ -36,8 +36,8 @@ public class BandAccessRoleServiceImpl implements BandAccessRoleService {
     }
 
     @Override
-    public Optional<BandAccessRoleDTO> getBandAccessRoleById(UUID id) {
-        return bandAccessRoleRepository.findById(id).map(bandAccessRoleMapper::mapToBandAccessRoleDTO);
+    public Optional<BandAccessRoleDTO> getBandAccessRoleById(UUID bandAccessRoleId) {
+        return bandAccessRoleRepository.findById(bandAccessRoleId).map(bandAccessRoleMapper::mapToBandAccessRoleDTO);
     }
 
     @Override
@@ -46,23 +46,23 @@ public class BandAccessRoleServiceImpl implements BandAccessRoleService {
     }
 
     @Override
-    public BandAccessRoleDTO modifyBandAccessRoleById(UUID id, BandAccessRoleEditableDTO bandAccessRoleEditableDTO) throws NoSuchBandAccessRoleException {
-        return bandAccessRoleRepository.findById(id)
+    public BandAccessRoleDTO modifyBandAccessRoleById(UUID bandAccessRoleId, BandAccessRoleEditableDTO bandAccessRoleEditableDTO) throws NoSuchBandAccessRoleException {
+        return bandAccessRoleRepository.findById(bandAccessRoleId)
                 .map(bandAccessRole -> {
                     bandAccessRole.setName(bandAccessRoleEditableDTO.getName());
                     bandAccessRole.setType(bandAccessRoleEditableDTO.getType());
 
                     return bandAccessRoleMapper.mapToBandAccessRoleDTO(bandAccessRoleRepository.save(bandAccessRole));
                 })
-                .orElseThrow(() -> new NoSuchBandAccessRoleException(String.format("Band access role does not exist with id=%s", id)));
+                .orElseThrow(() -> new NoSuchBandAccessRoleException(String.format("Band access role does not exist with id=%s", bandAccessRoleId)));
     }
 
     @Override
-    public void removeBandAccessRoleById(UUID id) throws NoSuchBandAccessRoleException {
-        if (!bandAccessRoleRepository.existsById(id)) {
-            throw new NoSuchBandAccessRoleException(String.format("Band access role does not exist with id=%s", id));
+    public void removeBandAccessRoleById(UUID bandAccessRoleId) throws NoSuchBandAccessRoleException {
+        if (!bandAccessRoleRepository.existsById(bandAccessRoleId)) {
+            throw new NoSuchBandAccessRoleException(String.format("Band access role does not exist with id=%s", bandAccessRoleId));
         }
 
-        bandAccessRoleRepository.deleteById(id);
+        bandAccessRoleRepository.deleteById(bandAccessRoleId);
     }
 }

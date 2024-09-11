@@ -15,11 +15,11 @@ public interface SongService {
 
     SongDTO addSong(SongEditableDTO songEditableDTO) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException;
 
-    Optional<SongDTO> getSongById(UUID id);
+    Optional<SongDTO> getSongById(UUID songId);
 
     List<SongDTO> getAllSongs();
 
-    SongDTO modifySongById(UUID id, SongEditableDTO songEditableDTO) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException;
+    SongDTO modifySongById(UUID songId, SongEditableDTO songEditableDTO) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException;
 
-    void removeSongById(UUID id) throws NoSuchSongException;
+    void removeSongById(UUID songId) throws NoSuchSongException;
 }

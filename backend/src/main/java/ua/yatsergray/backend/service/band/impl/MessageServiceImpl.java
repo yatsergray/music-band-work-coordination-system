@@ -55,8 +55,8 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Optional<MessageDTO> getMessageById(UUID id) {
-        return messageRepository.findById(id).map(messageMapper::mapToMessageDTO);
+    public Optional<MessageDTO> getMessageById(UUID messageId) {
+        return messageRepository.findById(messageId).map(messageMapper::mapToMessageDTO);
     }
 
     @Override
@@ -65,9 +65,9 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageDTO modifyMessageById(UUID id, MessageEditableDTO messageEditableDTO) throws NoSuchMessageException, NoSuchChatException, NoSuchUserException {
-        Message message = messageRepository.findById(id)
-                .orElseThrow(() -> new NoSuchMessageException(String.format("Message does not exist with id=%s", id)));
+    public MessageDTO modifyMessageById(UUID messageId, MessageEditableDTO messageEditableDTO) throws NoSuchMessageException, NoSuchChatException, NoSuchUserException {
+        Message message = messageRepository.findById(messageId)
+                .orElseThrow(() -> new NoSuchMessageException(String.format("Message does not exist with id=%s", messageId)));
         Chat chat = chatRepository.findById(messageEditableDTO.getChatUUID())
                 .orElseThrow(() -> new NoSuchChatException(String.format("Chat does not exist with id=%s", messageEditableDTO.getChatUUID())));
         User user = userRepository.findById(messageEditableDTO.getUserUUID())
@@ -84,11 +84,11 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void removeMessageById(UUID id) throws NoSuchMessageException {
-        if (!messageRepository.existsById(id)) {
-            throw new NoSuchMessageException(String.format("Message does not exist with id=%s", id));
+    public void removeMessageById(UUID messageId) throws NoSuchMessageException {
+        if (!messageRepository.existsById(messageId)) {
+            throw new NoSuchMessageException(String.format("Message does not exist with id=%s", messageId));
         }
 
-        messageRepository.deleteById(id);
+        messageRepository.deleteById(messageId);
     }
 }

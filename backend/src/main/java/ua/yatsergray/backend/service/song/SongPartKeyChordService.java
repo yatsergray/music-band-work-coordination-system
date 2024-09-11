@@ -15,11 +15,11 @@ public interface SongPartKeyChordService {
 
     SongPartKeyChordDTO addSongPartKeyChord(SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) throws NoSuchKeyException, NoSuchChordException, NoSuchSongPartException;
 
-    Optional<SongPartKeyChordDTO> getSongPartKeyChordById(UUID id);
+    Optional<SongPartKeyChordDTO> getSongPartKeyChordById(UUID songPartKeyChordId);
 
     List<SongPartKeyChordDTO> getAllSongPartKeyChords();
 
-    SongPartKeyChordDTO modifySongPartKeyChordById(UUID id, SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) throws NoSuchSongPartKeyChordException, NoSuchKeyException, NoSuchChordException, NoSuchSongPartException;
+    SongPartKeyChordDTO modifySongPartKeyChordById(UUID songPartKeyChordId, SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) throws NoSuchSongPartKeyChordException, NoSuchKeyException, NoSuchChordException, NoSuchSongPartException;
 
-    void removeSongPartKeyChordById(UUID id) throws NoSuchSongPartKeyChordException;
+    void removeSongPartKeyChordById(UUID songPartKeyChordId) throws NoSuchSongPartKeyChordException;
 }
