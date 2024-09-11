@@ -37,20 +37,7 @@ public class SongPartServiceImpl implements SongPartService {
 
     @Override
     public SongPartDTO addSongPart(SongPartEditableDTO songPartEditableDTO) throws NoSuchSongException, NoSuchSongPartCategoryException {
-        Song song = songRepository.findById(songPartEditableDTO.getSongUUID())
-                .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", songPartEditableDTO.getSongUUID())));
-        SongPartCategory songPartCategory = songPartCategoryRepository.findById(songPartEditableDTO.getSongPartCategoryUUID())
-                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category does not exist with id=%s", songPartEditableDTO.getSongPartCategoryUUID())));
-
-        SongPart songPart = SongPart.builder()
-                .text(songPartEditableDTO.getText())
-                .typeNumber(songPartEditableDTO.getTypeNumber())
-                .measuresNumber(songPartEditableDTO.getMeasuresNumber())
-                .song(song)
-                .songPartCategory(songPartCategory)
-                .build();
-
-        return songPartMapper.mapToSongPartDTO(songPartRepository.save(songPart));
+        return songPartMapper.mapToSongPartDTO(songPartRepository.save(configureSongPart(new SongPart(), songPartEditableDTO)));
     }
 
     @Override
@@ -67,6 +54,20 @@ public class SongPartServiceImpl implements SongPartService {
     public SongPartDTO modifySongPartById(UUID songPartId, SongPartEditableDTO songPartEditableDTO) throws NoSuchSongPartException, NoSuchSongException, NoSuchSongPartCategoryException {
         SongPart songPart = songPartRepository.findById(songPartId)
                 .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part does not exist with id=%s", songPartId)));
+
+        return songPartMapper.mapToSongPartDTO(songPartRepository.save(configureSongPart(songPart, songPartEditableDTO)));
+    }
+
+    @Override
+    public void removeSongPartById(UUID songPartId) throws NoSuchSongPartException {
+        if (!songPartRepository.existsById(songPartId)) {
+            throw new NoSuchSongPartException(String.format("Song part does not exist with id=%s", songPartId));
+        }
+
+        songPartRepository.deleteById(songPartId);
+    }
+
+    private SongPart configureSongPart(SongPart songPart, SongPartEditableDTO songPartEditableDTO) throws NoSuchSongException, NoSuchSongPartCategoryException {
         Song song = songRepository.findById(songPartEditableDTO.getSongUUID())
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", songPartEditableDTO.getSongUUID())));
         SongPartCategory songPartCategory = songPartCategoryRepository.findById(songPartEditableDTO.getSongPartCategoryUUID())
@@ -78,15 +79,6 @@ public class SongPartServiceImpl implements SongPartService {
         songPart.setSong(song);
         songPart.setSongPartCategory(songPartCategory);
 
-        return songPartMapper.mapToSongPartDTO(songPartRepository.save(songPart));
-    }
-
-    @Override
-    public void removeSongPartById(UUID songPartId) throws NoSuchSongPartException {
-        if (!songPartRepository.existsById(songPartId)) {
-            throw new NoSuchSongPartException(String.format("Song part does not exist with id=%s", songPartId));
-        }
-
-        songPartRepository.deleteById(songPartId);
+        return songPart;
     }
 }

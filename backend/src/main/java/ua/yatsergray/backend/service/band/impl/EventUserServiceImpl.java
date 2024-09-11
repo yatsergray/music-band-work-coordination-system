@@ -47,23 +47,7 @@ public class EventUserServiceImpl implements EventUserService {
 
     @Override
     public EventUserDTO addEventUser(EventUserEditableDTO eventUserEditableDTO) throws NoSuchUserException, NoSuchEventException, NoSuchStageRoleException, NoSuchParticipationStatusException {
-        User user = userRepository.findById(eventUserEditableDTO.getEventUUID())
-                .orElseThrow(() -> new NoSuchUserException(String.format("User does not exist with id=%s", eventUserEditableDTO.getEventUUID())));
-        Event event = eventRepository.findById(eventUserEditableDTO.getEventUUID())
-                .orElseThrow(() -> new NoSuchEventException(String.format("Event does not exist with id=%s", eventUserEditableDTO.getEventUUID())));
-        StageRole stageRole = stageRoleRepository.findById(eventUserEditableDTO.getStageRoleUUID())
-                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role does not exist with id=%s", eventUserEditableDTO.getStageRoleUUID())));
-        ParticipationStatus participationStatus = participationStatusRepository.findById(eventUserEditableDTO.getParticipationStatusUUID())
-                .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=%s", eventUserEditableDTO.getParticipationStatusUUID())));
-
-        EventUser eventUser = EventUser.builder()
-                .user(user)
-                .event(event)
-                .stageRole(stageRole)
-                .participationStatus(participationStatus)
-                .build();
-
-        return eventUserMapper.mapToEventUserDTO(eventUserRepository.save(eventUser));
+        return eventUserMapper.mapToEventUserDTO(eventUserRepository.save(configureEventUser(new EventUser(), eventUserEditableDTO)));
     }
 
     @Override
@@ -80,6 +64,20 @@ public class EventUserServiceImpl implements EventUserService {
     public EventUserDTO modifyEventUserById(UUID eventUserId, EventUserEditableDTO eventUserEditableDTO) throws NoSuchEventUserException, NoSuchUserException, NoSuchEventException, NoSuchStageRoleException, NoSuchParticipationStatusException {
         EventUser eventUser = eventUserRepository.findById(eventUserId)
                 .orElseThrow(() -> new NoSuchEventUserException(String.format("Event user does not exist with id=%s", eventUserId)));
+
+        return eventUserMapper.mapToEventUserDTO(eventUserRepository.save(configureEventUser(eventUser, eventUserEditableDTO)));
+    }
+
+    @Override
+    public void removeEventUserById(UUID eventUserId) throws NoSuchEventUserException {
+        if (!eventUserRepository.existsById(eventUserId)) {
+            throw new NoSuchEventUserException(String.format("Event user does not exist with id=%s", eventUserId));
+        }
+
+        eventUserRepository.deleteById(eventUserId);
+    }
+
+    private EventUser configureEventUser(EventUser eventUser, EventUserEditableDTO eventUserEditableDTO) throws NoSuchUserException, NoSuchEventException, NoSuchStageRoleException, NoSuchParticipationStatusException {
         User user = userRepository.findById(eventUserEditableDTO.getEventUUID())
                 .orElseThrow(() -> new NoSuchUserException(String.format("User does not exist with id=%s", eventUserEditableDTO.getEventUUID())));
         Event event = eventRepository.findById(eventUserEditableDTO.getEventUUID())
@@ -94,15 +92,6 @@ public class EventUserServiceImpl implements EventUserService {
         eventUser.setStageRole(stageRole);
         eventUser.setParticipationStatus(participationStatus);
 
-        return eventUserMapper.mapToEventUserDTO(eventUserRepository.save(eventUser));
-    }
-
-    @Override
-    public void removeEventUserById(UUID eventUserId) throws NoSuchEventUserException {
-        if (!eventUserRepository.existsById(eventUserId)) {
-            throw new NoSuchEventUserException(String.format("Event user does not exist with id=%s", eventUserId));
-        }
-
-        eventUserRepository.deleteById(eventUserId);
+        return eventUser;
     }
 }

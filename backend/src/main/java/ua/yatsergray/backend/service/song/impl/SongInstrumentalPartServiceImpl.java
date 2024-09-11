@@ -37,17 +37,7 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
 
     @Override
     public SongInstrumentalPartDTO addSongInstrumentalPart(SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongException, NoSuchStageRoleException {
-        Song song = songRepository.findById(songInstrumentalPartEditableDTO.getSongUUID())
-                .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", songInstrumentalPartEditableDTO.getSongUUID())));
-        StageRole stageRole = stageRoleRepository.findById(songInstrumentalPartEditableDTO.getStageRoleUUID())
-                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role does not exist with id=%s", songInstrumentalPartEditableDTO.getStageRoleUUID())));
-
-        SongInstrumentalPart songInstrumentalPart = SongInstrumentalPart.builder()
-                .song(song)
-                .stageRole(stageRole)
-                .build();
-
-        return songInstrumentalPartMapper.mapToSongInstrumentalPartDTO(songInstrumentalPartRepository.save(songInstrumentalPart));
+        return songInstrumentalPartMapper.mapToSongInstrumentalPartDTO(songInstrumentalPartRepository.save(configureSongInstrumentalPart(new SongInstrumentalPart(), songInstrumentalPartEditableDTO)));
     }
 
     @Override
@@ -64,21 +54,8 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
     public SongInstrumentalPartDTO modifySongInstrumentalPartById(UUID songInstrumentalPartId, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongInstrumentalPartException, NoSuchSongException, NoSuchStageRoleException {
         SongInstrumentalPart songInstrumentalPart = songInstrumentalPartRepository.findById(songInstrumentalPartId)
                 .orElseThrow(() -> new NoSuchSongInstrumentalPartException(String.format("Song instrumental part does not exist with id=%s", songInstrumentalPartId)));
-        Song song = songRepository.findById(songInstrumentalPartEditableDTO.getSongUUID())
-                .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", songInstrumentalPartEditableDTO.getSongUUID())));
-        StageRole stageRole = stageRoleRepository.findById(songInstrumentalPartEditableDTO.getStageRoleUUID())
-                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role does not exist with id=%s", songInstrumentalPartEditableDTO.getStageRoleUUID())));
-//        String audioFileName = songInstrumentalPartEditableDTO.getAudioFileName();
-//        String videoFileName = songInstrumentalPartEditableDTO.getVideoFileName();
-//        String tabFileName = songInstrumentalPartEditableDTO.getTabFileName();
 
-//        songInstrumentalPart.setAudioFileURL(audioFileName);
-//        songInstrumentalPart.setVideoFileURL(videoFileName);
-//        songInstrumentalPart.setTabFileURL(tabFileName);
-        songInstrumentalPart.setSong(song);
-        songInstrumentalPart.setStageRole(stageRole);
-
-        return songInstrumentalPartMapper.mapToSongInstrumentalPartDTO(songInstrumentalPartRepository.save(songInstrumentalPart));
+        return songInstrumentalPartMapper.mapToSongInstrumentalPartDTO(songInstrumentalPartRepository.save(configureSongInstrumentalPart(songInstrumentalPart, songInstrumentalPartEditableDTO)));
     }
 
     @Override
@@ -88,5 +65,17 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
         }
 
         songInstrumentalPartRepository.deleteById(songInstrumentalPartId);
+    }
+
+    private SongInstrumentalPart configureSongInstrumentalPart(SongInstrumentalPart songInstrumentalPart, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongException, NoSuchStageRoleException {
+        Song song = songRepository.findById(songInstrumentalPartEditableDTO.getSongUUID())
+                .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", songInstrumentalPartEditableDTO.getSongUUID())));
+        StageRole stageRole = stageRoleRepository.findById(songInstrumentalPartEditableDTO.getStageRoleUUID())
+                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role does not exist with id=%s", songInstrumentalPartEditableDTO.getStageRoleUUID())));
+
+        songInstrumentalPart.setSong(song);
+        songInstrumentalPart.setStageRole(stageRole);
+
+        return songInstrumentalPart;
     }
 }

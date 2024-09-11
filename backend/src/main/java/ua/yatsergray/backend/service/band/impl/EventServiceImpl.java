@@ -37,20 +37,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventDTO addEvent(EventEditableDTO eventEditableDTO) throws NoSuchBandException, NoSuchEventCategoryException {
-        Band band = bandRepository.findById(eventEditableDTO.getBandUUID())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", eventEditableDTO.getBandUUID())));
-        EventCategory eventCategory = eventCategoryRepository.findById(eventEditableDTO.getEventCategoryUUID())
-                .orElseThrow(() -> new NoSuchEventCategoryException(String.format("Event category does not exist with id=%s", eventEditableDTO.getEventCategoryUUID())));
-
-        Event event = Event.builder()
-                .date(eventEditableDTO.getDate())
-                .startTime(eventEditableDTO.getStartTime())
-                .endTime(eventEditableDTO.getEndTime())
-                .band(band)
-                .eventCategory(eventCategory)
-                .build();
-
-        return eventMapper.mapToEventDTO(eventRepository.save(event));
+        return eventMapper.mapToEventDTO(eventRepository.save(configureEvent(new Event(), eventEditableDTO)));
     }
 
     @Override
@@ -67,6 +54,20 @@ public class EventServiceImpl implements EventService {
     public EventDTO modifyEventById(UUID eventId, EventEditableDTO eventEditableDTO) throws NoSuchEventException, NoSuchBandException, NoSuchEventCategoryException {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NoSuchEventException(String.format("Event does not exist with id=%s", eventId)));
+
+        return eventMapper.mapToEventDTO(eventRepository.save(configureEvent(event, eventEditableDTO)));
+    }
+
+    @Override
+    public void removeEventById(UUID eventId) throws NoSuchEventException {
+        if (!eventRepository.existsById(eventId)) {
+            throw new NoSuchEventException(String.format("Event does not exist with id=%s", eventId));
+        }
+
+        eventRepository.deleteById(eventId);
+    }
+
+    private Event configureEvent(Event event, EventEditableDTO eventEditableDTO) throws NoSuchBandException, NoSuchEventCategoryException {
         Band band = bandRepository.findById(eventEditableDTO.getBandUUID())
                 .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", eventEditableDTO.getBandUUID())));
         EventCategory eventCategory = eventCategoryRepository.findById(eventEditableDTO.getEventCategoryUUID())
@@ -78,15 +79,6 @@ public class EventServiceImpl implements EventService {
         event.setBand(band);
         event.setEventCategory(eventCategory);
 
-        return eventMapper.mapToEventDTO(eventRepository.save(event));
-    }
-
-    @Override
-    public void removeEventById(UUID eventId) throws NoSuchEventException {
-        if (!eventRepository.existsById(eventId)) {
-            throw new NoSuchEventException(String.format("Event does not exist with id=%s", eventId));
-        }
-
-        eventRepository.deleteById(eventId);
+        return event;
     }
 }

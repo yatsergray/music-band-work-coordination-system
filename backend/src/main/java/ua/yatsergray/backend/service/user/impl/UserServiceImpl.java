@@ -61,11 +61,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void removeUserById(UUID userId) throws NoSuchUserException {
-        if (!userRepository.existsById(userId)) {
-            throw new NoSuchUserException(String.format("User does not exist with id=%s", userId));
+    public void removeUserById(UUID id) throws NoSuchUserException {
+        if (!userRepository.existsById(id)) {
+            throw new NoSuchUserException(String.format("User does not exist with id=%s", id));
         }
 
-        userRepository.deleteById(userId);
+        userRepository.deleteById(id);
     }
 }

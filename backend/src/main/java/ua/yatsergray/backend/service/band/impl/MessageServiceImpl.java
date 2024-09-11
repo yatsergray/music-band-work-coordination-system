@@ -37,21 +37,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public MessageDTO addMessage(MessageEditableDTO messageEditableDTO) throws NoSuchChatException, NoSuchUserException {
-        Chat chat = chatRepository.findById(messageEditableDTO.getChatUUID())
-                .orElseThrow(() -> new NoSuchChatException(String.format("Chat does not exist with id=%s", messageEditableDTO.getChatUUID())));
-        User user = userRepository.findById(messageEditableDTO.getUserUUID())
-                .orElseThrow(() -> new NoSuchUserException(String.format("User does not exist with id=%s", messageEditableDTO.getUserUUID())));
-
-        Message message = Message.builder()
-                .text(messageEditableDTO.getText())
-                .date(messageEditableDTO.getDate())
-                .time(messageEditableDTO.getTime())
-                .edited(messageEditableDTO.getEdited())
-                .chat(chat)
-                .user(user)
-                .build();
-
-        return messageMapper.mapToMessageDTO(messageRepository.save(message));
+        return messageMapper.mapToMessageDTO(messageRepository.save(configureMessage(new Message(), messageEditableDTO)));
     }
 
     @Override
@@ -68,6 +54,20 @@ public class MessageServiceImpl implements MessageService {
     public MessageDTO modifyMessageById(UUID messageId, MessageEditableDTO messageEditableDTO) throws NoSuchMessageException, NoSuchChatException, NoSuchUserException {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new NoSuchMessageException(String.format("Message does not exist with id=%s", messageId)));
+
+        return messageMapper.mapToMessageDTO(messageRepository.save(configureMessage(message, messageEditableDTO)));
+    }
+
+    @Override
+    public void removeMessageById(UUID messageId) throws NoSuchMessageException {
+        if (!messageRepository.existsById(messageId)) {
+            throw new NoSuchMessageException(String.format("Message does not exist with id=%s", messageId));
+        }
+
+        messageRepository.deleteById(messageId);
+    }
+
+    private Message configureMessage(Message message, MessageEditableDTO messageEditableDTO) throws NoSuchChatException, NoSuchUserException {
         Chat chat = chatRepository.findById(messageEditableDTO.getChatUUID())
                 .orElseThrow(() -> new NoSuchChatException(String.format("Chat does not exist with id=%s", messageEditableDTO.getChatUUID())));
         User user = userRepository.findById(messageEditableDTO.getUserUUID())
@@ -80,15 +80,6 @@ public class MessageServiceImpl implements MessageService {
         message.setChat(chat);
         message.setUser(user);
 
-        return messageMapper.mapToMessageDTO(messageRepository.save(message));
-    }
-
-    @Override
-    public void removeMessageById(UUID messageId) throws NoSuchMessageException {
-        if (!messageRepository.existsById(messageId)) {
-            throw new NoSuchMessageException(String.format("Message does not exist with id=%s", messageId));
-        }
-
-        messageRepository.deleteById(messageId);
+        return message;
     }
 }

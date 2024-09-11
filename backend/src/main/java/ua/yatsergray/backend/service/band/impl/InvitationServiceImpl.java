@@ -37,19 +37,7 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     public InvitationDTO addInvitation(InvitationEditableDTO invitationEditableDTO) throws NoSuchBandException, NoSuchParticipationStatusException {
-        Band band = bandRepository.findById(invitationEditableDTO.getBandUUID())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", invitationEditableDTO.getBandUUID())));
-        ParticipationStatus participationStatus = participationStatusRepository.findById(invitationEditableDTO.getParticipationStatusUUID())
-                .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=%s", invitationEditableDTO.getParticipationStatusUUID())));
-
-        Invitation invitation = Invitation.builder()
-                .email(invitationEditableDTO.getEmail())
-                .token(invitationEditableDTO.getToken())
-                .band(band)
-                .participationStatus(participationStatus)
-                .build();
-
-        return invitationMapper.mapToInvitationDTO(invitationRepository.save(invitation));
+        return invitationMapper.mapToInvitationDTO(invitationRepository.save(configureInvitation(new Invitation(), invitationEditableDTO)));
     }
 
     @Override
@@ -66,6 +54,20 @@ public class InvitationServiceImpl implements InvitationService {
     public InvitationDTO modifyInvitationById(UUID invitationId, InvitationEditableDTO invitationEditableDTO) throws NoSuchInvitationException, NoSuchBandException, NoSuchParticipationStatusException {
         Invitation invitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new NoSuchInvitationException(String.format("Invitation does not exist with id=%s", invitationId)));
+
+        return invitationMapper.mapToInvitationDTO(invitationRepository.save(configureInvitation(invitation, invitationEditableDTO)));
+    }
+
+    @Override
+    public void removeInvitationById(UUID invitationId) throws NoSuchInvitationException {
+        if (!invitationRepository.existsById(invitationId)) {
+            throw new NoSuchInvitationException(String.format("Invitation does not exist with id=%s", invitationId));
+        }
+
+        invitationRepository.deleteById(invitationId);
+    }
+
+    private Invitation configureInvitation(Invitation invitation, InvitationEditableDTO invitationEditableDTO) throws NoSuchBandException, NoSuchParticipationStatusException {
         Band band = bandRepository.findById(invitationEditableDTO.getBandUUID())
                 .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", invitationEditableDTO.getBandUUID())));
         ParticipationStatus participationStatus = participationStatusRepository.findById(invitationEditableDTO.getParticipationStatusUUID())
@@ -76,15 +78,6 @@ public class InvitationServiceImpl implements InvitationService {
         invitation.setBand(band);
         invitation.setParticipationStatus(participationStatus);
 
-        return invitationMapper.mapToInvitationDTO(invitationRepository.save(invitation));
-    }
-
-    @Override
-    public void removeInvitationById(UUID invitationId) throws NoSuchInvitationException {
-        if (!invitationRepository.existsById(invitationId)) {
-            throw new NoSuchInvitationException(String.format("Invitation does not exist with id=%s", invitationId));
-        }
-
-        invitationRepository.deleteById(invitationId);
+        return invitation;
     }
 }

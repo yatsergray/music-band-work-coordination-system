@@ -32,15 +32,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public ChatDTO addChat(ChatEditableDTO chatEditableDTO) throws NoSuchBandException {
-        Band band = bandRepository.findById(chatEditableDTO.getBandUUID())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", chatEditableDTO.getBandUUID())));
-
-        Chat chat = Chat.builder()
-                .name(chatEditableDTO.getName())
-                .band(band)
-                .build();
-
-        return chatMapper.mapToChatDTO(chatRepository.save(chat));
+        return chatMapper.mapToChatDTO(chatRepository.save(confidureChat(new Chat(), chatEditableDTO)));
     }
 
     @Override
@@ -57,13 +49,8 @@ public class ChatServiceImpl implements ChatService {
     public ChatDTO modifyChatById(UUID chatId, ChatEditableDTO chatEditableDTO) throws NoSuchChatException, NoSuchBandException {
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new NoSuchChatException(String.format("Chat does not exist with id=%s", chatId)));
-        Band band = bandRepository.findById(chatEditableDTO.getBandUUID())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", chatId)));
 
-        chat.setName(chatEditableDTO.getName());
-        chat.setBand(band);
-
-        return chatMapper.mapToChatDTO(chatRepository.save(chat));
+        return chatMapper.mapToChatDTO(chatRepository.save(confidureChat(chat, chatEditableDTO)));
     }
 
     @Override
@@ -73,5 +60,15 @@ public class ChatServiceImpl implements ChatService {
         }
 
         chatRepository.deleteById(chatId);
+    }
+
+    private Chat confidureChat(Chat chat, ChatEditableDTO chatEditableDTO) throws NoSuchBandException {
+        Band band = bandRepository.findById(chatEditableDTO.getBandUUID())
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", chatEditableDTO.getBandUUID())));
+
+        chat.setName(chatEditableDTO.getName());
+        chat.setBand(band);
+
+        return chat;
     }
 }

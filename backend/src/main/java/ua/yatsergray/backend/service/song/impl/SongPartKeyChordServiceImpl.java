@@ -42,21 +42,7 @@ public class SongPartKeyChordServiceImpl implements SongPartKeyChordService {
 
     @Override
     public SongPartKeyChordDTO addSongPartKeyChord(SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) throws NoSuchKeyException, NoSuchChordException, NoSuchSongPartException {
-        Key key = keyRepository.findById(songPartKeyChordEditableDTO.getKeyUUID())
-                .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", songPartKeyChordEditableDTO.getKeyUUID())));
-        Chord chord = chordRepository.findById(songPartKeyChordEditableDTO.getChordUUID())
-                .orElseThrow(() -> new NoSuchChordException(String.format("Chord does not exist with id=%s", songPartKeyChordEditableDTO.getChordUUID())));
-        SongPart songPart = songPartRepository.findById(songPartKeyChordEditableDTO.getSongPartUUID())
-                .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part does not exist with id=%s", songPartKeyChordEditableDTO.getSongPartUUID())));
-
-        SongPartKeyChord songPartKeyChord = SongPartKeyChord.builder()
-                .sequenceNumber(songPartKeyChordEditableDTO.getSequenceNumber())
-                .key(key)
-                .chord(chord)
-                .songPart(songPart)
-                .build();
-
-        return songPartKeyChordMapper.mapToSongPartKeyChordDTO(songPartKeyChordRepository.save(songPartKeyChord));
+        return songPartKeyChordMapper.mapToSongPartKeyChordDTO(songPartKeyChordRepository.save(configureSongPartKeyChord(new SongPartKeyChord(), songPartKeyChordEditableDTO)));
     }
 
     @Override
@@ -73,6 +59,20 @@ public class SongPartKeyChordServiceImpl implements SongPartKeyChordService {
     public SongPartKeyChordDTO modifySongPartKeyChordById(UUID songPartKeyChordId, SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) throws NoSuchSongPartKeyChordException, NoSuchKeyException, NoSuchChordException, NoSuchSongPartException {
         SongPartKeyChord songPartKeyChord = songPartKeyChordRepository.findById(songPartKeyChordId)
                 .orElseThrow(() -> new NoSuchSongPartKeyChordException(String.format("Song part key chord does not exist with id=%s", songPartKeyChordId)));
+
+        return songPartKeyChordMapper.mapToSongPartKeyChordDTO(songPartKeyChordRepository.save(configureSongPartKeyChord(songPartKeyChord, songPartKeyChordEditableDTO)));
+    }
+
+    @Override
+    public void removeSongPartKeyChordById(UUID songPartKeyChordId) throws NoSuchSongPartKeyChordException {
+        if (!songPartKeyChordRepository.existsById(songPartKeyChordId)) {
+            throw new NoSuchSongPartKeyChordException(String.format("Song part key chord does not exist with id=%s", songPartKeyChordId));
+        }
+
+        songPartKeyChordRepository.deleteById(songPartKeyChordId);
+    }
+
+    private SongPartKeyChord configureSongPartKeyChord(SongPartKeyChord songPartKeyChord, SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) throws NoSuchKeyException, NoSuchChordException, NoSuchSongPartException {
         Key key = keyRepository.findById(songPartKeyChordEditableDTO.getKeyUUID())
                 .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", songPartKeyChordEditableDTO.getKeyUUID())));
         Chord chord = chordRepository.findById(songPartKeyChordEditableDTO.getChordUUID())
@@ -85,15 +85,6 @@ public class SongPartKeyChordServiceImpl implements SongPartKeyChordService {
         songPartKeyChord.setChord(chord);
         songPartKeyChord.setSongPart(songPart);
 
-        return songPartKeyChordMapper.mapToSongPartKeyChordDTO(songPartKeyChordRepository.save(songPartKeyChord));
-    }
-
-    @Override
-    public void removeSongPartKeyChordById(UUID songPartKeyChordId) throws NoSuchSongPartKeyChordException {
-        if (!songPartKeyChordRepository.existsById(songPartKeyChordId)) {
-            throw new NoSuchSongPartKeyChordException(String.format("Song part key chord does not exist with id=%s", songPartKeyChordId));
-        }
-
-        songPartKeyChordRepository.deleteById(songPartKeyChordId);
+        return songPartKeyChord;
     }
 }
