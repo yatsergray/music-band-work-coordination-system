@@ -57,7 +57,7 @@ public class SongPartDetailsServiceImpl implements SongPartDetailsService {
     @Override
     public SongPartDetailsDTO modifySongPartDetailsById(UUID songPartCategoryId, SongPartDetailsEditableDTO songPartDetailsEditableDTO) throws NoSuchSongPartDetailsException, NoSuchSongPartException, SongPartDetailsConflictException {
         SongPartDetails songPartDetails = songPartDetailsRepository.findById(songPartCategoryId)
-                .orElseThrow(() -> new NoSuchSongPartDetailsException(String.format("Song part details does not exist with id=%s", songPartCategoryId)));
+                .orElseThrow(() -> new NoSuchSongPartDetailsException(String.format("Song part details with id=%s does not exist", songPartCategoryId)));
 
         return songPartDetailsMapper.mapToSongPartDetailsDTO(songPartDetailsRepository.save(configureSongPartDetails(songPartDetails, songPartDetailsEditableDTO)));
     }
@@ -65,7 +65,7 @@ public class SongPartDetailsServiceImpl implements SongPartDetailsService {
     @Override
     public void removeSongPartDetailsById(UUID songPartCategoryId) throws NoSuchSongPartDetailsException {
         if (!songPartDetailsRepository.existsById(songPartCategoryId)) {
-            throw new NoSuchSongPartDetailsException(String.format("Song part details does not exist with id=%s", songPartCategoryId));
+            throw new NoSuchSongPartDetailsException(String.format("Song part details with id=%s does not exist", songPartCategoryId));
         }
 
         songPartDetailsRepository.deleteById(songPartCategoryId);
@@ -77,17 +77,17 @@ public class SongPartDetailsServiceImpl implements SongPartDetailsService {
         }
 
         SongPart songPart = songPartRepository.findById(songPartDetailsEditableDTO.getSongPartUUID())
-                .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part does not exist with id=%s", songPartDetailsEditableDTO.getSongPartUUID())));
+                .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part with id=%s does not exist", songPartDetailsEditableDTO.getSongPartUUID())));
 
         Song song = null;
         BandSongVersion bandSongVersion = null;
 
         if (songPartDetailsEditableDTO.getSongUUID() != null) {
             song = songRepository.findById(songPartDetailsEditableDTO.getSongUUID())
-                    .orElseThrow(() -> new NoSuchSongPartException(String.format("Song does not exist with id=%s", songPartDetailsEditableDTO.getSongUUID())));
+                    .orElseThrow(() -> new NoSuchSongPartException(String.format("Song with id=%s does not exist", songPartDetailsEditableDTO.getSongUUID())));
         } else {
             bandSongVersion = bandSongVersionRepository.findById(songPartDetailsEditableDTO.getBandSongVersionUUID())
-                    .orElseThrow(() -> new NoSuchSongPartException(String.format("Band song version does not exist with id=%s", songPartDetailsEditableDTO.getBandSongVersionUUID())));
+                    .orElseThrow(() -> new NoSuchSongPartException(String.format("Band song version with id=%s does not exist", songPartDetailsEditableDTO.getBandSongVersionUUID())));
         }
 
         songPartDetails.setSequenceNumber(songPartDetailsEditableDTO.getSequenceNumber());

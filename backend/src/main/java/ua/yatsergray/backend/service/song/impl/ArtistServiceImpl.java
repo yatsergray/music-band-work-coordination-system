@@ -47,7 +47,7 @@ public class ArtistServiceImpl implements ArtistService {
     @Override
     public ArtistDTO modifyArtistById(UUID artistId, ArtistEditableDTO artistEditableDTO) throws NoSuchArtistException {
         Artist artist = artistRepository.findById(artistId)
-                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist does not exist with id=%s", artistId)));
+                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=%s does not exist", artistId)));
 
         artist.setName(artistEditableDTO.getName());
 
@@ -57,7 +57,7 @@ public class ArtistServiceImpl implements ArtistService {
     @Override
     public void removeArtistById(UUID artistId) throws NoSuchArtistException {
         if (!artistRepository.existsById(artistId)) {
-            throw new NoSuchArtistException(String.format("Artist does not exist with id=%s", artistId));
+            throw new NoSuchArtistException(String.format("Artist with id=%s does not exist", artistId));
         }
 
         artistRepository.deleteById(artistId);

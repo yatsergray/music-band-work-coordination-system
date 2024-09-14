@@ -27,11 +27,7 @@ public class BandServiceImpl implements BandService {
 
     @Override
     public BandDTO addBand(BandEditableDTO bandEditableDTO) {
-        Band band = Band.builder()
-                .name(bandEditableDTO.getName())
-                .build();
-
-        return bandMapper.mapToBandDTO(bandRepository.save(band));
+        return bandMapper.mapToBandDTO(bandRepository.save(configureBand(new Band(), bandEditableDTO)));
     }
 
     @Override
@@ -46,21 +42,25 @@ public class BandServiceImpl implements BandService {
 
     @Override
     public BandDTO modifyBandById(UUID bandId, BandEditableDTO bandEditableDTO) throws NoSuchBandException {
-        return bandRepository.findById(bandId)
-                .map(band -> {
-                    band.setName(bandEditableDTO.getName());
+        Band band = bandRepository.findById(bandId)
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=%s does not exist", bandId)));
 
-                    return bandMapper.mapToBandDTO(bandRepository.save(band));
-                })
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", bandId)));
+        return bandMapper.mapToBandDTO(bandRepository.save(configureBand(band, bandEditableDTO)));
+
     }
 
     @Override
     public void removeBandById(UUID bandId) throws NoSuchBandException {
         if (!bandRepository.existsById(bandId)) {
-            throw new NoSuchBandException(String.format("Band does not exist with id=%s", bandId));
+            throw new NoSuchBandException(String.format("Band with id=%s does not exist", bandId));
         }
 
         bandRepository.deleteById(bandId);
+    }
+
+    private Band configureBand(Band band, BandEditableDTO bandEditableDTO) {
+        band.setName(bandEditableDTO.getName());
+
+        return band;
     }
 }

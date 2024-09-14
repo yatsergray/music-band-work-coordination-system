@@ -21,6 +21,7 @@ public class EventCategoryController {
         this.eventCategoryService = eventCategoryService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<EventCategoryDTO> createEventCategory(@RequestBody EventCategoryEditableDTO eventCategoryEditableDTO) {
         return ResponseEntity.ok(eventCategoryService.addEventCategory(eventCategoryEditableDTO));

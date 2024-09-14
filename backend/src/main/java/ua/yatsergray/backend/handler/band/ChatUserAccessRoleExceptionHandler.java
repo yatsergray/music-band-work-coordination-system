@@ -9,7 +9,7 @@ import ua.yatsergray.backend.exception.band.NoSuchChatUserAccessRoleException;
 public class ChatUserAccessRoleExceptionHandler {
 
     @ExceptionHandler(NoSuchChatUserAccessRoleException.class)
-    public ResponseEntity<String> handleChatUserAccessRoleException(NoSuchChatUserAccessRoleException e) {
+    public ResponseEntity<String> handleNoSuchChatUserAccessRoleException(NoSuchChatUserAccessRoleException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

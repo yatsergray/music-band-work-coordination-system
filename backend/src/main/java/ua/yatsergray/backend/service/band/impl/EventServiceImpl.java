@@ -7,6 +7,7 @@ import ua.yatsergray.backend.domain.dto.band.editable.EventEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.Band;
 import ua.yatsergray.backend.domain.entity.band.Event;
 import ua.yatsergray.backend.domain.entity.band.EventCategory;
+import ua.yatsergray.backend.exception.band.EventConflictException;
 import ua.yatsergray.backend.exception.band.NoSuchBandException;
 import ua.yatsergray.backend.exception.band.NoSuchEventCategoryException;
 import ua.yatsergray.backend.exception.band.NoSuchEventException;
@@ -17,6 +18,7 @@ import ua.yatsergray.backend.repository.band.EventRepository;
 import ua.yatsergray.backend.service.band.EventService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,7 +38,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDTO addEvent(EventEditableDTO eventEditableDTO) throws NoSuchBandException, NoSuchEventCategoryException {
+    public EventDTO addEvent(EventEditableDTO eventEditableDTO) throws NoSuchBandException, NoSuchEventCategoryException, EventConflictException {
         return eventMapper.mapToEventDTO(eventRepository.save(configureEvent(new Event(), eventEditableDTO)));
     }
 
@@ -51,9 +53,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventDTO modifyEventById(UUID eventId, EventEditableDTO eventEditableDTO) throws NoSuchEventException, NoSuchBandException, NoSuchEventCategoryException {
+    public EventDTO modifyEventById(UUID eventId, EventEditableDTO eventEditableDTO) throws NoSuchEventException, NoSuchBandException, NoSuchEventCategoryException, EventConflictException {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NoSuchEventException(String.format("Event does not exist with id=%s", eventId)));
+                .orElseThrow(() -> new NoSuchEventException(String.format("Event with id=%s does not exist", eventId)));
 
         return eventMapper.mapToEventDTO(eventRepository.save(configureEvent(event, eventEditableDTO)));
     }
@@ -61,17 +63,35 @@ public class EventServiceImpl implements EventService {
     @Override
     public void removeEventById(UUID eventId) throws NoSuchEventException {
         if (!eventRepository.existsById(eventId)) {
-            throw new NoSuchEventException(String.format("Event does not exist with id=%s", eventId));
+            throw new NoSuchEventException(String.format("Event with id=%s does not exist", eventId));
         }
 
         eventRepository.deleteById(eventId);
     }
 
-    private Event configureEvent(Event event, EventEditableDTO eventEditableDTO) throws NoSuchBandException, NoSuchEventCategoryException {
+    private Event configureEvent(Event event, EventEditableDTO eventEditableDTO) throws NoSuchBandException, NoSuchEventCategoryException, EventConflictException {
         Band band = bandRepository.findById(eventEditableDTO.getBandUUID())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", eventEditableDTO.getBandUUID())));
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=%s does not exist", eventEditableDTO.getBandUUID())));
         EventCategory eventCategory = eventCategoryRepository.findById(eventEditableDTO.getEventCategoryUUID())
                 .orElseThrow(() -> new NoSuchEventCategoryException(String.format("Event category does not exist with id=%s", eventEditableDTO.getEventCategoryUUID())));
+
+        if (eventEditableDTO.getStartTime().equals(eventEditableDTO.getEndTime())) {
+            throw new EventConflictException(String.format("Event startTime=%s and endTime=%s cannot be equal", eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime()));
+        }
+
+        if (eventEditableDTO.getStartTime().isAfter(eventEditableDTO.getEndTime())) {
+            throw new EventConflictException(String.format("Event startTime=%s must be before endTime=%s", eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime()));
+        }
+
+        if (Objects.isNull(event.getId())) {
+            if (eventRepository.existsOverlappingEvent(eventEditableDTO.getBandUUID(), eventEditableDTO.getDate(), eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime())) {
+                throw new EventConflictException(String.format("Event with startTime=%s and endTime=%s overlaps other event", eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime()));
+            }
+        } else {
+            if ((!eventEditableDTO.getBandUUID().equals(event.getBand().getId()) || !eventEditableDTO.getDate().equals(event.getDate()) || !eventEditableDTO.getStartTime().equals(event.getStartTime()) || !eventEditableDTO.getEndTime().equals(event.getEndTime())) && eventRepository.existsOverlappingEvent(eventEditableDTO.getBandUUID(), eventEditableDTO.getDate(), eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime())) {
+                throw new EventConflictException(String.format("Event with startTime=%s and endTime=%s overlaps other event", eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime()));
+            }
+        }
 
         event.setDate(eventEditableDTO.getDate());
         event.setStartTime(eventEditableDTO.getStartTime());

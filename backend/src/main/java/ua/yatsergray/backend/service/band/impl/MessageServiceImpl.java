@@ -53,7 +53,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public MessageDTO modifyMessageById(UUID messageId, MessageEditableDTO messageEditableDTO) throws NoSuchMessageException, NoSuchChatException, NoSuchUserException {
         Message message = messageRepository.findById(messageId)
-                .orElseThrow(() -> new NoSuchMessageException(String.format("Message does not exist with id=%s", messageId)));
+                .orElseThrow(() -> new NoSuchMessageException(String.format("Message with id=%s does not exist", messageId)));
 
         return messageMapper.mapToMessageDTO(messageRepository.save(configureMessage(message, messageEditableDTO)));
     }
@@ -61,7 +61,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void removeMessageById(UUID messageId) throws NoSuchMessageException {
         if (!messageRepository.existsById(messageId)) {
-            throw new NoSuchMessageException(String.format("Message does not exist with id=%s", messageId));
+            throw new NoSuchMessageException(String.format("Message with id=%s does not exist", messageId));
         }
 
         messageRepository.deleteById(messageId);
@@ -69,9 +69,9 @@ public class MessageServiceImpl implements MessageService {
 
     private Message configureMessage(Message message, MessageEditableDTO messageEditableDTO) throws NoSuchChatException, NoSuchUserException {
         Chat chat = chatRepository.findById(messageEditableDTO.getChatUUID())
-                .orElseThrow(() -> new NoSuchChatException(String.format("Chat does not exist with id=%s", messageEditableDTO.getChatUUID())));
+                .orElseThrow(() -> new NoSuchChatException(String.format("Chat with id=%s does not exist", messageEditableDTO.getChatUUID())));
         User user = userRepository.findById(messageEditableDTO.getUserUUID())
-                .orElseThrow(() -> new NoSuchUserException(String.format("User does not exist with id=%s", messageEditableDTO.getUserUUID())));
+                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=%s does not exist", messageEditableDTO.getUserUUID())));
 
         message.setText(messageEditableDTO.getText());
         message.setDate(messageEditableDTO.getDate());

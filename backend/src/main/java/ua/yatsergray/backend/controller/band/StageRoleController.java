@@ -21,6 +21,7 @@ public class StageRoleController {
         this.stageRoleService = stageRoleService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<StageRoleDTO> createStageRole(@RequestBody StageRoleEditableDTO stageRoleEditableDTO) {
         return ResponseEntity.ok(stageRoleService.addStageRole(stageRoleEditableDTO));

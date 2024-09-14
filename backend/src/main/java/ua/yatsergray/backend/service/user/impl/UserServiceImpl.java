@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO modifyUserById(UUID userId, UserEditableDTO userEditableDTO) throws NoSuchUserException {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchUserException(String.format("User does not exist with id=%s", userId)));
+                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=%s does not exist", userId)));
 
         user.setFirstName(userEditableDTO.getFirstName());
         user.setLastName(userEditableDTO.getLastName());
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeUserById(UUID id) throws NoSuchUserException {
         if (!userRepository.existsById(id)) {
-            throw new NoSuchUserException(String.format("User does not exist with id=%s", id));
+            throw new NoSuchUserException(String.format("User with id=%s does not exist", id));
         }
 
         userRepository.deleteById(id);

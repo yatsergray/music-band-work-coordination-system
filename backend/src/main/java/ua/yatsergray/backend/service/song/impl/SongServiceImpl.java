@@ -58,7 +58,7 @@ public class SongServiceImpl implements SongService {
     @Override
     public SongDTO modifySongById(UUID songId, SongEditableDTO songEditableDTO) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException {
         Song song = songRepository.findById(songId)
-                .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", songId)));
+                .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=%s does not exist", songId)));
 
         return songMapper.mapToSongDTO(songRepository.save(configureSong(song, songEditableDTO)));
     }
@@ -66,7 +66,7 @@ public class SongServiceImpl implements SongService {
     @Override
     public void removeSongById(UUID songId) throws NoSuchSongException {
         if (!songRepository.existsById(songId)) {
-            throw new NoSuchSongException(String.format("Song does not exist with id=%s", songId));
+            throw new NoSuchSongException(String.format("Song with id=%s does not exist", songId));
         }
 
         songRepository.deleteById(songId);
@@ -74,11 +74,11 @@ public class SongServiceImpl implements SongService {
 
     private Song configureSong(Song song, SongEditableDTO songEditableDTO) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException {
         Key key = keyRepository.findById(songEditableDTO.getKeyUUID())
-                .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", songEditableDTO.getKeyUUID())));
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=%s does not exist", songEditableDTO.getKeyUUID())));
         Artist artist = artistRepository.findById(songEditableDTO.getArtistUUID())
-                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist does not exist with id=%s", songEditableDTO.getArtistUUID())));
+                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=%s does not exist", songEditableDTO.getArtistUUID())));
         TimeSignature timeSignature = timeSignatureRepository.findById(songEditableDTO.getTimeSignatureUUID())
-                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature does not exist with id=%s", songEditableDTO.getTimeSignatureUUID())));
+                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=%s does not exist", songEditableDTO.getTimeSignatureUUID())));
 
         song.setMediaURL(songEditableDTO.getMediaURL());
         song.setName(songEditableDTO.getName());

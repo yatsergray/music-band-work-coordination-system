@@ -58,7 +58,7 @@ public class SongPartKeyChordServiceImpl implements SongPartKeyChordService {
     @Override
     public SongPartKeyChordDTO modifySongPartKeyChordById(UUID songPartKeyChordId, SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) throws NoSuchSongPartKeyChordException, NoSuchKeyException, NoSuchChordException, NoSuchSongPartException {
         SongPartKeyChord songPartKeyChord = songPartKeyChordRepository.findById(songPartKeyChordId)
-                .orElseThrow(() -> new NoSuchSongPartKeyChordException(String.format("Song part key chord does not exist with id=%s", songPartKeyChordId)));
+                .orElseThrow(() -> new NoSuchSongPartKeyChordException(String.format("Song part key chord with id=%s does not exist", songPartKeyChordId)));
 
         return songPartKeyChordMapper.mapToSongPartKeyChordDTO(songPartKeyChordRepository.save(configureSongPartKeyChord(songPartKeyChord, songPartKeyChordEditableDTO)));
     }
@@ -66,7 +66,7 @@ public class SongPartKeyChordServiceImpl implements SongPartKeyChordService {
     @Override
     public void removeSongPartKeyChordById(UUID songPartKeyChordId) throws NoSuchSongPartKeyChordException {
         if (!songPartKeyChordRepository.existsById(songPartKeyChordId)) {
-            throw new NoSuchSongPartKeyChordException(String.format("Song part key chord does not exist with id=%s", songPartKeyChordId));
+            throw new NoSuchSongPartKeyChordException(String.format("Song part key chord with id=%s does not exist", songPartKeyChordId));
         }
 
         songPartKeyChordRepository.deleteById(songPartKeyChordId);
@@ -74,11 +74,11 @@ public class SongPartKeyChordServiceImpl implements SongPartKeyChordService {
 
     private SongPartKeyChord configureSongPartKeyChord(SongPartKeyChord songPartKeyChord, SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) throws NoSuchKeyException, NoSuchChordException, NoSuchSongPartException {
         Key key = keyRepository.findById(songPartKeyChordEditableDTO.getKeyUUID())
-                .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", songPartKeyChordEditableDTO.getKeyUUID())));
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=%s does not exist", songPartKeyChordEditableDTO.getKeyUUID())));
         Chord chord = chordRepository.findById(songPartKeyChordEditableDTO.getChordUUID())
-                .orElseThrow(() -> new NoSuchChordException(String.format("Chord does not exist with id=%s", songPartKeyChordEditableDTO.getChordUUID())));
+                .orElseThrow(() -> new NoSuchChordException(String.format("Chord with id=%s does not exist", songPartKeyChordEditableDTO.getChordUUID())));
         SongPart songPart = songPartRepository.findById(songPartKeyChordEditableDTO.getSongPartUUID())
-                .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part does not exist with id=%s", songPartKeyChordEditableDTO.getSongPartUUID())));
+                .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part with id=%s does not exist", songPartKeyChordEditableDTO.getSongPartUUID())));
 
         songPartKeyChord.setSequenceNumber(songPartKeyChordEditableDTO.getSequenceNumber());
         songPartKeyChord.setKey(key);

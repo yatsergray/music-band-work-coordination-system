@@ -53,7 +53,7 @@ public class SongPartServiceImpl implements SongPartService {
     @Override
     public SongPartDTO modifySongPartById(UUID songPartId, SongPartEditableDTO songPartEditableDTO) throws NoSuchSongPartException, NoSuchSongException, NoSuchSongPartCategoryException {
         SongPart songPart = songPartRepository.findById(songPartId)
-                .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part does not exist with id=%s", songPartId)));
+                .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part with id=%s does not exist", songPartId)));
 
         return songPartMapper.mapToSongPartDTO(songPartRepository.save(configureSongPart(songPart, songPartEditableDTO)));
     }
@@ -61,7 +61,7 @@ public class SongPartServiceImpl implements SongPartService {
     @Override
     public void removeSongPartById(UUID songPartId) throws NoSuchSongPartException {
         if (!songPartRepository.existsById(songPartId)) {
-            throw new NoSuchSongPartException(String.format("Song part does not exist with id=%s", songPartId));
+            throw new NoSuchSongPartException(String.format("Song part with id=%s does not exist", songPartId));
         }
 
         songPartRepository.deleteById(songPartId);
@@ -69,9 +69,9 @@ public class SongPartServiceImpl implements SongPartService {
 
     private SongPart configureSongPart(SongPart songPart, SongPartEditableDTO songPartEditableDTO) throws NoSuchSongException, NoSuchSongPartCategoryException {
         Song song = songRepository.findById(songPartEditableDTO.getSongUUID())
-                .orElseThrow(() -> new NoSuchSongException(String.format("Song does not exist with id=%s", songPartEditableDTO.getSongUUID())));
+                .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=%s does not exist", songPartEditableDTO.getSongUUID())));
         SongPartCategory songPartCategory = songPartCategoryRepository.findById(songPartEditableDTO.getSongPartCategoryUUID())
-                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category does not exist with id=%s", songPartEditableDTO.getSongPartCategoryUUID())));
+                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category with id=%s does not exist", songPartEditableDTO.getSongPartCategoryUUID())));
 
         songPart.setText(songPartEditableDTO.getText());
         songPart.setTypeNumber(songPartEditableDTO.getTypeNumber());

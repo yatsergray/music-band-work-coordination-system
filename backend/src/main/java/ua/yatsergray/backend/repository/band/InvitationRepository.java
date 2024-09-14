@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface InvitationRepository extends JpaRepository<Invitation, UUID> {
+
+    boolean existsByBandIdAndEmail(UUID invitationBandId, String invitationEmail);
 }

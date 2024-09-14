@@ -52,13 +52,13 @@ public class ChordServiceImpl implements ChordService {
 
                     return chordMapper.mapToChordDTO(chordRepository.save(chord));
                 })
-                .orElseThrow(() -> new NoSuchChordException(String.format("Chord does not exist with id=%s", chordId)));
+                .orElseThrow(() -> new NoSuchChordException(String.format("Chord with id=%s not exist", chordId)));
     }
 
     @Override
     public void removeChordById(UUID chordId) throws NoSuchChordException {
         if (!chordRepository.existsById(chordId)) {
-            throw new NoSuchChordException(String.format("Chord does not exist with id=%s", chordId));
+            throw new NoSuchChordException(String.format("Chord with id=%s does not exist", chordId));
         }
 
         chordRepository.deleteById(chordId);

@@ -6,6 +6,7 @@ import ua.yatsergray.backend.domain.dto.band.ChatDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.ChatEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.Band;
 import ua.yatsergray.backend.domain.entity.band.Chat;
+import ua.yatsergray.backend.exception.band.ChatAlreadyExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchBandException;
 import ua.yatsergray.backend.exception.band.NoSuchChatException;
 import ua.yatsergray.backend.mapper.band.ChatMapper;
@@ -14,6 +15,7 @@ import ua.yatsergray.backend.repository.band.ChatRepository;
 import ua.yatsergray.backend.service.band.ChatService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,8 +33,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatDTO addChat(ChatEditableDTO chatEditableDTO) throws NoSuchBandException {
-        return chatMapper.mapToChatDTO(chatRepository.save(confidureChat(new Chat(), chatEditableDTO)));
+    public ChatDTO addChat(ChatEditableDTO chatEditableDTO) throws NoSuchBandException, ChatAlreadyExistsException {
+        return chatMapper.mapToChatDTO(chatRepository.save(configureChat(new Chat(), chatEditableDTO)));
     }
 
     @Override
@@ -46,25 +48,35 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public ChatDTO modifyChatById(UUID chatId, ChatEditableDTO chatEditableDTO) throws NoSuchChatException, NoSuchBandException {
+    public ChatDTO modifyChatById(UUID chatId, ChatEditableDTO chatEditableDTO) throws NoSuchChatException, NoSuchBandException, ChatAlreadyExistsException {
         Chat chat = chatRepository.findById(chatId)
-                .orElseThrow(() -> new NoSuchChatException(String.format("Chat does not exist with id=%s", chatId)));
+                .orElseThrow(() -> new NoSuchChatException(String.format("Chat with id=%s does not exist", chatId)));
 
-        return chatMapper.mapToChatDTO(chatRepository.save(confidureChat(chat, chatEditableDTO)));
+        return chatMapper.mapToChatDTO(chatRepository.save(configureChat(chat, chatEditableDTO)));
     }
 
     @Override
     public void removeChatById(UUID chatId) throws NoSuchChatException {
         if (!chatRepository.existsById(chatId)) {
-            throw new NoSuchChatException(String.format("Chat does not exist with id=%s", chatId));
+            throw new NoSuchChatException(String.format("Chat with id=%s does not exist", chatId));
         }
 
         chatRepository.deleteById(chatId);
     }
 
-    private Chat confidureChat(Chat chat, ChatEditableDTO chatEditableDTO) throws NoSuchBandException {
+    private Chat configureChat(Chat chat, ChatEditableDTO chatEditableDTO) throws NoSuchBandException, ChatAlreadyExistsException {
         Band band = bandRepository.findById(chatEditableDTO.getBandUUID())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band does not exist with id=%s", chatEditableDTO.getBandUUID())));
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=%s does not exist", chatEditableDTO.getBandUUID())));
+
+        if (Objects.isNull(chat.getId())) {
+            if (chatRepository.existsByBandIdAndName(chatEditableDTO.getBandUUID(), chatEditableDTO.getName())) {
+                throw new ChatAlreadyExistsException(String.format("Chat with bandId=%s and name=%s already exists", chatEditableDTO.getBandUUID(), chatEditableDTO.getName()));
+            }
+        } else {
+            if ((!chatEditableDTO.getBandUUID().equals(chat.getBand().getId()) || !chatEditableDTO.getName().equals(chat.getName())) && chatRepository.existsByBandIdAndName(chatEditableDTO.getBandUUID(), chatEditableDTO.getName())) {
+                throw new ChatAlreadyExistsException(String.format("Chat with bandId=%s and name=%s already exists", chatEditableDTO.getBandUUID(), chatEditableDTO.getName()));
+            }
+        }
 
         chat.setName(chatEditableDTO.getName());
         chat.setBand(band);

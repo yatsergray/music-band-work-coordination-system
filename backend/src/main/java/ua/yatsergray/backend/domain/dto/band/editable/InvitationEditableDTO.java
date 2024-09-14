@@ -11,7 +11,6 @@ import java.util.UUID;
 @Builder
 public class InvitationEditableDTO {
     private String email;
-    private String token;
     private UUID bandUUID;
     private UUID participationStatusUUID;
 }

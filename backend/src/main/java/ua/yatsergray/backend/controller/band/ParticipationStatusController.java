@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.ParticipationStatusDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.ParticipationStatusEditableDTO;
+import ua.yatsergray.backend.exception.band.ParticipationStatusAlreadyExistsException;
 import ua.yatsergray.backend.service.band.impl.ParticipationStatusServiceImpl;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ParticipationStatusController {
     }
 
     @PostMapping
-    public ResponseEntity<ParticipationStatusDTO> createParticipationStatus(@RequestBody ParticipationStatusEditableDTO participationStatusEditableDTO) {
+    public ResponseEntity<ParticipationStatusDTO> createParticipationStatus(@RequestBody ParticipationStatusEditableDTO participationStatusEditableDTO) throws ParticipationStatusAlreadyExistsException {
         return ResponseEntity.ok(participationStatusService.addParticipationStatus(participationStatusEditableDTO));
     }
 

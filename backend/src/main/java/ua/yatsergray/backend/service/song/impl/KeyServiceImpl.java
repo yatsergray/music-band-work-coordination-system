@@ -52,13 +52,13 @@ public class KeyServiceImpl implements KeyService {
 
                     return keyMapper.mapToKeyDTO(keyRepository.save(key));
                 })
-                .orElseThrow(() -> new NoSuchKeyException(String.format("Key does not exist with id=%s", keyId)));
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=%s does not exist", keyId)));
     }
 
     @Override
     public void removeKeyById(UUID keyId) throws NoSuchKeyException {
         if (!keyRepository.existsById(keyId)) {
-            throw new NoSuchKeyException(String.format("Key does not exist with id=%s", keyId));
+            throw new NoSuchKeyException(String.format("Key with id=%s does not exist", keyId));
         }
 
         keyRepository.deleteById(keyId);

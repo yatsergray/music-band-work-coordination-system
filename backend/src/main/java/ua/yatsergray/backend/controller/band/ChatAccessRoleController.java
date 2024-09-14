@@ -21,6 +21,7 @@ public class ChatAccessRoleController {
         this.chatAccessRoleService = chatAccessRoleService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<ChatAccessRoleDTO> createChatAccessRole(@RequestBody ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) {
         return ResponseEntity.ok(chatAccessRoleService.addChatAccessRole(chatAccessRoleEditableDTO));

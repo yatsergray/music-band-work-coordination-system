@@ -54,13 +54,13 @@ public class SongPartCategoryServiceImpl implements SongPartCategoryService {
 
                     return songPartCategoryMapper.mapToSongPartCategoryDTO(songPartCategoryRepository.save(songPartCategory));
                 })
-                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category does not exist with id=%s", songPartCategoryId)));
+                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category with id=%s does not exist", songPartCategoryId)));
     }
 
     @Override
     public void removeSongPartCategoryById(UUID songPartCategoryId) throws NoSuchSongPartCategoryException {
         if (songPartCategoryRepository.existsById(songPartCategoryId)) {
-            throw new NoSuchSongPartCategoryException(String.format("Song part category does not exist with id=%s", songPartCategoryId));
+            throw new NoSuchSongPartCategoryException(String.format("Song part category with id=%s does not exist", songPartCategoryId));
         }
 
         songPartCategoryRepository.deleteById(songPartCategoryId);

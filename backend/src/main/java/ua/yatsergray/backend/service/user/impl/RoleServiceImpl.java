@@ -54,13 +54,13 @@ public class RoleServiceImpl implements RoleService {
 
                     return roleMapper.mapToRoleDTO(roleRepository.save(role));
                 })
-                .orElseThrow(() -> new NoSuchRoleException(String.format("Role does not exist with id=%s", roleId)));
+                .orElseThrow(() -> new NoSuchRoleException(String.format("Role with id=%s does not exist", roleId)));
     }
 
     @Override
     public void removeRoleById(UUID roleId) throws NoSuchRoleException {
         if (!roleRepository.existsById(roleId)) {
-            throw new NoSuchRoleException(String.format("Role does not exist with id=%s", roleId));
+            throw new NoSuchRoleException(String.format("Role with id=%s does not exist", roleId));
         }
 
         roleRepository.deleteById(roleId);

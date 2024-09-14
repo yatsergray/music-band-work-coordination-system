@@ -21,6 +21,7 @@ public class BandAccessRoleController {
         this.bandAccessRoleService = bandAccessRoleService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<BandAccessRoleDTO> createBandAccessRole(@RequestBody BandAccessRoleEditableDTO bandAccessRoleEditableDTO) {
         return ResponseEntity.ok(bandAccessRoleService.addBandAccessRole(bandAccessRoleEditableDTO));

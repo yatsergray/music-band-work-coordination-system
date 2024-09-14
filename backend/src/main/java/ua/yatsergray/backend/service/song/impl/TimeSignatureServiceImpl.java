@@ -54,13 +54,13 @@ public class TimeSignatureServiceImpl implements TimeSignatureService {
 
                     return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(timeSignature));
                 })
-                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature does not exist with id=%s", timeSignatureId)));
+                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=%s does not exist", timeSignatureId)));
     }
 
     @Override
     public void removeTimeSignatureById(UUID timeSignatureId) throws NoSuchTimeSignatureException {
         if (!timeSignatureRepository.existsById(timeSignatureId)) {
-            throw new NoSuchTimeSignatureException(String.format("Time signature does not exist with id=%s", timeSignatureId));
+            throw new NoSuchTimeSignatureException(String.format("Time signature with id=%s does not exist", timeSignatureId));
         }
 
         timeSignatureRepository.deleteById(timeSignatureId);
