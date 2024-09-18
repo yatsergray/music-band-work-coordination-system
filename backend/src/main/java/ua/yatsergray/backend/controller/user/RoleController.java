@@ -21,6 +21,7 @@ public class RoleController {
         this.roleService = roleService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<RoleDTO> createRole(@RequestBody RoleEditableDTO roleEditableDTO) {
         return ResponseEntity.ok(roleService.addRole(roleEditableDTO));

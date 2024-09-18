@@ -19,6 +19,7 @@ import ua.yatsergray.backend.repository.song.SongRepository;
 import ua.yatsergray.backend.service.song.SongPartDetailsService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -72,29 +73,50 @@ public class SongPartDetailsServiceImpl implements SongPartDetailsService {
     }
 
     private SongPartDetails configureSongPartDetails(SongPartDetails songPartDetails, SongPartDetailsEditableDTO songPartDetailsEditableDTO) throws SongPartDetailsConflictException, NoSuchSongPartException {
-        if (songPartDetailsEditableDTO.getSongUUID() != null && songPartDetailsEditableDTO.getBandSongVersionUUID() != null) {
+        if (!Objects.isNull(songPartDetailsEditableDTO.getSongUUID()) && !Objects.isNull(songPartDetailsEditableDTO.getBandSongVersionUUID())) {
             throw new SongPartDetailsConflictException(String.format("Song part details refers to song with id=%s and band song version with id=%s at the same time", songPartDetailsEditableDTO.getSongUUID(), songPartDetailsEditableDTO.getBandSongVersionUUID()));
         }
 
         SongPart songPart = songPartRepository.findById(songPartDetailsEditableDTO.getSongPartUUID())
                 .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part with id=%s does not exist", songPartDetailsEditableDTO.getSongPartUUID())));
 
-        Song song = null;
-        BandSongVersion bandSongVersion = null;
-
-        if (songPartDetailsEditableDTO.getSongUUID() != null) {
-            song = songRepository.findById(songPartDetailsEditableDTO.getSongUUID())
+        if (!Objects.isNull(songPartDetailsEditableDTO.getSongUUID())) {
+            Song song = songRepository.findById(songPartDetailsEditableDTO.getSongUUID())
                     .orElseThrow(() -> new NoSuchSongPartException(String.format("Song with id=%s does not exist", songPartDetailsEditableDTO.getSongUUID())));
-        } else {
-            bandSongVersion = bandSongVersionRepository.findById(songPartDetailsEditableDTO.getBandSongVersionUUID())
+
+            if (Objects.isNull(songPartDetails.getId())) {
+                if (songPartDetailsRepository.existsBySongIdAndSequenceNumber(songPartDetailsEditableDTO.getSongUUID(), songPartDetailsEditableDTO.getSequenceNumber())) {
+                    throw new SongPartDetailsConflictException(String.format("Song part details with songId=%s and sequenceNumber=%d already exists", songPartDetailsEditableDTO.getSongUUID(), songPartDetailsEditableDTO.getSequenceNumber()));
+                }
+            } else {
+                if ((!songPartDetailsEditableDTO.getSongUUID().equals(songPartDetails.getSong().getId()) || !songPartDetailsEditableDTO.getSequenceNumber().equals(songPartDetails.getSequenceNumber())) && songPartDetailsRepository.existsBySongIdAndSequenceNumber(songPartDetailsEditableDTO.getSongUUID(), songPartDetailsEditableDTO.getSequenceNumber())) {
+                    throw new SongPartDetailsConflictException(String.format("Song part details with songId=%s and sequenceNumber=%d already exists", songPartDetailsEditableDTO.getSongUUID(), songPartDetailsEditableDTO.getSequenceNumber()));
+                }
+            }
+
+            songPartDetails.setSong(song);
+        }
+
+        if (!Objects.isNull(songPartDetailsEditableDTO.getBandSongVersionUUID())) {
+            BandSongVersion bandSongVersion = bandSongVersionRepository.findById(songPartDetailsEditableDTO.getBandSongVersionUUID())
                     .orElseThrow(() -> new NoSuchSongPartException(String.format("Band song version with id=%s does not exist", songPartDetailsEditableDTO.getBandSongVersionUUID())));
+
+            if (Objects.isNull(songPartDetails.getId())) {
+                if (songPartDetailsRepository.existsByBandSongVersionIdAndSequenceNumber(songPartDetailsEditableDTO.getBandSongVersionUUID(), songPartDetailsEditableDTO.getSequenceNumber())) {
+                    throw new SongPartDetailsConflictException(String.format("Song part details with bandSongVersionId=%s and sequenceNumber=%d already exists", songPartDetailsEditableDTO.getBandSongVersionUUID(), songPartDetailsEditableDTO.getSequenceNumber()));
+                }
+            } else {
+                if ((!songPartDetailsEditableDTO.getBandSongVersionUUID().equals(songPartDetails.getBandSongVersion().getId()) || !songPartDetailsEditableDTO.getSequenceNumber().equals(songPartDetails.getSequenceNumber())) && songPartDetailsRepository.existsByBandSongVersionIdAndSequenceNumber(songPartDetailsEditableDTO.getBandSongVersionUUID(), songPartDetailsEditableDTO.getSequenceNumber())) {
+                    throw new SongPartDetailsConflictException(String.format("Song part details with bandSongVersionId=%s and sequenceNumber=%d already exists", songPartDetailsEditableDTO.getBandSongVersionUUID(), songPartDetailsEditableDTO.getSequenceNumber()));
+                }
+            }
+
+            songPartDetails.setBandSongVersion(bandSongVersion);
         }
 
         songPartDetails.setSequenceNumber(songPartDetailsEditableDTO.getSequenceNumber());
         songPartDetails.setRepeatNumber(songPartDetailsEditableDTO.getRepeatNumber());
         songPartDetails.setSongPart(songPart);
-        songPartDetails.setSong(song);
-        songPartDetails.setBandSongVersion(bandSongVersion);
 
         return songPartDetails;
     }

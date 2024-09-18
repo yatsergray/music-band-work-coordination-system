@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface KeyRepository extends JpaRepository<Key, UUID> {
+
+    boolean existsByName(String keyName);
 }

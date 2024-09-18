@@ -6,11 +6,13 @@ import ua.yatsergray.backend.domain.dto.user.UserDTO;
 import ua.yatsergray.backend.domain.dto.user.editable.UserEditableDTO;
 import ua.yatsergray.backend.domain.entity.user.User;
 import ua.yatsergray.backend.exception.user.NoSuchUserException;
+import ua.yatsergray.backend.exception.user.UserAlreadyExistsException;
 import ua.yatsergray.backend.mapper.user.UserMapper;
 import ua.yatsergray.backend.repository.user.UserRepository;
 import ua.yatsergray.backend.service.user.UserService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,15 +28,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO addUser(UserEditableDTO userEditableDTO) {
-        User user = User.builder()
-                .firstName(userEditableDTO.getFirstName())
-                .lastName(userEditableDTO.getLastName())
-                .email(userEditableDTO.getEmail())
-                .password(userEditableDTO.getPassword())
-                .build();
-
-        return userMapper.mapToUserDTO(userRepository.save(user));
+    public UserDTO addUser(UserEditableDTO userEditableDTO) throws UserAlreadyExistsException {
+        return userMapper.mapToUserDTO(userRepository.save(configureUser(new User(), userEditableDTO)));
     }
 
     @Override
@@ -48,16 +43,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO modifyUserById(UUID userId, UserEditableDTO userEditableDTO) throws NoSuchUserException {
+    public UserDTO modifyUserById(UUID userId, UserEditableDTO userEditableDTO) throws NoSuchUserException, UserAlreadyExistsException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchUserException(String.format("User with id=%s does not exist", userId)));
 
-        user.setFirstName(userEditableDTO.getFirstName());
-        user.setLastName(userEditableDTO.getLastName());
-        user.setEmail(userEditableDTO.getEmail());
-        user.setPassword(userEditableDTO.getPassword());
-
-        return userMapper.mapToUserDTO(userRepository.save(user));
+        return userMapper.mapToUserDTO(userRepository.save(configureUser(user, userEditableDTO)));
     }
 
     @Override
@@ -67,5 +57,24 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.deleteById(id);
+    }
+
+    private User configureUser(User user, UserEditableDTO userEditableDTO) throws UserAlreadyExistsException {
+        if (Objects.isNull(user.getId())) {
+            if (userRepository.existsByEmail(userEditableDTO.getEmail())) {
+                throw new UserAlreadyExistsException(String.format("User with email=%s already exists", userEditableDTO.getEmail()));
+            }
+        } else {
+            if (!userEditableDTO.getEmail().equals(user.getEmail()) && userRepository.existsByEmail(userEditableDTO.getEmail())) {
+                throw new UserAlreadyExistsException(String.format("User with email=%s already exists", userEditableDTO.getEmail()));
+            }
+        }
+
+        user.setFirstName(userEditableDTO.getFirstName());
+        user.setLastName(userEditableDTO.getLastName());
+        user.setEmail(userEditableDTO.getEmail());
+        user.setPassword(userEditableDTO.getPassword());
+
+        return user;
     }
 }

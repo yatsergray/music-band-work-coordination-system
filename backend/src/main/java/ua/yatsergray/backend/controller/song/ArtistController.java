@@ -21,6 +21,7 @@ public class ArtistController {
         this.artistService = artistService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<ArtistDTO> createArtist(@RequestBody ArtistEditableDTO artistEditableDTO) {
         return ResponseEntity.ok(artistService.addArtist(artistEditableDTO));

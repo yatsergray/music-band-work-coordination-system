@@ -21,6 +21,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserEditableDTO userEditableDTO) {
         return ResponseEntity.ok(userService.addUser(userEditableDTO));

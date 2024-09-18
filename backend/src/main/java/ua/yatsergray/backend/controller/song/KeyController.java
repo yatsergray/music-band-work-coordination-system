@@ -21,6 +21,7 @@ public class KeyController {
         this.keyService = keyService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<KeyDTO> createKey(@RequestBody KeyEditableDTO keyEditableDTO) {
         return ResponseEntity.ok(keyService.addKey(keyEditableDTO));

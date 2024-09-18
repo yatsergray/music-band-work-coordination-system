@@ -6,11 +6,13 @@ import ua.yatsergray.backend.domain.dto.song.TimeSignatureDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.TimeSignatureEditableDTO;
 import ua.yatsergray.backend.domain.entity.song.TimeSignature;
 import ua.yatsergray.backend.exception.song.NoSuchTimeSignatureException;
+import ua.yatsergray.backend.exception.song.TimeSignatureAlreadyExistsException;
 import ua.yatsergray.backend.mapper.song.TimeSignatureMapper;
 import ua.yatsergray.backend.repository.song.TimeSignatureRepository;
 import ua.yatsergray.backend.service.song.TimeSignatureService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,13 +28,8 @@ public class TimeSignatureServiceImpl implements TimeSignatureService {
     }
 
     @Override
-    public TimeSignatureDTO addTimeSignature(TimeSignatureEditableDTO timeSignatureEditableDTO) {
-        TimeSignature timeSignature = TimeSignature.builder()
-                .beats(timeSignatureEditableDTO.getBeats())
-                .duration(timeSignatureEditableDTO.getDuration())
-                .build();
-
-        return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(timeSignature));
+    public TimeSignatureDTO addTimeSignature(TimeSignatureEditableDTO timeSignatureEditableDTO) throws TimeSignatureAlreadyExistsException {
+        return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(configureTimeSignature(new TimeSignature(), timeSignatureEditableDTO)));
     }
 
     @Override
@@ -46,15 +43,11 @@ public class TimeSignatureServiceImpl implements TimeSignatureService {
     }
 
     @Override
-    public TimeSignatureDTO modifyTimeSignatureById(UUID timeSignatureId, TimeSignatureEditableDTO timeSignatureEditableDTO) throws NoSuchTimeSignatureException {
-        return timeSignatureRepository.findById(timeSignatureId)
-                .map(timeSignature -> {
-                    timeSignature.setBeats(timeSignatureEditableDTO.getBeats());
-                    timeSignature.setDuration(timeSignatureEditableDTO.getDuration());
-
-                    return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(timeSignature));
-                })
+    public TimeSignatureDTO modifyTimeSignatureById(UUID timeSignatureId, TimeSignatureEditableDTO timeSignatureEditableDTO) throws NoSuchTimeSignatureException, TimeSignatureAlreadyExistsException {
+        TimeSignature timeSignature = timeSignatureRepository.findById(timeSignatureId)
                 .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=%s does not exist", timeSignatureId)));
+
+        return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(configureTimeSignature(timeSignature, timeSignatureEditableDTO)));
     }
 
     @Override
@@ -64,5 +57,22 @@ public class TimeSignatureServiceImpl implements TimeSignatureService {
         }
 
         timeSignatureRepository.deleteById(timeSignatureId);
+    }
+
+    private TimeSignature configureTimeSignature(TimeSignature timeSignature, TimeSignatureEditableDTO timeSignatureEditableDTO) throws TimeSignatureAlreadyExistsException {
+        if (Objects.isNull(timeSignature.getId())) {
+            if (timeSignatureRepository.existsByBeatsAndDuration(timeSignatureEditableDTO.getBeats(), timeSignatureEditableDTO.getDuration())) {
+                throw new TimeSignatureAlreadyExistsException(String.format("Time signature with beats=%s and duration=%s already exists", timeSignatureEditableDTO.getBeats(), timeSignatureEditableDTO.getDuration()));
+            }
+        } else {
+            if ((!timeSignatureEditableDTO.getBeats().equals(timeSignature.getBeats()) || !timeSignatureEditableDTO.getDuration().equals(timeSignature.getDuration())) && timeSignatureRepository.existsByBeatsAndDuration(timeSignatureEditableDTO.getBeats(), timeSignatureEditableDTO.getDuration())) {
+                throw new TimeSignatureAlreadyExistsException(String.format("Time signature with beats=%s and duration=%s already exists", timeSignatureEditableDTO.getBeats(), timeSignatureEditableDTO.getDuration()));
+            }
+        }
+
+        timeSignature.setBeats(timeSignatureEditableDTO.getBeats());
+        timeSignature.setDuration(timeSignatureEditableDTO.getDuration());
+
+        return timeSignature;
     }
 }

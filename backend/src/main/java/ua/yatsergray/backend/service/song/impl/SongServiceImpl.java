@@ -8,10 +8,7 @@ import ua.yatsergray.backend.domain.entity.song.Artist;
 import ua.yatsergray.backend.domain.entity.song.Key;
 import ua.yatsergray.backend.domain.entity.song.Song;
 import ua.yatsergray.backend.domain.entity.song.TimeSignature;
-import ua.yatsergray.backend.exception.song.NoSuchArtistException;
-import ua.yatsergray.backend.exception.song.NoSuchKeyException;
-import ua.yatsergray.backend.exception.song.NoSuchSongException;
-import ua.yatsergray.backend.exception.song.NoSuchTimeSignatureException;
+import ua.yatsergray.backend.exception.song.*;
 import ua.yatsergray.backend.mapper.song.SongMapper;
 import ua.yatsergray.backend.repository.song.ArtistRepository;
 import ua.yatsergray.backend.repository.song.KeyRepository;
@@ -20,6 +17,7 @@ import ua.yatsergray.backend.repository.song.TimeSignatureRepository;
 import ua.yatsergray.backend.service.song.SongService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +39,7 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDTO addSong(SongEditableDTO songEditableDTO) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException {
+    public SongDTO addSong(SongEditableDTO songEditableDTO) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException {
         return songMapper.mapToSongDTO(songRepository.save(configureSong(new Song(), songEditableDTO)));
     }
 
@@ -56,7 +54,7 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDTO modifySongById(UUID songId, SongEditableDTO songEditableDTO) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException {
+    public SongDTO modifySongById(UUID songId, SongEditableDTO songEditableDTO) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException {
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=%s does not exist", songId)));
 
@@ -72,13 +70,23 @@ public class SongServiceImpl implements SongService {
         songRepository.deleteById(songId);
     }
 
-    private Song configureSong(Song song, SongEditableDTO songEditableDTO) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException {
+    private Song configureSong(Song song, SongEditableDTO songEditableDTO) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException {
         Key key = keyRepository.findById(songEditableDTO.getKeyUUID())
                 .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=%s does not exist", songEditableDTO.getKeyUUID())));
         Artist artist = artistRepository.findById(songEditableDTO.getArtistUUID())
                 .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=%s does not exist", songEditableDTO.getArtistUUID())));
         TimeSignature timeSignature = timeSignatureRepository.findById(songEditableDTO.getTimeSignatureUUID())
                 .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=%s does not exist", songEditableDTO.getTimeSignatureUUID())));
+
+        if (Objects.isNull(song.getId())) {
+            if (songRepository.existsByArtistIdAndName(songEditableDTO.getArtistUUID(), songEditableDTO.getName())) {
+                throw new SongAlreadyExistsException(String.format("Song with artistId=%s and name=%s already exists", songEditableDTO.getArtistUUID(), songEditableDTO.getName()));
+            }
+        } else {
+            if ((!songEditableDTO.getArtistUUID().equals(song.getArtist().getId()) || !songEditableDTO.getName().equals(song.getName())) && songRepository.existsByArtistIdAndName(songEditableDTO.getArtistUUID(), songEditableDTO.getName())) {
+                throw new SongAlreadyExistsException(String.format("Song with artistId=%s and name=%s already exists", songEditableDTO.getArtistUUID(), songEditableDTO.getName()));
+            }
+        }
 
         song.setMediaURL(songEditableDTO.getMediaURL());
         song.setName(songEditableDTO.getName());

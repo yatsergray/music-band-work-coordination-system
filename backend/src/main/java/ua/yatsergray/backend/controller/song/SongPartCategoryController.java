@@ -21,6 +21,7 @@ public class SongPartCategoryController {
         this.songPartCategoryService = songPartCategoryService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<SongPartCategoryDTO> createSongPartCategory(@RequestBody SongPartCategoryEditableDTO songPartCategoryEditableDTO) {
         return ResponseEntity.ok(songPartCategoryService.addSongPartCategory(songPartCategoryEditableDTO));

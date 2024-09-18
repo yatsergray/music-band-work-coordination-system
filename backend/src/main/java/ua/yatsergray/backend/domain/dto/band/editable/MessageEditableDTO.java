@@ -15,7 +15,6 @@ public class MessageEditableDTO {
     private String text;
     private LocalDate date;
     private LocalTime time;
-    private Boolean edited;
     private UUID chatUUID;
     private UUID userUUID;
 }

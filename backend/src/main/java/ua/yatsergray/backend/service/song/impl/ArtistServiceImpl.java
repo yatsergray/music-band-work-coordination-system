@@ -5,12 +5,14 @@ import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.ArtistDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.ArtistEditableDTO;
 import ua.yatsergray.backend.domain.entity.song.Artist;
+import ua.yatsergray.backend.exception.song.ArtistAlreadyExistsException;
 import ua.yatsergray.backend.exception.song.NoSuchArtistException;
 import ua.yatsergray.backend.mapper.song.ArtistMapper;
 import ua.yatsergray.backend.repository.song.ArtistRepository;
 import ua.yatsergray.backend.service.song.ArtistService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,12 +28,8 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public ArtistDTO addArtist(ArtistEditableDTO artistEditableDTO) {
-        Artist artist = Artist.builder()
-                .name(artistEditableDTO.getName())
-                .build();
-
-        return artistMapper.mapToArtistDTO(artistRepository.save(artist));
+    public ArtistDTO addArtist(ArtistEditableDTO artistEditableDTO) throws ArtistAlreadyExistsException {
+        return artistMapper.mapToArtistDTO(corfigureArtist(new Artist(), artistEditableDTO));
     }
 
     @Override
@@ -45,13 +43,11 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public ArtistDTO modifyArtistById(UUID artistId, ArtistEditableDTO artistEditableDTO) throws NoSuchArtistException {
+    public ArtistDTO modifyArtistById(UUID artistId, ArtistEditableDTO artistEditableDTO) throws NoSuchArtistException, ArtistAlreadyExistsException {
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=%s does not exist", artistId)));
 
-        artist.setName(artistEditableDTO.getName());
-
-        return artistMapper.mapToArtistDTO(artistRepository.save(artist));
+        return artistMapper.mapToArtistDTO(corfigureArtist(artist, artistEditableDTO));
     }
 
     @Override
@@ -61,5 +57,21 @@ public class ArtistServiceImpl implements ArtistService {
         }
 
         artistRepository.deleteById(artistId);
+    }
+
+    private Artist corfigureArtist(Artist artist, ArtistEditableDTO artistEditableDTO) throws ArtistAlreadyExistsException {
+        if (Objects.isNull(artist.getId())) {
+            if (artistRepository.existsByName(artistEditableDTO.getName())) {
+                throw new ArtistAlreadyExistsException(String.format("Artist with name=%s already exists", artistEditableDTO.getName()));
+            }
+        } else {
+            if (!artistEditableDTO.getName().equals(artist.getName()) && artistRepository.existsByName(artistEditableDTO.getName())) {
+                throw new ArtistAlreadyExistsException(String.format("Artist with name=%s already exists", artistEditableDTO.getName()));
+            }
+        }
+
+        artist.setName(artistEditableDTO.getName());
+
+        return artist;
     }
 }

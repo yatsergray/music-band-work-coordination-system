@@ -10,6 +10,7 @@ import ua.yatsergray.backend.domain.entity.song.SongInstrumentalPart;
 import ua.yatsergray.backend.exception.band.NoSuchStageRoleException;
 import ua.yatsergray.backend.exception.song.NoSuchSongException;
 import ua.yatsergray.backend.exception.song.NoSuchSongInstrumentalPartException;
+import ua.yatsergray.backend.exception.song.SongInstrumentalPartAlreadyExistsException;
 import ua.yatsergray.backend.mapper.song.SongInstrumentalPartMapper;
 import ua.yatsergray.backend.repository.band.StageRoleRepository;
 import ua.yatsergray.backend.repository.song.SongInstrumentalPartRepository;
@@ -17,6 +18,7 @@ import ua.yatsergray.backend.repository.song.SongRepository;
 import ua.yatsergray.backend.service.song.SongInstrumentalPartService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,7 +38,7 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
     }
 
     @Override
-    public SongInstrumentalPartDTO addSongInstrumentalPart(SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongException, NoSuchStageRoleException {
+    public SongInstrumentalPartDTO addSongInstrumentalPart(SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongException, NoSuchStageRoleException, SongInstrumentalPartAlreadyExistsException {
         return songInstrumentalPartMapper.mapToSongInstrumentalPartDTO(songInstrumentalPartRepository.save(configureSongInstrumentalPart(new SongInstrumentalPart(), songInstrumentalPartEditableDTO)));
     }
 
@@ -51,7 +53,7 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
     }
 
     @Override
-    public SongInstrumentalPartDTO modifySongInstrumentalPartById(UUID songInstrumentalPartId, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongInstrumentalPartException, NoSuchSongException, NoSuchStageRoleException {
+    public SongInstrumentalPartDTO modifySongInstrumentalPartById(UUID songInstrumentalPartId, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongInstrumentalPartException, NoSuchSongException, NoSuchStageRoleException, SongInstrumentalPartAlreadyExistsException {
         SongInstrumentalPart songInstrumentalPart = songInstrumentalPartRepository.findById(songInstrumentalPartId)
                 .orElseThrow(() -> new NoSuchSongInstrumentalPartException(String.format("Song instrumental part with id=%s does not exist", songInstrumentalPartId)));
 
@@ -67,11 +69,21 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
         songInstrumentalPartRepository.deleteById(songInstrumentalPartId);
     }
 
-    private SongInstrumentalPart configureSongInstrumentalPart(SongInstrumentalPart songInstrumentalPart, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongException, NoSuchStageRoleException {
+    private SongInstrumentalPart configureSongInstrumentalPart(SongInstrumentalPart songInstrumentalPart, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongException, NoSuchStageRoleException, SongInstrumentalPartAlreadyExistsException {
         Song song = songRepository.findById(songInstrumentalPartEditableDTO.getSongUUID())
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=%s does not exist", songInstrumentalPartEditableDTO.getSongUUID())));
         StageRole stageRole = stageRoleRepository.findById(songInstrumentalPartEditableDTO.getStageRoleUUID())
                 .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role with id=%s does not exist", songInstrumentalPartEditableDTO.getStageRoleUUID())));
+
+        if (Objects.isNull(songInstrumentalPart.getId())) {
+            if (songInstrumentalPartRepository.existsBySongIdAndStageRoleId(songInstrumentalPartEditableDTO.getSongUUID(), songInstrumentalPartEditableDTO.getStageRoleUUID())) {
+                throw new SongInstrumentalPartAlreadyExistsException(String.format("Song instrumental part with songId=%s and stageRoleId=%s already exists", songInstrumentalPartEditableDTO.getSongUUID(), songInstrumentalPartEditableDTO.getStageRoleUUID()));
+            }
+        } else {
+            if ((!songInstrumentalPartEditableDTO.getSongUUID().equals(songInstrumentalPart.getSong().getId()) || !songInstrumentalPartEditableDTO.getStageRoleUUID().equals(songInstrumentalPart.getStageRole().getId())) && songInstrumentalPartRepository.existsBySongIdAndStageRoleId(songInstrumentalPartEditableDTO.getSongUUID(), songInstrumentalPartEditableDTO.getStageRoleUUID())) {
+                throw new SongInstrumentalPartAlreadyExistsException(String.format("Song instrumental part with songId=%s and stageRoleId=%s already exists", songInstrumentalPartEditableDTO.getSongUUID(), songInstrumentalPartEditableDTO.getStageRoleUUID()));
+            }
+        }
 
         songInstrumentalPart.setSong(song);
         songInstrumentalPart.setStageRole(stageRole);

@@ -21,6 +21,7 @@ public class TimeSignatureController {
         this.timeSignatureService = timeSignatureService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<TimeSignatureDTO> createTimeSignature(@RequestBody TimeSignatureEditableDTO timeSignatureEditableDTO) {
         return ResponseEntity.ok(timeSignatureService.addTimeSignature(timeSignatureEditableDTO));

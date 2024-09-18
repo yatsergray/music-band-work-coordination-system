@@ -5,12 +5,14 @@ import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.KeyDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.KeyEditableDTO;
 import ua.yatsergray.backend.domain.entity.song.Key;
+import ua.yatsergray.backend.exception.song.KeyAlreadyExistsException;
 import ua.yatsergray.backend.exception.song.NoSuchKeyException;
 import ua.yatsergray.backend.mapper.song.KeyMapper;
 import ua.yatsergray.backend.repository.song.KeyRepository;
 import ua.yatsergray.backend.service.song.KeyService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,12 +28,8 @@ public class KeyServiceImpl implements KeyService {
     }
 
     @Override
-    public KeyDTO addKey(KeyEditableDTO keyEditableDTO) {
-        Key key = Key.builder()
-                .name(keyEditableDTO.getName())
-                .build();
-
-        return keyMapper.mapToKeyDTO(keyRepository.save(key));
+    public KeyDTO addKey(KeyEditableDTO keyEditableDTO) throws KeyAlreadyExistsException {
+        return keyMapper.mapToKeyDTO(configureKey(new Key(), keyEditableDTO));
     }
 
     @Override
@@ -45,14 +43,11 @@ public class KeyServiceImpl implements KeyService {
     }
 
     @Override
-    public KeyDTO modifyKeyById(UUID keyId, KeyEditableDTO keyEditableDTO) throws NoSuchKeyException {
-        return keyRepository.findById(keyId)
-                .map(key -> {
-                    key.setName(keyEditableDTO.getName());
-
-                    return keyMapper.mapToKeyDTO(keyRepository.save(key));
-                })
+    public KeyDTO modifyKeyById(UUID keyId, KeyEditableDTO keyEditableDTO) throws NoSuchKeyException, KeyAlreadyExistsException {
+        Key key = keyRepository.findById(keyId)
                 .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=%s does not exist", keyId)));
+
+        return keyMapper.mapToKeyDTO(configureKey(key, keyEditableDTO));
     }
 
     @Override
@@ -62,5 +57,21 @@ public class KeyServiceImpl implements KeyService {
         }
 
         keyRepository.deleteById(keyId);
+    }
+
+    private Key configureKey(Key key, KeyEditableDTO keyEditableDTO) throws KeyAlreadyExistsException {
+        if (Objects.isNull(key.getId())) {
+            if (keyRepository.existsByName(keyEditableDTO.getName())) {
+                throw new KeyAlreadyExistsException(String.format("Key with name=%s already exists", keyEditableDTO.getName()));
+            }
+        } else {
+            if (!keyEditableDTO.getName().equals(key.getName()) && keyRepository.existsByName(keyEditableDTO.getName())) {
+                throw new KeyAlreadyExistsException(String.format("Key with name=%s already exists", keyEditableDTO.getName()));
+            }
+        }
+
+        key.setName(keyEditableDTO.getName());
+
+        return key;
     }
 }

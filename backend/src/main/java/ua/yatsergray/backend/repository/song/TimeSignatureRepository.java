@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface TimeSignatureRepository extends JpaRepository<TimeSignature, UUID> {
+
+    boolean existsByBeatsAndDuration(Integer timeSignatureBeats, Integer timeSignatureDuration);
 }

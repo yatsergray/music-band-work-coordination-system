@@ -5,6 +5,7 @@ import ua.yatsergray.backend.domain.dto.song.editable.SongInstrumentalPartEditab
 import ua.yatsergray.backend.exception.band.NoSuchStageRoleException;
 import ua.yatsergray.backend.exception.song.NoSuchSongException;
 import ua.yatsergray.backend.exception.song.NoSuchSongInstrumentalPartException;
+import ua.yatsergray.backend.exception.song.SongInstrumentalPartAlreadyExistsException;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,13 +13,13 @@ import java.util.UUID;
 
 public interface SongInstrumentalPartService {
 
-    SongInstrumentalPartDTO addSongInstrumentalPart(SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongException, NoSuchStageRoleException;
+    SongInstrumentalPartDTO addSongInstrumentalPart(SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongException, NoSuchStageRoleException, SongInstrumentalPartAlreadyExistsException;
 
     Optional<SongInstrumentalPartDTO> getSongInstrumentalPartById(UUID songInstrumentalPartId);
 
     List<SongInstrumentalPartDTO> getAllSongInstrumentalParts();
 
-    SongInstrumentalPartDTO modifySongInstrumentalPartById(UUID songInstrumentalPartId, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongInstrumentalPartException, NoSuchSongException, NoSuchStageRoleException;
+    SongInstrumentalPartDTO modifySongInstrumentalPartById(UUID songInstrumentalPartId, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongInstrumentalPartException, NoSuchSongException, NoSuchStageRoleException, SongInstrumentalPartAlreadyExistsException;
 
     void removeSongInstrumentalPartById(UUID songInstrumentalPartId) throws NoSuchSongInstrumentalPartException;
 }

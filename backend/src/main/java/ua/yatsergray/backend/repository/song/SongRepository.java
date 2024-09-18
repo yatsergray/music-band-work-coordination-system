@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface SongRepository extends JpaRepository<Song, UUID> {
+
+    boolean existsByArtistIdAndName(UUID songArtistId, String songName);
 }

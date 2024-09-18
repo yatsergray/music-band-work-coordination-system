@@ -17,6 +17,7 @@ import ua.yatsergray.backend.repository.user.UserRepository;
 import ua.yatsergray.backend.service.band.MessageService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -73,10 +74,13 @@ public class MessageServiceImpl implements MessageService {
         User user = userRepository.findById(messageEditableDTO.getUserUUID())
                 .orElseThrow(() -> new NoSuchUserException(String.format("User with id=%s does not exist", messageEditableDTO.getUserUUID())));
 
+        if (!Objects.isNull(message.getId())) {
+            message.setEdited(!messageEditableDTO.getText().equals(message.getText()));
+        }
+
         message.setText(messageEditableDTO.getText());
         message.setDate(messageEditableDTO.getDate());
         message.setTime(messageEditableDTO.getTime());
-        message.setEdited(messageEditableDTO.getEdited());
         message.setChat(chat);
         message.setUser(user);
 
