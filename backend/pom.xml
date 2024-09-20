@@ -20,7 +20,6 @@
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
 		<org.lombok.version>1.18.30</org.lombok.version>
 		<com.amazonaws.version>1.12.375</com.amazonaws.version>
-		<jakarta.validation.version>3.0.0</jakarta.validation.version>
 	</properties>
 
 	<dependencies>
@@ -79,12 +78,6 @@
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
 			<version>${com.amazonaws.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>jakarta.validation</groupId>
-			<artifactId>jakarta.validation-api</artifactId>
-			<version>${jakarta.validation.version}</version>
 		</dependency>
 
 		<dependency>
