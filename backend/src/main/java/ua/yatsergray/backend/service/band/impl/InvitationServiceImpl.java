@@ -7,14 +7,14 @@ import ua.yatsergray.backend.domain.dto.band.editable.InvitationEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.Band;
 import ua.yatsergray.backend.domain.entity.band.Invitation;
 import ua.yatsergray.backend.domain.entity.band.ParticipationStatus;
-import ua.yatsergray.backend.exception.band.InvitationAlreadyExistsException;
-import ua.yatsergray.backend.exception.band.NoSuchBandException;
-import ua.yatsergray.backend.exception.band.NoSuchInvitationException;
-import ua.yatsergray.backend.exception.band.NoSuchParticipationStatusException;
+import ua.yatsergray.backend.domain.entity.user.User;
+import ua.yatsergray.backend.exception.band.*;
 import ua.yatsergray.backend.mapper.band.InvitationMapper;
 import ua.yatsergray.backend.repository.band.BandRepository;
+import ua.yatsergray.backend.repository.band.BandUserAccessRoleRepository;
 import ua.yatsergray.backend.repository.band.InvitationRepository;
 import ua.yatsergray.backend.repository.band.ParticipationStatusRepository;
+import ua.yatsergray.backend.repository.user.UserRepository;
 import ua.yatsergray.backend.service.band.InvitationService;
 
 import java.util.List;
@@ -28,17 +28,21 @@ public class InvitationServiceImpl implements InvitationService {
     private final InvitationRepository invitationRepository;
     private final BandRepository bandRepository;
     private final ParticipationStatusRepository participationStatusRepository;
+    private final UserRepository userRepository;
+    private final BandUserAccessRoleRepository bandUserAccessRoleRepository;
 
     @Autowired
-    public InvitationServiceImpl(InvitationMapper invitationMapper, InvitationRepository invitationRepository, BandRepository bandRepository, ParticipationStatusRepository participationStatusRepository) {
+    public InvitationServiceImpl(InvitationMapper invitationMapper, InvitationRepository invitationRepository, BandRepository bandRepository, ParticipationStatusRepository participationStatusRepository, UserRepository userRepository, BandUserAccessRoleRepository bandUserAccessRoleRepository) {
         this.invitationMapper = invitationMapper;
         this.invitationRepository = invitationRepository;
         this.bandRepository = bandRepository;
         this.participationStatusRepository = participationStatusRepository;
+        this.userRepository = userRepository;
+        this.bandUserAccessRoleRepository = bandUserAccessRoleRepository;
     }
 
     @Override
-    public InvitationDTO addInvitation(InvitationEditableDTO invitationEditableDTO) throws NoSuchBandException, NoSuchParticipationStatusException, InvitationAlreadyExistsException {
+    public InvitationDTO addInvitation(InvitationEditableDTO invitationEditableDTO) throws NoSuchBandException, NoSuchParticipationStatusException, InvitationAlreadyExistsException, InvitationConflictException {
         return invitationMapper.mapToInvitationDTO(invitationRepository.save(configureInvitation(new Invitation(), invitationEditableDTO)));
     }
 
@@ -53,7 +57,7 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public InvitationDTO modifyInvitationById(UUID invitationId, InvitationEditableDTO invitationEditableDTO) throws NoSuchInvitationException, NoSuchBandException, NoSuchParticipationStatusException, InvitationAlreadyExistsException {
+    public InvitationDTO modifyInvitationById(UUID invitationId, InvitationEditableDTO invitationEditableDTO) throws NoSuchInvitationException, NoSuchBandException, NoSuchParticipationStatusException, InvitationAlreadyExistsException, InvitationConflictException {
         Invitation invitation = invitationRepository.findById(invitationId)
                 .orElseThrow(() -> new NoSuchInvitationException(String.format("Invitation with id=%s does not exist", invitationId)));
 
@@ -69,19 +73,25 @@ public class InvitationServiceImpl implements InvitationService {
         invitationRepository.deleteById(invitationId);
     }
 
-    private Invitation configureInvitation(Invitation invitation, InvitationEditableDTO invitationEditableDTO) throws NoSuchBandException, NoSuchParticipationStatusException, InvitationAlreadyExistsException {
-        Band band = bandRepository.findById(invitationEditableDTO.getBandUUID())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=%s does not exist", invitationEditableDTO.getBandUUID())));
-        ParticipationStatus participationStatus = participationStatusRepository.findById(invitationEditableDTO.getParticipationStatusUUID())
-                .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status with id=%s does not exist", invitationEditableDTO.getParticipationStatusUUID())));
+    private Invitation configureInvitation(Invitation invitation, InvitationEditableDTO invitationEditableDTO) throws NoSuchBandException, NoSuchParticipationStatusException, InvitationAlreadyExistsException, InvitationConflictException {
+        Band band = bandRepository.findById(invitationEditableDTO.getBandId())
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=%s does not exist", invitationEditableDTO.getBandId())));
+        ParticipationStatus participationStatus = participationStatusRepository.findById(invitationEditableDTO.getParticipationStatusId())
+                .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status with id=%s does not exist", invitationEditableDTO.getParticipationStatusId())));
+
+        Optional<User> optionalUser = userRepository.findByEmail(invitationEditableDTO.getEmail());
+
+        if (optionalUser.isPresent() && bandUserAccessRoleRepository.existsByBandIdAndUserId(invitationEditableDTO.getBandId(), optionalUser.get().getId())) {
+            throw new InvitationConflictException(String.format("User with email=%s already belongs to the Band with id=%s", invitationEditableDTO.getEmail(), invitationEditableDTO.getBandId()));
+        }
 
         if (Objects.isNull(invitation.getId())) {
-            if (invitationRepository.existsByBandIdAndEmail(invitationEditableDTO.getBandUUID(), invitationEditableDTO.getEmail())) {
-                throw new InvitationAlreadyExistsException(String.format("Invitation with bandId=%s and email=%s already exists", invitationEditableDTO.getBandUUID(), invitationEditableDTO.getEmail()));
+            if (invitationRepository.existsByBandIdAndEmail(invitationEditableDTO.getBandId(), invitationEditableDTO.getEmail())) {
+                throw new InvitationAlreadyExistsException(String.format("Invitation with bandId=%s and email=%s already exists", invitationEditableDTO.getBandId(), invitationEditableDTO.getEmail()));
             }
         } else {
-            if ((!invitationEditableDTO.getBandUUID().equals(invitation.getBand().getId()) || !invitationEditableDTO.getEmail().equals(invitation.getEmail())) && invitationRepository.existsByBandIdAndEmail(invitationEditableDTO.getBandUUID(), invitationEditableDTO.getEmail())) {
-                throw new InvitationAlreadyExistsException(String.format("Invitation with bandId=%s and email=%s already exists", invitationEditableDTO.getBandUUID(), invitationEditableDTO.getEmail()));
+            if ((!invitationEditableDTO.getBandId().equals(invitation.getBand().getId()) || !invitationEditableDTO.getEmail().equals(invitation.getEmail())) && invitationRepository.existsByBandIdAndEmail(invitationEditableDTO.getBandId(), invitationEditableDTO.getEmail())) {
+                throw new InvitationAlreadyExistsException(String.format("Invitation with bandId=%s and email=%s already exists", invitationEditableDTO.getBandId(), invitationEditableDTO.getEmail()));
             }
         }
 

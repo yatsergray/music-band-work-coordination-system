@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.song;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class TimeSignatureController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<TimeSignatureDTO> createTimeSignature(@RequestBody TimeSignatureEditableDTO timeSignatureEditableDTO) {
+    public ResponseEntity<TimeSignatureDTO> createTimeSignature(@Valid @RequestBody TimeSignatureEditableDTO timeSignatureEditableDTO) {
         return ResponseEntity.ok(timeSignatureService.addTimeSignature(timeSignatureEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class TimeSignatureController {
 
     @SneakyThrows
     @PutMapping("/{timeSignatureId}")
-    public ResponseEntity<TimeSignatureDTO> updateTimeSignatureById(@PathVariable("timeSignatureId") UUID timeSignatureId, @RequestBody TimeSignatureEditableDTO timeSignatureEditableDTO) {
+    public ResponseEntity<TimeSignatureDTO> updateTimeSignatureById(@PathVariable("timeSignatureId") UUID timeSignatureId, @Valid @RequestBody TimeSignatureEditableDTO timeSignatureEditableDTO) {
         return ResponseEntity.ok(timeSignatureService.modifyTimeSignatureById(timeSignatureId, timeSignatureEditableDTO));
     }
 

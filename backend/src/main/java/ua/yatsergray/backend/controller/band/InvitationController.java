@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.band;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class InvitationController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<InvitationDTO> createInvitation(@RequestBody InvitationEditableDTO invitationEditableDTO) {
+    public ResponseEntity<InvitationDTO> createInvitation(@Valid @RequestBody InvitationEditableDTO invitationEditableDTO) {
         return ResponseEntity.ok(invitationService.addInvitation(invitationEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class InvitationController {
 
     @SneakyThrows
     @PutMapping("/{invitationId}")
-    public ResponseEntity<InvitationDTO> updateInvitationById(@PathVariable("invitationId") UUID invitationId, @RequestBody InvitationEditableDTO invitationEditableDTO) {
+    public ResponseEntity<InvitationDTO> updateInvitationById(@PathVariable("invitationId") UUID invitationId, @Valid @RequestBody InvitationEditableDTO invitationEditableDTO) {
         return ResponseEntity.ok(invitationService.modifyInvitationById(invitationId, invitationEditableDTO));
     }
 

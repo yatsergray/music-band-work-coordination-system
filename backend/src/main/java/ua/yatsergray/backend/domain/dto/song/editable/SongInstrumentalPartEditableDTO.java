@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.domain.dto.song.editable;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.UUID;
@@ -10,6 +11,10 @@ import java.util.UUID;
 @Setter
 @Builder
 public class SongInstrumentalPartEditableDTO {
-    private UUID songUUID;
-    private UUID stageRoleUUID;
+
+    @NotNull(message = "Song id is mandatory")
+    private UUID songId;
+
+    @NotNull(message = "Stage role id is mandatory")
+    private UUID stageRoleId;
 }

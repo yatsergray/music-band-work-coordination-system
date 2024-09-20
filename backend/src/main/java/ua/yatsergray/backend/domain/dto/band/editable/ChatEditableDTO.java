@@ -1,5 +1,7 @@
 package ua.yatsergray.backend.domain.dto.band.editable;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.UUID;
@@ -10,6 +12,10 @@ import java.util.UUID;
 @Setter
 @Builder
 public class ChatEditableDTO {
+
+    @NotBlank(message = "Name is mandatory")
     private String name;
-    private UUID bandUUID;
+
+    @NotNull(message = "Band id is mandatory")
+    private UUID bandId;
 }

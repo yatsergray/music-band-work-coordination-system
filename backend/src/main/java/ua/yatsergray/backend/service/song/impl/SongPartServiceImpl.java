@@ -68,10 +68,10 @@ public class SongPartServiceImpl implements SongPartService {
     }
 
     private SongPart configureSongPart(SongPart songPart, SongPartEditableDTO songPartEditableDTO) throws NoSuchSongException, NoSuchSongPartCategoryException {
-        Song song = songRepository.findById(songPartEditableDTO.getSongUUID())
-                .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=%s does not exist", songPartEditableDTO.getSongUUID())));
-        SongPartCategory songPartCategory = songPartCategoryRepository.findById(songPartEditableDTO.getSongPartCategoryUUID())
-                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category with id=%s does not exist", songPartEditableDTO.getSongPartCategoryUUID())));
+        Song song = songRepository.findById(songPartEditableDTO.getSongId())
+                .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=%s does not exist", songPartEditableDTO.getSongId())));
+        SongPartCategory songPartCategory = songPartCategoryRepository.findById(songPartEditableDTO.getSongPartCategoryId())
+                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category with id=%s does not exist", songPartEditableDTO.getSongPartCategoryId())));
 
         songPart.setText(songPartEditableDTO.getText());
         songPart.setTypeNumber(songPartEditableDTO.getTypeNumber());

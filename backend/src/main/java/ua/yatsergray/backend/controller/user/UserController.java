@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.user;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class UserController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserEditableDTO userEditableDTO) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserEditableDTO userEditableDTO) {
         return ResponseEntity.ok(userService.addUser(userEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class UserController {
 
     @SneakyThrows
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDTO> updateUserById(@PathVariable("userId") UUID userId, @RequestBody UserEditableDTO userEditableDTO) {
+    public ResponseEntity<UserDTO> updateUserById(@PathVariable("userId") UUID userId, @Valid @RequestBody UserEditableDTO userEditableDTO) {
         return ResponseEntity.ok(userService.modifyUserById(userId, userEditableDTO));
     }
 

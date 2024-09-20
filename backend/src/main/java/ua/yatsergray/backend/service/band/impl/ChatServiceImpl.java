@@ -65,16 +65,16 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private Chat configureChat(Chat chat, ChatEditableDTO chatEditableDTO) throws NoSuchBandException, ChatAlreadyExistsException {
-        Band band = bandRepository.findById(chatEditableDTO.getBandUUID())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=%s does not exist", chatEditableDTO.getBandUUID())));
+        Band band = bandRepository.findById(chatEditableDTO.getBandId())
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=%s does not exist", chatEditableDTO.getBandId())));
 
         if (Objects.isNull(chat.getId())) {
-            if (chatRepository.existsByBandIdAndName(chatEditableDTO.getBandUUID(), chatEditableDTO.getName())) {
-                throw new ChatAlreadyExistsException(String.format("Chat with bandId=%s and name=%s already exists", chatEditableDTO.getBandUUID(), chatEditableDTO.getName()));
+            if (chatRepository.existsByBandIdAndName(chatEditableDTO.getBandId(), chatEditableDTO.getName())) {
+                throw new ChatAlreadyExistsException(String.format("Chat with bandId=%s and name=%s already exists", chatEditableDTO.getBandId(), chatEditableDTO.getName()));
             }
         } else {
-            if ((!chatEditableDTO.getBandUUID().equals(chat.getBand().getId()) || !chatEditableDTO.getName().equals(chat.getName())) && chatRepository.existsByBandIdAndName(chatEditableDTO.getBandUUID(), chatEditableDTO.getName())) {
-                throw new ChatAlreadyExistsException(String.format("Chat with bandId=%s and name=%s already exists", chatEditableDTO.getBandUUID(), chatEditableDTO.getName()));
+            if ((!chatEditableDTO.getBandId().equals(chat.getBand().getId()) || !chatEditableDTO.getName().equals(chat.getName())) && chatRepository.existsByBandIdAndName(chatEditableDTO.getBandId(), chatEditableDTO.getName())) {
+                throw new ChatAlreadyExistsException(String.format("Chat with bandId=%s and name=%s already exists", chatEditableDTO.getBandId(), chatEditableDTO.getName()));
             }
         }
 

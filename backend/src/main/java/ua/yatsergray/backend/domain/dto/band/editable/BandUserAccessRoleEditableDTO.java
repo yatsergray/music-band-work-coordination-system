@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.domain.dto.band.editable;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.UUID;
@@ -10,7 +11,13 @@ import java.util.UUID;
 @Setter
 @Builder
 public class BandUserAccessRoleEditableDTO {
-    private UUID bandUUID;
-    private UUID userUUID;
-    private UUID bandAccessRoleUUID;
+
+    @NotNull(message = "Band id is mandatory")
+    private UUID bandId;
+
+    @NotNull(message = "User id is mandatory")
+    private UUID userId;
+
+    @NotNull(message = "Band access role id is mandatory")
+    private UUID bandAccessRoleId;
 }

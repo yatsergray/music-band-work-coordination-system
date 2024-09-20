@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.song;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class SongPartCategoryController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<SongPartCategoryDTO> createSongPartCategory(@RequestBody SongPartCategoryEditableDTO songPartCategoryEditableDTO) {
+    public ResponseEntity<SongPartCategoryDTO> createSongPartCategory(@Valid @RequestBody SongPartCategoryEditableDTO songPartCategoryEditableDTO) {
         return ResponseEntity.ok(songPartCategoryService.addSongPartCategory(songPartCategoryEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class SongPartCategoryController {
 
     @SneakyThrows
     @PutMapping("/{songPartCategoryId}")
-    public ResponseEntity<SongPartCategoryDTO> updateSongPartCategoryById(@PathVariable("songPartCategoryId") UUID songPartCategoryId, @RequestBody SongPartCategoryEditableDTO songPartCategoryEditableDTO) {
+    public ResponseEntity<SongPartCategoryDTO> updateSongPartCategoryById(@PathVariable("songPartCategoryId") UUID songPartCategoryId, @Valid @RequestBody SongPartCategoryEditableDTO songPartCategoryEditableDTO) {
         return ResponseEntity.ok(songPartCategoryService.modifySongPartCategoryById(songPartCategoryId, songPartCategoryEditableDTO));
     }
 

@@ -70,18 +70,18 @@ public class SongInstrumentalPartServiceImpl implements SongInstrumentalPartServ
     }
 
     private SongInstrumentalPart configureSongInstrumentalPart(SongInstrumentalPart songInstrumentalPart, SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) throws NoSuchSongException, NoSuchStageRoleException, SongInstrumentalPartAlreadyExistsException {
-        Song song = songRepository.findById(songInstrumentalPartEditableDTO.getSongUUID())
-                .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=%s does not exist", songInstrumentalPartEditableDTO.getSongUUID())));
-        StageRole stageRole = stageRoleRepository.findById(songInstrumentalPartEditableDTO.getStageRoleUUID())
-                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role with id=%s does not exist", songInstrumentalPartEditableDTO.getStageRoleUUID())));
+        Song song = songRepository.findById(songInstrumentalPartEditableDTO.getSongId())
+                .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=%s does not exist", songInstrumentalPartEditableDTO.getSongId())));
+        StageRole stageRole = stageRoleRepository.findById(songInstrumentalPartEditableDTO.getStageRoleId())
+                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role with id=%s does not exist", songInstrumentalPartEditableDTO.getStageRoleId())));
 
         if (Objects.isNull(songInstrumentalPart.getId())) {
-            if (songInstrumentalPartRepository.existsBySongIdAndStageRoleId(songInstrumentalPartEditableDTO.getSongUUID(), songInstrumentalPartEditableDTO.getStageRoleUUID())) {
-                throw new SongInstrumentalPartAlreadyExistsException(String.format("Song instrumental part with songId=%s and stageRoleId=%s already exists", songInstrumentalPartEditableDTO.getSongUUID(), songInstrumentalPartEditableDTO.getStageRoleUUID()));
+            if (songInstrumentalPartRepository.existsBySongIdAndStageRoleId(songInstrumentalPartEditableDTO.getSongId(), songInstrumentalPartEditableDTO.getStageRoleId())) {
+                throw new SongInstrumentalPartAlreadyExistsException(String.format("Song instrumental part with songId=%s and stageRoleId=%s already exists", songInstrumentalPartEditableDTO.getSongId(), songInstrumentalPartEditableDTO.getStageRoleId()));
             }
         } else {
-            if ((!songInstrumentalPartEditableDTO.getSongUUID().equals(songInstrumentalPart.getSong().getId()) || !songInstrumentalPartEditableDTO.getStageRoleUUID().equals(songInstrumentalPart.getStageRole().getId())) && songInstrumentalPartRepository.existsBySongIdAndStageRoleId(songInstrumentalPartEditableDTO.getSongUUID(), songInstrumentalPartEditableDTO.getStageRoleUUID())) {
-                throw new SongInstrumentalPartAlreadyExistsException(String.format("Song instrumental part with songId=%s and stageRoleId=%s already exists", songInstrumentalPartEditableDTO.getSongUUID(), songInstrumentalPartEditableDTO.getStageRoleUUID()));
+            if ((!songInstrumentalPartEditableDTO.getSongId().equals(songInstrumentalPart.getSong().getId()) || !songInstrumentalPartEditableDTO.getStageRoleId().equals(songInstrumentalPart.getStageRole().getId())) && songInstrumentalPartRepository.existsBySongIdAndStageRoleId(songInstrumentalPartEditableDTO.getSongId(), songInstrumentalPartEditableDTO.getStageRoleId())) {
+                throw new SongInstrumentalPartAlreadyExistsException(String.format("Song instrumental part with songId=%s and stageRoleId=%s already exists", songInstrumentalPartEditableDTO.getSongId(), songInstrumentalPartEditableDTO.getStageRoleId()));
             }
         }
 

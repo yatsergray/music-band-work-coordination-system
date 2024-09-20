@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.song;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class SongController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<SongDTO> createSong(@RequestBody SongEditableDTO songEditableDTO) {
+    public ResponseEntity<SongDTO> createSong(@Valid @RequestBody SongEditableDTO songEditableDTO) {
         return ResponseEntity.ok(songService.addSong(songEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class SongController {
 
     @SneakyThrows
     @PutMapping("/{songId}")
-    public ResponseEntity<SongDTO> updateSongById(@PathVariable("songId") UUID songId, @RequestBody SongEditableDTO songEditableDTO) {
+    public ResponseEntity<SongDTO> updateSongById(@PathVariable("songId") UUID songId, @Valid @RequestBody SongEditableDTO songEditableDTO) {
         return ResponseEntity.ok(songService.modifySongById(songId, songEditableDTO));
     }
 

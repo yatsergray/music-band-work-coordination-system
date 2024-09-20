@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.band;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class StageRoleController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<StageRoleDTO> createStageRole(@RequestBody StageRoleEditableDTO stageRoleEditableDTO) {
+    public ResponseEntity<StageRoleDTO> createStageRole(@Valid @RequestBody StageRoleEditableDTO stageRoleEditableDTO) {
         return ResponseEntity.ok(stageRoleService.addStageRole(stageRoleEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class StageRoleController {
 
     @SneakyThrows
     @PutMapping("/{stageRoleId}")
-    public ResponseEntity<StageRoleDTO> updateStageRoleById(@PathVariable("stageRoleId") UUID stageRoleId, @RequestBody StageRoleEditableDTO stageRoleEditableDTO) {
+    public ResponseEntity<StageRoleDTO> updateStageRoleById(@PathVariable("stageRoleId") UUID stageRoleId, @Valid @RequestBody StageRoleEditableDTO stageRoleEditableDTO) {
         return ResponseEntity.ok(stageRoleService.modifyStageRoleById(stageRoleId, stageRoleEditableDTO));
     }
 
