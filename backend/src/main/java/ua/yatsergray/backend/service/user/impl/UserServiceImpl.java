@@ -4,10 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.user.UserDTO;
 import ua.yatsergray.backend.domain.dto.user.editable.UserEditableDTO;
+import ua.yatsergray.backend.domain.dto.user.editable.UserRoleEditableDTO;
+import ua.yatsergray.backend.domain.entity.user.Role;
 import ua.yatsergray.backend.domain.entity.user.User;
+import ua.yatsergray.backend.exception.user.NoSuchRoleException;
 import ua.yatsergray.backend.exception.user.NoSuchUserException;
 import ua.yatsergray.backend.exception.user.UserAlreadyExistsException;
+import ua.yatsergray.backend.exception.user.UserRoleConflictException;
 import ua.yatsergray.backend.mapper.user.UserMapper;
+import ua.yatsergray.backend.repository.user.RoleRepository;
 import ua.yatsergray.backend.repository.user.UserRepository;
 import ua.yatsergray.backend.service.user.UserService;
 
@@ -20,11 +25,13 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, UserRepository userRepository) {
+    public UserServiceImpl(UserMapper userMapper, UserRepository userRepository, RoleRepository roleRepository) {
         this.userMapper = userMapper;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Override
@@ -57,6 +64,38 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserDTO addUserRole(UserRoleEditableDTO userRoleEditableDTO) throws NoSuchUserException, NoSuchRoleException, UserRoleConflictException {
+        User user = userRepository.findById(userRoleEditableDTO.getUserId())
+                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=%s does not exist", userRoleEditableDTO.getUserId())));
+        Role role = roleRepository.findById(userRoleEditableDTO.getRoleId())
+                .orElseThrow(() -> new NoSuchRoleException(String.format("Role with id=%s does not exist", userRoleEditableDTO.getRoleId())));
+
+        if (user.getRoles().contains(role)) {
+            throw new UserRoleConflictException(String.format("User with id=%s already has role with id=%s", userRoleEditableDTO.getUserId(), userRoleEditableDTO.getRoleId()));
+        }
+
+        user.getRoles().add(role);
+
+        return userMapper.mapToUserDTO(userRepository.save(user));
+    }
+
+    @Override
+    public UserDTO removeUserRole(UserRoleEditableDTO userRoleEditableDTO) throws NoSuchUserException, NoSuchRoleException, UserRoleConflictException {
+        User user = userRepository.findById(userRoleEditableDTO.getUserId())
+                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=%s does not exist", userRoleEditableDTO.getUserId())));
+        Role role = roleRepository.findById(userRoleEditableDTO.getRoleId())
+                .orElseThrow(() -> new NoSuchRoleException(String.format("Role with id=%s does not exist", userRoleEditableDTO.getRoleId())));
+
+        if (!user.getRoles().contains(role)) {
+            throw new UserRoleConflictException(String.format("User with id=%s does not have role with id=%s", userRoleEditableDTO.getUserId(), userRoleEditableDTO.getRoleId()));
+        }
+
+        user.getRoles().remove(role);
+
+        return userMapper.mapToUserDTO(userRepository.save(user));
     }
 
     private User configureUser(User user, UserEditableDTO userEditableDTO) throws UserAlreadyExistsException {

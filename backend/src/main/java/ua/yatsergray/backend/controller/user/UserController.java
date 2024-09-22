@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.user.UserDTO;
 import ua.yatsergray.backend.domain.dto.user.editable.UserEditableDTO;
+import ua.yatsergray.backend.domain.dto.user.editable.UserRoleEditableDTO;
 import ua.yatsergray.backend.service.user.impl.UserServiceImpl;
 
 import java.util.List;
@@ -52,5 +53,17 @@ public class UserController {
         userService.removeUserById(userId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @SneakyThrows
+    @PostMapping("/create-user-role")
+    public ResponseEntity<UserDTO> createUserRole(@Valid @RequestBody UserRoleEditableDTO userRoleEditableDTO) {
+        return ResponseEntity.ok(userService.addUserRole(userRoleEditableDTO));
+    }
+
+    @SneakyThrows
+    @DeleteMapping("/delete-user-role")
+    public ResponseEntity<UserDTO> deleteUserRole(@Valid @RequestBody UserRoleEditableDTO userRoleEditableDTO) {
+        return ResponseEntity.ok(userService.removeUserRole(userRoleEditableDTO));
     }
 }

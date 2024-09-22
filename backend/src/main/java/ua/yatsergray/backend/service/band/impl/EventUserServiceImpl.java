@@ -87,7 +87,7 @@ public class EventUserServiceImpl implements EventUserService {
                 .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=%s", eventUserEditableDTO.getParticipationStatusId())));
 
         if (!bandUserAccessRoleRepository.existsByBandIdAndUserId(event.getBand().getId(), eventUserEditableDTO.getUserId())) {
-            throw new EventUserConflictException(String.format("User with id=%s does not belong to the Band with id=%s", eventUserEditableDTO.getUserId(), eventUserEditableDTO.getEventId()));
+            throw new EventUserConflictException(String.format("User with id=%s does not belong to the Band with id=%s", eventUserEditableDTO.getUserId(), event.getBand().getId()));
         }
 
         if (!bandUserStageRoleRepository.existsByBandIdAndUserIdAndStageRoleId(event.getBand().getId(), eventUserEditableDTO.getUserId(), eventUserEditableDTO.getStageRoleId())) {

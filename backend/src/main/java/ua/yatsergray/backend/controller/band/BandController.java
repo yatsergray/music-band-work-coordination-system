@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.BandDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.BandEditableDTO;
+import ua.yatsergray.backend.domain.dto.band.editable.BandUserEditableDTO;
 import ua.yatsergray.backend.service.band.impl.BandServiceImpl;
 
 import java.util.List;
@@ -51,5 +52,17 @@ public class BandController {
         bandService.removeBandById(bandId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @SneakyThrows
+    @PostMapping("/create-band-user")
+    public ResponseEntity<BandDTO> createBandUser(@Valid @RequestBody BandUserEditableDTO bandUserEditableDTO) {
+        return ResponseEntity.ok(bandService.addBandUser(bandUserEditableDTO));
+    }
+
+    @SneakyThrows
+    @PostMapping("/delete-band-user")
+    public ResponseEntity<BandDTO> deleteBandUser(@Valid @RequestBody BandUserEditableDTO bandUserEditableDTO) {
+        return ResponseEntity.ok(bandService.removeBandUser(bandUserEditableDTO));
     }
 }

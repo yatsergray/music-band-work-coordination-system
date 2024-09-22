@@ -4,14 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.ChatDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.ChatEditableDTO;
+import ua.yatsergray.backend.domain.dto.band.editable.ChatUserEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.Band;
 import ua.yatsergray.backend.domain.entity.band.Chat;
+import ua.yatsergray.backend.domain.entity.user.User;
 import ua.yatsergray.backend.exception.band.ChatAlreadyExistsException;
+import ua.yatsergray.backend.exception.band.ChatUserConflictException;
 import ua.yatsergray.backend.exception.band.NoSuchBandException;
 import ua.yatsergray.backend.exception.band.NoSuchChatException;
+import ua.yatsergray.backend.exception.user.NoSuchUserException;
 import ua.yatsergray.backend.mapper.band.ChatMapper;
 import ua.yatsergray.backend.repository.band.BandRepository;
+import ua.yatsergray.backend.repository.band.BandUserAccessRoleRepository;
 import ua.yatsergray.backend.repository.band.ChatRepository;
+import ua.yatsergray.backend.repository.band.ChatUserAccessRoleRepository;
+import ua.yatsergray.backend.repository.user.UserRepository;
 import ua.yatsergray.backend.service.band.ChatService;
 
 import java.util.List;
@@ -24,12 +31,19 @@ public class ChatServiceImpl implements ChatService {
     private final ChatMapper chatMapper;
     private final ChatRepository chatRepository;
     private final BandRepository bandRepository;
+    private final UserRepository userRepository;
+    private final BandUserAccessRoleRepository bandUserAccessRoleRepository;
+    private final ChatUserAccessRoleRepository chatUserAccessRoleRepository;
 
     @Autowired
-    public ChatServiceImpl(ChatMapper chatMapper, ChatRepository chatRepository, BandRepository bandRepository) {
+    public ChatServiceImpl(ChatMapper chatMapper, ChatRepository chatRepository, BandRepository bandRepository,
+                           UserRepository userRepository, BandUserAccessRoleRepository bandUserAccessRoleRepository, ChatUserAccessRoleRepository chatUserAccessRoleRepository) {
         this.chatMapper = chatMapper;
         this.chatRepository = chatRepository;
         this.bandRepository = bandRepository;
+        this.userRepository = userRepository;
+        this.bandUserAccessRoleRepository = bandUserAccessRoleRepository;
+        this.chatUserAccessRoleRepository = chatUserAccessRoleRepository;
     }
 
     @Override
@@ -62,6 +76,46 @@ public class ChatServiceImpl implements ChatService {
         }
 
         chatRepository.deleteById(chatId);
+    }
+
+    @Override
+    public ChatDTO addChatUser(ChatUserEditableDTO chatUserEditableDTO) throws NoSuchChatException, NoSuchUserException, ChatUserConflictException {
+        Chat chat = chatRepository.findById(chatUserEditableDTO.getChatId())
+                .orElseThrow(() -> new NoSuchChatException(String.format("Chat with id=%s does not exist", chatUserEditableDTO.getChatId())));
+        User user = userRepository.findById(chatUserEditableDTO.getUserId())
+                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=%s does not exist", chatUserEditableDTO.getUserId())));
+
+        if (!bandUserAccessRoleRepository.existsByBandIdAndUserId(chat.getBand().getId(), chatUserEditableDTO.getUserId())) {
+            throw new ChatUserConflictException(String.format("User with id=%s does not belong to the Band with id%s", chatUserEditableDTO.getUserId(), chat.getBand().getId()));
+        }
+
+        if (chatUserAccessRoleRepository.existsByChatIdAndUserId(chatUserEditableDTO.getChatId(), chatUserEditableDTO.getUserId())) {
+            throw new ChatUserConflictException(String.format("User with id=%s already belongs to the Chat with id=%s", chatUserEditableDTO.getUserId(), chatUserEditableDTO.getChatId()));
+        }
+
+        chat.getUsers().add(user);
+
+        return chatMapper.mapToChatDTO(chatRepository.save(chat));
+    }
+
+    @Override
+    public ChatDTO removeChatUser(ChatUserEditableDTO chatUserEditableDTO) throws NoSuchChatException, NoSuchUserException, ChatUserConflictException {
+        Chat chat = chatRepository.findById(chatUserEditableDTO.getChatId())
+                .orElseThrow(() -> new NoSuchChatException(String.format("Chat with id=%s does not exist", chatUserEditableDTO.getChatId())));
+        User user = userRepository.findById(chatUserEditableDTO.getUserId())
+                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=%s does not exist", chatUserEditableDTO.getUserId())));
+
+        if (!bandUserAccessRoleRepository.existsByBandIdAndUserId(chat.getBand().getId(), chatUserEditableDTO.getUserId())) {
+            throw new ChatUserConflictException(String.format("User with id=%s does not belong to the Band with id%s", chatUserEditableDTO.getUserId(), chat.getBand().getId()));
+        }
+
+        if (!chatUserAccessRoleRepository.existsByChatIdAndUserId(chatUserEditableDTO.getChatId(), chatUserEditableDTO.getUserId())) {
+            throw new ChatUserConflictException(String.format("User with id=%s does not belong to the Chat with id=%s", chatUserEditableDTO.getUserId(), chatUserEditableDTO.getChatId()));
+        }
+
+        chat.getUsers().add(user);
+
+        return chatMapper.mapToChatDTO(chatRepository.save(chat));
     }
 
     private Chat configureChat(Chat chat, ChatEditableDTO chatEditableDTO) throws NoSuchBandException, ChatAlreadyExistsException {

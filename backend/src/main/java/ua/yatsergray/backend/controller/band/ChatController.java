@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.ChatDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.ChatEditableDTO;
+import ua.yatsergray.backend.domain.dto.band.editable.ChatUserEditableDTO;
 import ua.yatsergray.backend.service.band.impl.ChatServiceImpl;
 
 import java.util.List;
@@ -52,5 +53,17 @@ public class ChatController {
         chatService.removeChatById(chatId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @SneakyThrows
+    @PostMapping("/create-chat-user")
+    public ResponseEntity<ChatDTO> createChatUser(@Valid @RequestBody ChatUserEditableDTO chatUserEditableDTO) {
+        return ResponseEntity.ok(chatService.addChatUser(chatUserEditableDTO));
+    }
+
+    @SneakyThrows
+    @PostMapping("/delete-chat-user")
+    public ResponseEntity<ChatDTO> deleteChatUser(@Valid @RequestBody ChatUserEditableDTO chatUserEditableDTO) {
+        return ResponseEntity.ok(chatService.removeChatUser(chatUserEditableDTO));
     }
 }
