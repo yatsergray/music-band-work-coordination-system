@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.band;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class BandAccessRoleController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<BandAccessRoleDTO> createBandAccessRole(@RequestBody BandAccessRoleEditableDTO bandAccessRoleEditableDTO) {
+    public ResponseEntity<BandAccessRoleDTO> createBandAccessRole(@Valid @RequestBody BandAccessRoleEditableDTO bandAccessRoleEditableDTO) {
         return ResponseEntity.ok(bandAccessRoleService.addBandAccessRole(bandAccessRoleEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class BandAccessRoleController {
 
     @SneakyThrows
     @PutMapping("/{bandAccessRoleId}")
-    public ResponseEntity<BandAccessRoleDTO> updateBandAccessRoleById(@PathVariable("bandAccessRoleId") UUID bandAccessRoleId, @RequestBody BandAccessRoleEditableDTO bandAccessRoleEditableDTO) {
+    public ResponseEntity<BandAccessRoleDTO> updateBandAccessRoleById(@PathVariable("bandAccessRoleId") UUID bandAccessRoleId, @Valid @RequestBody BandAccessRoleEditableDTO bandAccessRoleEditableDTO) {
         return ResponseEntity.ok(bandAccessRoleService.modifyBandAccessRoleById(bandAccessRoleId, bandAccessRoleEditableDTO));
     }
 

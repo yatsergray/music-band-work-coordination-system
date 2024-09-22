@@ -1,11 +1,13 @@
 package ua.yatsergray.backend.controller.song;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.song.SongDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.SongEditableDTO;
+import ua.yatsergray.backend.domain.dto.song.editable.SongKeyEditableDTO;
 import ua.yatsergray.backend.service.song.impl.SongServiceImpl;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public class SongController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<SongDTO> createSong(@RequestBody SongEditableDTO songEditableDTO) {
+    public ResponseEntity<SongDTO> createSong(@Valid @RequestBody SongEditableDTO songEditableDTO) {
         return ResponseEntity.ok(songService.addSong(songEditableDTO));
     }
 
@@ -41,7 +43,7 @@ public class SongController {
 
     @SneakyThrows
     @PutMapping("/{songId}")
-    public ResponseEntity<SongDTO> updateSongById(@PathVariable("songId") UUID songId, @RequestBody SongEditableDTO songEditableDTO) {
+    public ResponseEntity<SongDTO> updateSongById(@PathVariable("songId") UUID songId, @Valid @RequestBody SongEditableDTO songEditableDTO) {
         return ResponseEntity.ok(songService.modifySongById(songId, songEditableDTO));
     }
 
@@ -51,5 +53,17 @@ public class SongController {
         songService.removeSongById(songId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @SneakyThrows
+    @PostMapping("/create-song-key")
+    public ResponseEntity<SongDTO> createSongKey(@Valid @RequestBody SongKeyEditableDTO songKeyEditableDTO) {
+        return ResponseEntity.ok(songService.addSongKey(songKeyEditableDTO));
+    }
+
+    @SneakyThrows
+    @PostMapping("/delete-song-key")
+    public ResponseEntity<SongDTO> deleteSongKey(@Valid @RequestBody SongKeyEditableDTO songKeyEditableDTO) {
+        return ResponseEntity.ok(songService.removeSongKey(songKeyEditableDTO));
     }
 }

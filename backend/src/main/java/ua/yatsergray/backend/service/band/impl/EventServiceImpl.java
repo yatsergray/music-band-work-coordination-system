@@ -70,11 +70,6 @@ public class EventServiceImpl implements EventService {
     }
 
     private Event configureEvent(Event event, EventEditableDTO eventEditableDTO) throws NoSuchBandException, NoSuchEventCategoryException, EventConflictException {
-        Band band = bandRepository.findById(eventEditableDTO.getBandUUID())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=%s does not exist", eventEditableDTO.getBandUUID())));
-        EventCategory eventCategory = eventCategoryRepository.findById(eventEditableDTO.getEventCategoryUUID())
-                .orElseThrow(() -> new NoSuchEventCategoryException(String.format("Event category does not exist with id=%s", eventEditableDTO.getEventCategoryUUID())));
-
         if (eventEditableDTO.getStartTime().equals(eventEditableDTO.getEndTime())) {
             throw new EventConflictException(String.format("Event startTime=%s and endTime=%s cannot be equal", eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime()));
         }
@@ -83,12 +78,17 @@ public class EventServiceImpl implements EventService {
             throw new EventConflictException(String.format("Event startTime=%s must be before endTime=%s", eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime()));
         }
 
+        Band band = bandRepository.findById(eventEditableDTO.getBandId())
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=%s does not exist", eventEditableDTO.getBandId())));
+        EventCategory eventCategory = eventCategoryRepository.findById(eventEditableDTO.getEventCategoryId())
+                .orElseThrow(() -> new NoSuchEventCategoryException(String.format("Event category does not exist with id=%s", eventEditableDTO.getEventCategoryId())));
+
         if (Objects.isNull(event.getId())) {
-            if (eventRepository.existsOverlappingEvent(eventEditableDTO.getBandUUID(), eventEditableDTO.getDate(), eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime())) {
+            if (eventRepository.existsOverlappingEvent(eventEditableDTO.getBandId(), eventEditableDTO.getDate(), eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime())) {
                 throw new EventConflictException(String.format("Event with startTime=%s and endTime=%s overlaps other event", eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime()));
             }
         } else {
-            if ((!eventEditableDTO.getBandUUID().equals(event.getBand().getId()) || !eventEditableDTO.getDate().equals(event.getDate()) || !eventEditableDTO.getStartTime().equals(event.getStartTime()) || !eventEditableDTO.getEndTime().equals(event.getEndTime())) && eventRepository.existsOverlappingEvent(eventEditableDTO.getBandUUID(), eventEditableDTO.getDate(), eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime())) {
+            if ((!eventEditableDTO.getBandId().equals(event.getBand().getId()) || !eventEditableDTO.getDate().equals(event.getDate()) || !eventEditableDTO.getStartTime().equals(event.getStartTime()) || !eventEditableDTO.getEndTime().equals(event.getEndTime())) && eventRepository.existsOverlappingEvent(eventEditableDTO.getBandId(), eventEditableDTO.getDate(), eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime())) {
                 throw new EventConflictException(String.format("Event with startTime=%s and endTime=%s overlaps other event", eventEditableDTO.getStartTime(), eventEditableDTO.getEndTime()));
             }
         }

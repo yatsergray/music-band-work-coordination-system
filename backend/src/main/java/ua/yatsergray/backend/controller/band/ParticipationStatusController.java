@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.band;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ParticipationStatusController {
     }
 
     @PostMapping
-    public ResponseEntity<ParticipationStatusDTO> createParticipationStatus(@RequestBody ParticipationStatusEditableDTO participationStatusEditableDTO) throws ParticipationStatusAlreadyExistsException {
+    public ResponseEntity<ParticipationStatusDTO> createParticipationStatus(@Valid @RequestBody ParticipationStatusEditableDTO participationStatusEditableDTO) throws ParticipationStatusAlreadyExistsException {
         return ResponseEntity.ok(participationStatusService.addParticipationStatus(participationStatusEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class ParticipationStatusController {
 
     @SneakyThrows
     @PutMapping("/{participationStatusId}")
-    public ResponseEntity<ParticipationStatusDTO> updateParticipationStatusById(@PathVariable("participationStatusId") UUID participationStatusId, @RequestBody ParticipationStatusEditableDTO participationStatusEditableDTO) {
+    public ResponseEntity<ParticipationStatusDTO> updateParticipationStatusById(@PathVariable("participationStatusId") UUID participationStatusId, @Valid @RequestBody ParticipationStatusEditableDTO participationStatusEditableDTO) {
         return ResponseEntity.ok(participationStatusService.modifyParticipationStatusById(participationStatusId, participationStatusEditableDTO));
     }
 

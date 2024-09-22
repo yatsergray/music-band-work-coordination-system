@@ -1,11 +1,13 @@
 package ua.yatsergray.backend.controller.user;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.user.UserDTO;
 import ua.yatsergray.backend.domain.dto.user.editable.UserEditableDTO;
+import ua.yatsergray.backend.domain.dto.user.editable.UserRoleEditableDTO;
 import ua.yatsergray.backend.service.user.impl.UserServiceImpl;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public class UserController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserEditableDTO userEditableDTO) {
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserEditableDTO userEditableDTO) {
         return ResponseEntity.ok(userService.addUser(userEditableDTO));
     }
 
@@ -41,7 +43,7 @@ public class UserController {
 
     @SneakyThrows
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDTO> updateUserById(@PathVariable("userId") UUID userId, @RequestBody UserEditableDTO userEditableDTO) {
+    public ResponseEntity<UserDTO> updateUserById(@PathVariable("userId") UUID userId, @Valid @RequestBody UserEditableDTO userEditableDTO) {
         return ResponseEntity.ok(userService.modifyUserById(userId, userEditableDTO));
     }
 
@@ -51,5 +53,17 @@ public class UserController {
         userService.removeUserById(userId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @SneakyThrows
+    @PostMapping("/create-user-role")
+    public ResponseEntity<UserDTO> createUserRole(@Valid @RequestBody UserRoleEditableDTO userRoleEditableDTO) {
+        return ResponseEntity.ok(userService.addUserRole(userRoleEditableDTO));
+    }
+
+    @SneakyThrows
+    @DeleteMapping("/delete-user-role")
+    public ResponseEntity<UserDTO> deleteUserRole(@Valid @RequestBody UserRoleEditableDTO userRoleEditableDTO) {
+        return ResponseEntity.ok(userService.removeUserRole(userRoleEditableDTO));
     }
 }

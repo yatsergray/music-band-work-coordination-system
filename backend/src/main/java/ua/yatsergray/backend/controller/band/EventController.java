@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.band;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class EventController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<EventDTO> createEvent(@RequestBody EventEditableDTO eventEditableDTO) {
+    public ResponseEntity<EventDTO> createEvent(@Valid @RequestBody EventEditableDTO eventEditableDTO) {
         return ResponseEntity.ok(eventService.addEvent(eventEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class EventController {
 
     @SneakyThrows
     @PutMapping("/{eventId}")
-    public ResponseEntity<EventDTO> updateEventById(@PathVariable("eventId") UUID eventId, @RequestBody EventEditableDTO eventEditableDTO) {
+    public ResponseEntity<EventDTO> updateEventById(@PathVariable("eventId") UUID eventId, @Valid @RequestBody EventEditableDTO eventEditableDTO) {
         return ResponseEntity.ok(eventService.modifyEventById(eventId, eventEditableDTO));
     }
 

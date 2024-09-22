@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface BandUserAccessRoleRepository extends JpaRepository<BandUserAccessRole, UUID> {
+
+    boolean existsByBandIdAndUserId(UUID bandId, UUID userId);
 }

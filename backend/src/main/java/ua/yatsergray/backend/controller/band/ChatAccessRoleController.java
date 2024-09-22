@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.band;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class ChatAccessRoleController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<ChatAccessRoleDTO> createChatAccessRole(@RequestBody ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) {
+    public ResponseEntity<ChatAccessRoleDTO> createChatAccessRole(@Valid @RequestBody ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) {
         return ResponseEntity.ok(chatAccessRoleService.addChatAccessRole(chatAccessRoleEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class ChatAccessRoleController {
 
     @SneakyThrows
     @PutMapping("/{chatAccessRoleId}")
-    public ResponseEntity<ChatAccessRoleDTO> updateChatAccessRoleById(@PathVariable("chatAccessRoleId") UUID chatAccessRoleId, @RequestBody ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) {
+    public ResponseEntity<ChatAccessRoleDTO> updateChatAccessRoleById(@PathVariable("chatAccessRoleId") UUID chatAccessRoleId, @Valid @RequestBody ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) {
         return ResponseEntity.ok(chatAccessRoleService.modifyChatAccessRoleById(chatAccessRoleId, chatAccessRoleEditableDTO));
     }
 

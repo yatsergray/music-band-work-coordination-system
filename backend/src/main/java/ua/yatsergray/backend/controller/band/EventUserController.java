@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.band;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class EventUserController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<EventUserDTO> createEventUser(@RequestBody EventUserEditableDTO eventUserEditableDTO) {
+    public ResponseEntity<EventUserDTO> createEventUser(@Valid @RequestBody EventUserEditableDTO eventUserEditableDTO) {
         return ResponseEntity.ok(eventUserService.addEventUser(eventUserEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class EventUserController {
 
     @SneakyThrows
     @PutMapping("/{eventUserId}")
-    public ResponseEntity<EventUserDTO> updateEventUserById(@PathVariable("eventUserId") UUID eventUserId, @RequestBody EventUserEditableDTO eventUserEditableDTO) {
+    public ResponseEntity<EventUserDTO> updateEventUserById(@PathVariable("eventUserId") UUID eventUserId, @Valid @RequestBody EventUserEditableDTO eventUserEditableDTO) {
         return ResponseEntity.ok(eventUserService.modifyEventUserById(eventUserId, eventUserEditableDTO));
     }
 

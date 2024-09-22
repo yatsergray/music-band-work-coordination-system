@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.user;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class RoleController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<RoleDTO> createRole(@RequestBody RoleEditableDTO roleEditableDTO) {
+    public ResponseEntity<RoleDTO> createRole(@Valid @RequestBody RoleEditableDTO roleEditableDTO) {
         return ResponseEntity.ok(roleService.addRole(roleEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class RoleController {
 
     @SneakyThrows
     @PutMapping("/{roleId}")
-    public ResponseEntity<RoleDTO> updateRoleById(@PathVariable("roleId") UUID roleId, @RequestBody RoleEditableDTO roleEditableDTO) {
+    public ResponseEntity<RoleDTO> updateRoleById(@PathVariable("roleId") UUID roleId, @Valid @RequestBody RoleEditableDTO roleEditableDTO) {
         return ResponseEntity.ok(roleService.modifyRoleById(roleId, roleEditableDTO));
     }
 

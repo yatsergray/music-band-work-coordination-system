@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface ChatUserAccessRoleRepository extends JpaRepository<ChatUserAccessRole, UUID> {
+
+    boolean  existsByChatIdAndUserId(UUID chatId, UUID userId);
 }

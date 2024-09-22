@@ -1,11 +1,13 @@
 package ua.yatsergray.backend.controller.band;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.BandDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.BandEditableDTO;
+import ua.yatsergray.backend.domain.dto.band.editable.BandUserEditableDTO;
 import ua.yatsergray.backend.service.band.impl.BandServiceImpl;
 
 import java.util.List;
@@ -22,7 +24,7 @@ public class BandController {
     }
 
     @PostMapping
-    public ResponseEntity<BandDTO> createBand(@RequestBody BandEditableDTO bandEditableDTO) {
+    public ResponseEntity<BandDTO> createBand(@Valid @RequestBody BandEditableDTO bandEditableDTO) {
         return ResponseEntity.ok(bandService.addBand(bandEditableDTO));
     }
 
@@ -40,7 +42,7 @@ public class BandController {
 
     @SneakyThrows
     @PutMapping("/{bandId}")
-    public ResponseEntity<BandDTO> updateBandById(@PathVariable("bandId") UUID bandId, @RequestBody BandEditableDTO bandEditableDTO) {
+    public ResponseEntity<BandDTO> updateBandById(@PathVariable("bandId") UUID bandId, @Valid @RequestBody BandEditableDTO bandEditableDTO) {
         return ResponseEntity.ok(bandService.modifyBandById(bandId, bandEditableDTO));
     }
 
@@ -50,5 +52,17 @@ public class BandController {
         bandService.removeBandById(bandId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @SneakyThrows
+    @PostMapping("/create-band-user")
+    public ResponseEntity<BandDTO> createBandUser(@Valid @RequestBody BandUserEditableDTO bandUserEditableDTO) {
+        return ResponseEntity.ok(bandService.addBandUser(bandUserEditableDTO));
+    }
+
+    @SneakyThrows
+    @PostMapping("/delete-band-user")
+    public ResponseEntity<BandDTO> deleteBandUser(@Valid @RequestBody BandUserEditableDTO bandUserEditableDTO) {
+        return ResponseEntity.ok(bandService.removeBandUser(bandUserEditableDTO));
     }
 }

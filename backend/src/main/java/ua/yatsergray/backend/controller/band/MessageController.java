@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.band;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class MessageController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<MessageDTO> createMessage(@RequestBody MessageEditableDTO messageEditableDTO) {
+    public ResponseEntity<MessageDTO> createMessage(@Valid @RequestBody MessageEditableDTO messageEditableDTO) {
         return ResponseEntity.ok(messageService.addMessage(messageEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class MessageController {
 
     @SneakyThrows
     @PutMapping("/{messageId}")
-    public ResponseEntity<MessageDTO> updateMessageById(@PathVariable("messageId") UUID messageId, @RequestBody MessageEditableDTO messageEditableDTO) {
+    public ResponseEntity<MessageDTO> updateMessageById(@PathVariable("messageId") UUID messageId, @Valid @RequestBody MessageEditableDTO messageEditableDTO) {
         return ResponseEntity.ok(messageService.modifyMessageById(messageId, messageEditableDTO));
     }
 

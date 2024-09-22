@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.domain.dto.song.editable;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @NoArgsConstructor
@@ -8,5 +9,7 @@ import lombok.*;
 @Setter
 @Builder
 public class ChordEditableDTO {
+
+    @NotBlank(message = "Name is mandatory")
     private String name;
 }

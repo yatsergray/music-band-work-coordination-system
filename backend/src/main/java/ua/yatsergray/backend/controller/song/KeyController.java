@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.controller.song;
 
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class KeyController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<KeyDTO> createKey(@RequestBody KeyEditableDTO keyEditableDTO) {
+    public ResponseEntity<KeyDTO> createKey(@Valid @RequestBody KeyEditableDTO keyEditableDTO) {
         return ResponseEntity.ok(keyService.addKey(keyEditableDTO));
     }
 
@@ -41,7 +42,7 @@ public class KeyController {
 
     @SneakyThrows
     @PutMapping("/{keyId}")
-    public ResponseEntity<KeyDTO> updateKeyById(@PathVariable("keyId") UUID keyId, @RequestBody KeyEditableDTO keyEditableDTO) {
+    public ResponseEntity<KeyDTO> updateKeyById(@PathVariable("keyId") UUID keyId, @Valid @RequestBody KeyEditableDTO keyEditableDTO) {
         return ResponseEntity.ok(keyService.modifyKeyById(keyId, keyEditableDTO));
     }
 
