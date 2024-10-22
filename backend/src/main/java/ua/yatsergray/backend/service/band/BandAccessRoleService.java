@@ -3,6 +3,7 @@ package ua.yatsergray.backend.service.band;
 import ua.yatsergray.backend.domain.dto.band.BandAccessRoleDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.BandAccessRoleEditableDTO;
 import ua.yatsergray.backend.exception.band.BandAccessRoleAlreadyExistsException;
+import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchBandAccessRoleException;
 
 import java.util.List;
@@ -19,5 +20,5 @@ public interface BandAccessRoleService {
 
     BandAccessRoleDTO modifyBandAccessRoleById(UUID bandAccessRoleId, BandAccessRoleEditableDTO bandAccessRoleEditableDTO) throws NoSuchBandAccessRoleException, BandAccessRoleAlreadyExistsException;
 
-    void removeBandAccessRoleById(UUID bandAccessRoleId) throws NoSuchBandAccessRoleException;
+    void removeBandAccessRoleById(UUID bandAccessRoleId) throws NoSuchBandAccessRoleException, ChildEntityExistsException;
 }

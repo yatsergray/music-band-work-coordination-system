@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/invitations")
+@RequestMapping("/api/v1/invitations")
 public class InvitationController {
     private final InvitationServiceImpl invitationService;
 

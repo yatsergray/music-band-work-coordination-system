@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/event-users")
+@RequestMapping("/api/v1/event-users")
 public class EventUserController {
     private final EventUserServiceImpl eventUserService;
 

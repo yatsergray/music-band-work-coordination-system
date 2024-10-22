@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.band;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.format.annotation.DateTimeFormat;
 import ua.yatsergray.backend.domain.entity.user.User;
 
@@ -41,19 +42,34 @@ public class Message {
     @JoinColumn(name = "id_chat", nullable = false)
     private Chat chat;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "id_user", nullable = false)
+//    private User user;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user", nullable = false)
+    @JoinColumn(
+            name = "id_user",
+            foreignKey = @ForeignKey(
+                    name = "fk_message_user",
+                    value = ConstraintMode.CONSTRAINT,
+                    foreignKeyDefinition = "FOREIGN KEY (id_user) REFERENCES users (id) ON DELETE SET NULL"
+            )
+    )
     private User user;
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Message message)) return false;
-        return Objects.equals(id, message.id) && Objects.equals(text, message.text) && Objects.equals(date, message.date) && Objects.equals(time, message.time) && Objects.equals(edited, message.edited) && Objects.equals(chat, message.chat) && Objects.equals(user, message.user);
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Message message = (Message) o;
+        return getId() != null && Objects.equals(getId(), message.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, text, date, time, edited, chat, user);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

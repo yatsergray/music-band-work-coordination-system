@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.band;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -44,21 +45,25 @@ public class Event {
     @JoinColumn(name = "id_event_category", nullable = false)
     private EventCategory eventCategory;
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE)
     private Set<EventUser> eventUsers = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "event")
+    @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE)
     private Set<EventBandSongVersion> eventBandSongVersions = new LinkedHashSet<>();
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Event event)) return false;
-        return Objects.equals(id, event.id) && Objects.equals(date, event.date) && Objects.equals(startTime, event.startTime) && Objects.equals(endTime, event.endTime) && Objects.equals(band, event.band) && Objects.equals(eventCategory, event.eventCategory) && Objects.equals(eventUsers, event.eventUsers) && Objects.equals(eventBandSongVersions, event.eventBandSongVersions);
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Event event = (Event) o;
+        return getId() != null && Objects.equals(getId(), event.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, date, startTime, endTime, band, eventCategory, eventUsers, eventBandSongVersions);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.song;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import ua.yatsergray.backend.domain.entity.band.StageRole;
 
 import java.util.Objects;
@@ -20,7 +21,7 @@ public class SongInstrumentalPart {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "audio_file_id", unique = true, nullable = false)
+    @Column(name = "audio_file_id", unique = true)
     private UUID audioFileId;
 
     @Column(name = "video_file_id", unique = true)
@@ -38,14 +39,18 @@ public class SongInstrumentalPart {
     private StageRole stageRole;
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SongInstrumentalPart that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(audioFileId, that.audioFileId) && Objects.equals(videoFileId, that.videoFileId) && Objects.equals(tabFileId, that.tabFileId) && Objects.equals(song, that.song) && Objects.equals(stageRole, that.stageRole);
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        SongInstrumentalPart that = (SongInstrumentalPart) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, audioFileId, videoFileId, tabFileId, song, stageRole);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

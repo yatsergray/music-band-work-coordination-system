@@ -2,6 +2,7 @@ package ua.yatsergray.backend.service.song;
 
 import ua.yatsergray.backend.domain.dto.song.TimeSignatureDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.TimeSignatureEditableDTO;
+import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.song.NoSuchTimeSignatureException;
 import ua.yatsergray.backend.exception.song.TimeSignatureAlreadyExistsException;
 
@@ -19,5 +20,5 @@ public interface TimeSignatureService {
 
     TimeSignatureDTO modifyTimeSignatureById(UUID timeSignatureId, TimeSignatureEditableDTO timeSignatureEditableDTO) throws NoSuchTimeSignatureException, TimeSignatureAlreadyExistsException;
 
-    void removeTimeSignatureById(UUID timeSignatureId) throws NoSuchTimeSignatureException;
+    void removeTimeSignatureById(UUID timeSignatureId) throws NoSuchTimeSignatureException, ChildEntityExistsException;
 }

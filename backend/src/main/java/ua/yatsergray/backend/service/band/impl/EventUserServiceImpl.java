@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.service.band.impl;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.EventUserDTO;
@@ -21,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+@Transactional
 @Service
 public class EventUserServiceImpl implements EventUserService {
     private final EventUserMapper eventUserMapper;
@@ -29,19 +31,19 @@ public class EventUserServiceImpl implements EventUserService {
     private final EventRepository eventRepository;
     private final StageRoleRepository stageRoleRepository;
     private final ParticipationStatusRepository participationStatusRepository;
-    private final BandUserAccessRoleRepository bandUserAccessRoleRepository;
     private final BandUserStageRoleRepository bandUserStageRoleRepository;
+    private final BandUserAccessRoleRepository bandUserAccessRoleRepository;
 
     @Autowired
-    public EventUserServiceImpl(EventUserMapper eventUserMapper, EventUserRepository eventUserRepository, UserRepository userRepository, EventRepository eventRepository, StageRoleRepository stageRoleRepository, ParticipationStatusRepository participationStatusRepository, BandUserAccessRoleRepository bandUserAccessRoleRepository, BandUserStageRoleRepository bandUserStageRoleRepository) {
+    public EventUserServiceImpl(EventUserMapper eventUserMapper, EventUserRepository eventUserRepository, UserRepository userRepository, EventRepository eventRepository, StageRoleRepository stageRoleRepository, ParticipationStatusRepository participationStatusRepository, BandUserStageRoleRepository bandUserStageRoleRepository, BandUserAccessRoleRepository bandUserAccessRoleRepository) {
         this.eventUserMapper = eventUserMapper;
         this.eventUserRepository = eventUserRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.stageRoleRepository = stageRoleRepository;
         this.participationStatusRepository = participationStatusRepository;
-        this.bandUserAccessRoleRepository = bandUserAccessRoleRepository;
         this.bandUserStageRoleRepository = bandUserStageRoleRepository;
+        this.bandUserAccessRoleRepository = bandUserAccessRoleRepository;
     }
 
     @Override
@@ -62,7 +64,7 @@ public class EventUserServiceImpl implements EventUserService {
     @Override
     public EventUserDTO modifyEventUserById(UUID eventUserId, EventUserEditableDTO eventUserEditableDTO) throws NoSuchEventUserException, NoSuchUserException, NoSuchEventException, NoSuchStageRoleException, NoSuchParticipationStatusException, EventUserAlreadyExistsException, EventUserConflictException {
         EventUser eventUser = eventUserRepository.findById(eventUserId)
-                .orElseThrow(() -> new NoSuchEventUserException(String.format("Event user with id=%s does not exist", eventUserId)));
+                .orElseThrow(() -> new NoSuchEventUserException(String.format("Event user with id=\"%s\" does not exist", eventUserId)));
 
         return eventUserMapper.mapToEventUserDTO(eventUserRepository.save(configureEventUser(eventUser, eventUserEditableDTO)));
     }
@@ -70,37 +72,37 @@ public class EventUserServiceImpl implements EventUserService {
     @Override
     public void removeEventUserById(UUID eventUserId) throws NoSuchEventUserException {
         if (!eventUserRepository.existsById(eventUserId)) {
-            throw new NoSuchEventUserException(String.format("Event user with id=%s does not exist", eventUserId));
+            throw new NoSuchEventUserException(String.format("Event user with id=\"%s\" does not exist", eventUserId));
         }
 
         eventUserRepository.deleteById(eventUserId);
     }
 
     private EventUser configureEventUser(EventUser eventUser, EventUserEditableDTO eventUserEditableDTO) throws NoSuchUserException, NoSuchEventException, NoSuchStageRoleException, NoSuchParticipationStatusException, EventUserAlreadyExistsException, EventUserConflictException {
-        User user = userRepository.findById(eventUserEditableDTO.getEventId())
-                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=%s does not exist", eventUserEditableDTO.getEventId())));
+        User user = userRepository.findById(eventUserEditableDTO.getUserId())
+                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=\"%s\" does not exist", eventUserEditableDTO.getUserId())));
         Event event = eventRepository.findById(eventUserEditableDTO.getEventId())
-                .orElseThrow(() -> new NoSuchEventException(String.format("Event with id=%s does not exist", eventUserEditableDTO.getEventId())));
+                .orElseThrow(() -> new NoSuchEventException(String.format("Event with id=\"%s\" does not exist", eventUserEditableDTO.getEventId())));
         StageRole stageRole = stageRoleRepository.findById(eventUserEditableDTO.getStageRoleId())
-                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role with id=%s does not exist", eventUserEditableDTO.getStageRoleId())));
+                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role with id=\"%s\" does not exist", eventUserEditableDTO.getStageRoleId())));
         ParticipationStatus participationStatus = participationStatusRepository.findById(eventUserEditableDTO.getParticipationStatusId())
-                .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=%s", eventUserEditableDTO.getParticipationStatusId())));
+                .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status does not exist with id=\"%s\"", eventUserEditableDTO.getParticipationStatusId())));
 
         if (!bandUserAccessRoleRepository.existsByBandIdAndUserId(event.getBand().getId(), eventUserEditableDTO.getUserId())) {
-            throw new EventUserConflictException(String.format("User with id=%s does not belong to the Band with id=%s", eventUserEditableDTO.getUserId(), event.getBand().getId()));
+            throw new EventUserConflictException(String.format("User with id=\"%s\" does not belong to the Band with id=\"%s\"", eventUserEditableDTO.getUserId(), event.getBand().getId()));
         }
 
         if (!bandUserStageRoleRepository.existsByBandIdAndUserIdAndStageRoleId(event.getBand().getId(), eventUserEditableDTO.getUserId(), eventUserEditableDTO.getStageRoleId())) {
-            throw new EventUserConflictException(String.format("User with id=%s does not have the Stage role with id=%s in the Band with id=%s", eventUserEditableDTO.getUserId(), eventUserEditableDTO.getStageRoleId(), event.getBand().getId()));
+            throw new EventUserConflictException(String.format("User with id=\"%s\" does not have the Stage role with id=\"%s\" in the Band with id=\"%s\"", eventUserEditableDTO.getUserId(), eventUserEditableDTO.getStageRoleId(), event.getBand().getId()));
         }
 
         if (Objects.isNull(eventUser.getId())) {
             if (eventUserRepository.existsByEventIdAndUserIdAndStageRoleId(eventUserEditableDTO.getEventId(), eventUserEditableDTO.getUserId(), eventUserEditableDTO.getStageRoleId())) {
-                throw new EventUserAlreadyExistsException(String.format("EventUser with userId=%s, eventId=%s and stageRole=%s already exists", eventUserEditableDTO.getUserId(), eventUserEditableDTO.getStageRoleId(), eventUserEditableDTO.getEventId()));
+                throw new EventUserAlreadyExistsException(String.format("Event user with userId=\"%s\", eventId=\"%s\" and stageRole=\"%s\" already exists", eventUserEditableDTO.getUserId(), eventUserEditableDTO.getStageRoleId(), eventUserEditableDTO.getEventId()));
             }
         } else {
             if ((!eventUserEditableDTO.getEventId().equals(eventUser.getEvent().getId()) || !eventUserEditableDTO.getUserId().equals(eventUser.getUser().getId()) || !eventUserEditableDTO.getStageRoleId().equals(eventUser.getStageRole().getId())) && eventUserRepository.existsByEventIdAndUserIdAndStageRoleId(eventUserEditableDTO.getEventId(), eventUserEditableDTO.getUserId(), eventUserEditableDTO.getStageRoleId())) {
-                throw new EventUserAlreadyExistsException(String.format("EventUser with eventId=%s, userId=%s and stageRole=%s already exists", eventUserEditableDTO.getStageRoleId(), eventUserEditableDTO.getUserId(), eventUserEditableDTO.getEventId()));
+                throw new EventUserAlreadyExistsException(String.format("Event user with eventId=\"%s\", userId=\"%s\" and stageRole=\"%s\" already exists", eventUserEditableDTO.getStageRoleId(), eventUserEditableDTO.getUserId(), eventUserEditableDTO.getEventId()));
             }
         }
 

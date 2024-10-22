@@ -2,6 +2,7 @@ package ua.yatsergray.backend.service.song;
 
 import ua.yatsergray.backend.domain.dto.song.KeyDTO;
 import ua.yatsergray.backend.domain.dto.song.editable.KeyEditableDTO;
+import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.song.KeyAlreadyExistsException;
 import ua.yatsergray.backend.exception.song.NoSuchKeyException;
 
@@ -19,5 +20,5 @@ public interface KeyService {
 
     KeyDTO modifyKeyById(UUID keyId, KeyEditableDTO keyEditableDTO) throws NoSuchKeyException, KeyAlreadyExistsException;
 
-    void removeKeyById(UUID keyId) throws NoSuchKeyException;
+    void removeKeyById(UUID keyId) throws NoSuchKeyException, ChildEntityExistsException;
 }

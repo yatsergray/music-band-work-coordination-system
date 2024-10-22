@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.band;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import ua.yatsergray.backend.domain.entity.song.Key;
 import ua.yatsergray.backend.domain.entity.song.Song;
 import ua.yatsergray.backend.domain.entity.song.SongPartDetails;
@@ -24,7 +25,7 @@ public class BandSongVersion {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "audio_file_id", unique = true, nullable = false)
+    @Column(name = "audio_file_id", unique = true)
     private UUID audioFileId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,25 +36,40 @@ public class BandSongVersion {
     @JoinColumn(name = "id_band", nullable = false)
     private Band band;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "id_song", nullable = false)
+//    private Song song;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_song", nullable = false)
+    @JoinColumn(
+            name = "id_song",
+            foreignKey = @ForeignKey(
+                    name = "fk_band_song_version_song",
+                    value = ConstraintMode.CONSTRAINT,
+                    foreignKeyDefinition = "FOREIGN KEY (id_song) REFERENCES songs (id) ON DELETE SET NULL"
+            )
+    )
     private Song song;
 
-    @OneToMany(mappedBy = "bandSongVersion")
+    @OneToMany(mappedBy = "bandSongVersion", cascade = CascadeType.REMOVE)
     private Set<SongPartDetails> songPartDetailsSet = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "bandSongVersion")
     private Set<EventBandSongVersion> eventBandSongVersions = new LinkedHashSet<>();
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BandSongVersion that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(audioFileId, that.audioFileId) && Objects.equals(key, that.key) && Objects.equals(band, that.band) && Objects.equals(song, that.song) && Objects.equals(songPartDetailsSet, that.songPartDetailsSet) && Objects.equals(eventBandSongVersions, that.eventBandSongVersions);
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        BandSongVersion that = (BandSongVersion) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, audioFileId, key, band, song, songPartDetailsSet, eventBandSongVersions);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

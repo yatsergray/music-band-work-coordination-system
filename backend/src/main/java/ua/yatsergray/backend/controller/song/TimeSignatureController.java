@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/time-signatures")
+@RequestMapping("/api/v1/time-signatures")
 public class TimeSignatureController {
     private final TimeSignatureServiceImpl timeSignatureService;
 

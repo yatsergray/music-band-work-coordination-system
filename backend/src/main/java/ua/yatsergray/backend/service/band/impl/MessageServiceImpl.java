@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.service.band.impl;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.MessageDTO;
@@ -23,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+@Transactional
 @Service
 public class MessageServiceImpl implements MessageService {
     private final MessageMapper messageMapper;
@@ -58,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public MessageDTO modifyMessageById(UUID messageId, MessageEditableDTO messageEditableDTO) throws NoSuchMessageException, NoSuchChatException, NoSuchUserException, MessageConflictException {
         Message message = messageRepository.findById(messageId)
-                .orElseThrow(() -> new NoSuchMessageException(String.format("Message with id=%s does not exist", messageId)));
+                .orElseThrow(() -> new NoSuchMessageException(String.format("Message with id=\"%s\" does not exist", messageId)));
 
         return messageMapper.mapToMessageDTO(messageRepository.save(configureMessage(message, messageEditableDTO)));
     }
@@ -66,7 +68,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void removeMessageById(UUID messageId) throws NoSuchMessageException {
         if (!messageRepository.existsById(messageId)) {
-            throw new NoSuchMessageException(String.format("Message with id=%s does not exist", messageId));
+            throw new NoSuchMessageException(String.format("Message with id=\"%s\" does not exist", messageId));
         }
 
         messageRepository.deleteById(messageId);
@@ -74,16 +76,18 @@ public class MessageServiceImpl implements MessageService {
 
     private Message configureMessage(Message message, MessageEditableDTO messageEditableDTO) throws NoSuchChatException, NoSuchUserException, MessageConflictException {
         Chat chat = chatRepository.findById(messageEditableDTO.getChatId())
-                .orElseThrow(() -> new NoSuchChatException(String.format("Chat with id=%s does not exist", messageEditableDTO.getChatId())));
+                .orElseThrow(() -> new NoSuchChatException(String.format("Chat with id=\"%s\" does not exist", messageEditableDTO.getChatId())));
         User user = userRepository.findById(messageEditableDTO.getUserId())
-                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=%s does not exist", messageEditableDTO.getUserId())));
+                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=\"%s\" does not exist", messageEditableDTO.getUserId())));
 
-        if (chatUserAccessRoleRepository.existsByChatIdAndUserId(messageEditableDTO.getChatId(), messageEditableDTO.getUserId())) {
-            throw new MessageConflictException(String.format("User with id=%s is not a member of Chat with id=%s", messageEditableDTO.getUserId(), messageEditableDTO.getChatId()));
+        if (!chatUserAccessRoleRepository.existsByChatIdAndUserId(chat.getId(), user.getId())) {
+            throw new MessageConflictException(String.format("User with id=\"%s\" does not belong to the Chat with id=\"%s\"", messageEditableDTO.getUserId(), messageEditableDTO.getChatId()));
         }
 
         if (!Objects.isNull(message.getId())) {
             message.setEdited(!messageEditableDTO.getText().equals(message.getText()));
+        } else {
+            message.setEdited(false);
         }
 
         message.setText(messageEditableDTO.getText());

@@ -12,9 +12,6 @@ import java.util.UUID;
 @Builder
 public class ChatUserAccessRoleEditableDTO {
 
-    @NotNull(message = "Chat id is mandatory")
-    private UUID chatId;
-
     @NotNull(message = "User id is mandatory")
     private UUID userId;
 

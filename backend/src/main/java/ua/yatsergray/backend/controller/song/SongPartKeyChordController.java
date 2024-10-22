@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/song-part-key-chords")
+@RequestMapping("/api/v1/song-part-key-chords")
 public class SongPartKeyChordController {
     private final SongPartKeyChordServiceImpl songPartKeyChordService;
 

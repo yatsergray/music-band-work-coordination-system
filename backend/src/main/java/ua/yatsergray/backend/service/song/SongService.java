@@ -21,7 +21,7 @@ public interface SongService {
 
     void removeSongById(UUID songId) throws NoSuchSongException;
 
-    SongDTO addSongKey(SongKeyEditableDTO songKeyEditableDTO) throws NoSuchSongException, NoSuchKeyException, SongKeyConflictException;
+    SongDTO addSongKey(UUID songId, SongKeyEditableDTO songKeyEditableDTO) throws NoSuchSongException, NoSuchKeyException, SongKeyConflictException;
 
-    SongDTO removeSongKey(SongKeyEditableDTO songKeyEditableDTO) throws NoSuchSongException, NoSuchKeyException, SongKeyConflictException;
+    void removeSongKey(UUID songId, UUID keyId) throws NoSuchSongException, NoSuchKeyException, SongKeyConflictException;
 }

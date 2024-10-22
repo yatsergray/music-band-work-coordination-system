@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface InvitationRepository extends JpaRepository<Invitation, UUID> {
 
     boolean existsByBandIdAndEmail(UUID invitationBandId, String invitationEmail);
+
+    long countByParticipationStatusId(UUID participationStatusId);
 }

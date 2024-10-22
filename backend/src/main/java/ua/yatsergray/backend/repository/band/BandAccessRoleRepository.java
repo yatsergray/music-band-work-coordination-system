@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ua.yatsergray.backend.domain.entity.band.BandAccessRole;
 import ua.yatsergray.backend.domain.type.band.BandAccessRoleType;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -13,4 +14,6 @@ public interface BandAccessRoleRepository extends JpaRepository<BandAccessRole, 
     boolean existsByName(String bandAccessRoleName);
 
     boolean existsByType(BandAccessRoleType bandAccessRoleType);
+
+    Optional<BandAccessRole> findByType(BandAccessRoleType bandAccessRoleType);
 }

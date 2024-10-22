@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface SongInstrumentalPartRepository extends JpaRepository<SongInstrumentalPart, UUID> {
 
     boolean existsBySongIdAndStageRoleId(UUID songId, UUID stageRoleId);
+
+    long countByStageRoleId(UUID stageRoleId);
 }

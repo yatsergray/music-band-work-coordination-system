@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ua.yatsergray.backend.domain.entity.band.ChatAccessRole;
 import ua.yatsergray.backend.domain.type.band.ChatAccessRoleType;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -13,4 +14,6 @@ public interface ChatAccessRoleRepository extends JpaRepository<ChatAccessRole, 
     boolean existsByName(String chatAccessRoleName);
 
     boolean existsByType(ChatAccessRoleType chatAccessRoleType);
+
+    Optional<ChatAccessRole> findByType(ChatAccessRoleType chatAccessRoleType);
 }

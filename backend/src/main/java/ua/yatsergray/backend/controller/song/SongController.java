@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/songs")
+@RequestMapping("/api/v1/songs")
 public class SongController {
     private final SongServiceImpl songService;
 
@@ -56,14 +56,16 @@ public class SongController {
     }
 
     @SneakyThrows
-    @PostMapping("/create-song-key")
-    public ResponseEntity<SongDTO> createSongKey(@Valid @RequestBody SongKeyEditableDTO songKeyEditableDTO) {
-        return ResponseEntity.ok(songService.addSongKey(songKeyEditableDTO));
+    @PostMapping("/{songId}/keys")
+    public ResponseEntity<SongDTO> createSongKey(@PathVariable("songId") UUID songId, @Valid @RequestBody SongKeyEditableDTO songKeyEditableDTO) {
+        return ResponseEntity.ok(songService.addSongKey(songId, songKeyEditableDTO));
     }
 
     @SneakyThrows
-    @PostMapping("/delete-song-key")
-    public ResponseEntity<SongDTO> deleteSongKey(@Valid @RequestBody SongKeyEditableDTO songKeyEditableDTO) {
-        return ResponseEntity.ok(songService.removeSongKey(songKeyEditableDTO));
+    @DeleteMapping("/{songId}/keys/{keyId}")
+    public ResponseEntity<Void> deleteSongKey(@PathVariable("songId") UUID songId, @PathVariable("keyId") UUID keyId) {
+        songService.removeSongKey(songId, keyId);
+
+        return ResponseEntity.ok().build();
     }
 }

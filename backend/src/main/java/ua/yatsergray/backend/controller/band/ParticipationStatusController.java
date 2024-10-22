@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/participation-statuses")
+@RequestMapping("/api/v1/participation-statuses")
 public class ParticipationStatusController {
     private final ParticipationStatusServiceImpl participationStatusService;
 

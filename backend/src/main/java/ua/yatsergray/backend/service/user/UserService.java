@@ -14,9 +14,9 @@ import java.util.UUID;
 
 public interface UserService {
 
-    UserDTO addUser(UserEditableDTO userEditableDTO) throws UserAlreadyExistsException;
+    UserDTO addUser(UserEditableDTO userEditableDTO) throws UserAlreadyExistsException, NoSuchRoleException;
 
-    Optional<UserDTO> getUserById(UUID userId);
+    Optional<UserDTO> getUserById(UUID userId) throws NoSuchUserException;
 
     List<UserDTO> getAllUsers();
 
@@ -24,7 +24,7 @@ public interface UserService {
 
     void removeUserById(UUID userId) throws NoSuchUserException;
 
-    UserDTO addUserRole(UserRoleEditableDTO userRoleEditableDTO) throws NoSuchUserException, NoSuchRoleException, UserRoleConflictException;
+    UserDTO addUserRole(UUID userId, UserRoleEditableDTO userRoleEditableDTO) throws NoSuchUserException, NoSuchRoleException, UserRoleConflictException;
 
-    UserDTO removeUserRole(UserRoleEditableDTO userRoleEditableDTO) throws NoSuchUserException, NoSuchRoleException, UserRoleConflictException;
+    void removeUserRole(UUID userId, UUID roleId) throws NoSuchUserException, NoSuchRoleException, UserRoleConflictException;
 }

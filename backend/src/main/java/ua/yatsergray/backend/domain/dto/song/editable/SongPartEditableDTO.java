@@ -21,7 +21,6 @@ public class SongPartEditableDTO {
     @Positive(message = "Type number must be a positive integer")
     private Integer typeNumber;
 
-    @NotNull(message = "Measures number is mandatory")
     @Positive(message = "Measures number must be a positive integer")
     private Integer measuresNumber;
 

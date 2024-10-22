@@ -2,6 +2,7 @@ package ua.yatsergray.backend.service.band;
 
 import ua.yatsergray.backend.domain.dto.band.ChatAccessRoleDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.ChatAccessRoleEditableDTO;
+import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.band.ChatAccessRoleAlreadyExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchChatAccessRoleException;
 
@@ -19,5 +20,5 @@ public interface ChatAccessRoleService {
 
     ChatAccessRoleDTO modifyChatAccessRoleById(UUID chatAccessRoleId, ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) throws NoSuchChatAccessRoleException, ChatAccessRoleAlreadyExistsException;
 
-    void removeChatAccessRoleById(UUID chatAccessRoleId) throws NoSuchChatAccessRoleException;
+    void removeChatAccessRoleById(UUID chatAccessRoleId) throws NoSuchChatAccessRoleException, ChildEntityExistsException;
 }

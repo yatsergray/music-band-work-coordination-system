@@ -15,7 +15,6 @@ import java.util.UUID;
 @Builder
 public class SongEditableDTO {
 
-    @NotBlank(message = "Media URL is mandatory")
     @Pattern(regexp = "^(http|https)://.*$", message = "Media URL must be a valid URL")
     private String mediaURL;
 

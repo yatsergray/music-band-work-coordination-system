@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/band-access-roles")
+@RequestMapping("/api/v1/band-access-roles")
 public class BandAccessRoleController {
     private final BandAccessRoleServiceImpl bandAccessRoleService;
 

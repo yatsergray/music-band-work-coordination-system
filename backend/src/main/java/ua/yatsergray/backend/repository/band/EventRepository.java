@@ -13,6 +13,12 @@ import java.util.UUID;
 @Repository
 public interface EventRepository extends JpaRepository<Event, UUID> {
 
-    @Query("SELECT COUNT(e) > 0 FROM Event e WHERE e.band.id = :eventBandId AND e.date = :eventDate AND (e.startTime < :eventEndTime AND e.endTime > :eventStartTime)")
+    @Query(value = """
+            SELECT COUNT(e) > 0
+            FROM events e
+            WHERE e.id_band = :eventBandId AND e.date = :eventDate AND (e.start_time < :eventEndTime AND e.end_time > :eventStartTime)
+            """, nativeQuery = true)
     boolean existsOverlappingEvent(@Param("eventBandId") UUID eventBandId, @Param("eventDate") LocalDate eventDate, @Param("eventStartTime") LocalTime eventStartTime, @Param("eventEndTime") LocalTime eventEndTime);
+
+    long countByEventCategoryId(UUID eventCategoryId);
 }

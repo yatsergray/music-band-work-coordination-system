@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserServiceImpl userService;
 
@@ -29,6 +29,7 @@ public class UserController {
         return ResponseEntity.ok(userService.addUser(userEditableDTO));
     }
 
+    @SneakyThrows
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> readUserById(@PathVariable("userId") UUID userId) {
         return userService.getUserById(userId)
@@ -56,14 +57,16 @@ public class UserController {
     }
 
     @SneakyThrows
-    @PostMapping("/create-user-role")
-    public ResponseEntity<UserDTO> createUserRole(@Valid @RequestBody UserRoleEditableDTO userRoleEditableDTO) {
-        return ResponseEntity.ok(userService.addUserRole(userRoleEditableDTO));
+    @PostMapping("/{userId}/roles")
+    public ResponseEntity<UserDTO> createUserRole(@PathVariable("userId") UUID userId, @Valid @RequestBody UserRoleEditableDTO userRoleEditableDTO) {
+        return ResponseEntity.ok(userService.addUserRole(userId, userRoleEditableDTO));
     }
 
     @SneakyThrows
-    @DeleteMapping("/delete-user-role")
-    public ResponseEntity<UserDTO> deleteUserRole(@Valid @RequestBody UserRoleEditableDTO userRoleEditableDTO) {
-        return ResponseEntity.ok(userService.removeUserRole(userRoleEditableDTO));
+    @DeleteMapping("/{userId}/roles/{roleId}")
+    public ResponseEntity<Void> deleteUserRole(@PathVariable("userId") UUID userId, @PathVariable("roleId") UUID roleId) {
+        userService.removeUserRole(userId, roleId);
+
+        return ResponseEntity.ok().build();
     }
 }

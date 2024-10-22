@@ -14,7 +14,4 @@ public class ChatUserEditableDTO {
 
     @NotNull(message = "User id is mandatory")
     private UUID userId;
-
-    @NotNull(message = "Chat id is mandatory")
-    private UUID chatId;
 }

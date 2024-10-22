@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.domain.dto.song;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import ua.yatsergray.backend.domain.dto.band.StageRoleDTO;
 
@@ -15,5 +16,7 @@ public class SongInstrumentalPartDTO {
     private UUID audioFileId;
     private UUID videoFileId;
     private UUID tabFileId;
+
+    @JsonProperty("stageRole")
     private StageRoleDTO stageRoleDTO;
 }

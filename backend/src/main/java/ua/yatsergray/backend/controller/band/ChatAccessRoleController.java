@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/chat-access-roles")
+@RequestMapping("/api/v1/chat-access-roles")
 public class ChatAccessRoleController {
     private final ChatAccessRoleServiceImpl chatAccessRoleService;
 

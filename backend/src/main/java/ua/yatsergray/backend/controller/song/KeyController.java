@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/keys")
+@RequestMapping("/api/v1/keys")
 public class KeyController {
     private final KeyServiceImpl keyService;
 

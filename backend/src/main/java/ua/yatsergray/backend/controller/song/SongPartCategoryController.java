@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/song-part-categories")
+@RequestMapping("/api/v1/song-part-categories")
 public class SongPartCategoryController {
     private final SongPartCategoryServiceImpl songPartCategoryService;
 

@@ -2,6 +2,7 @@ package ua.yatsergray.backend.service.band;
 
 import ua.yatsergray.backend.domain.dto.band.EventCategoryDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.EventCategoryEditableDTO;
+import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.band.EventCategoryAlreadyExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchEventCategoryException;
 
@@ -19,5 +20,5 @@ public interface EventCategoryService {
 
     EventCategoryDTO modifyEventCategoryById(UUID eventCategoryId, EventCategoryEditableDTO eventCategoryEditableDTO) throws NoSuchEventCategoryException, EventCategoryAlreadyExistsException;
 
-    void removeEventCategoryById(UUID eventCategoryId) throws NoSuchEventCategoryException;
+    void removeEventCategoryById(UUID eventCategoryId) throws NoSuchEventCategoryException, ChildEntityExistsException;
 }

@@ -2,7 +2,7 @@ package ua.yatsergray.backend.domain.entity.band;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ua.yatsergray.backend.domain.entity.user.User;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -28,36 +28,37 @@ public class Band {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "band")
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     private Set<Chat> chats = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "band")
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     private Set<Event> events = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "band")
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     private Set<Invitation> invitations = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "band")
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     private Set<BandSongVersion> bandSongVersions = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "band")
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     private Set<BandUserStageRole> bandUserStageRoles = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "band")
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     private Set<BandUserAccessRole> bandUserAccessRoles = new LinkedHashSet<>();
 
-    @ManyToMany(mappedBy = "bands")
-    private Set<User> users = new LinkedHashSet<>();
-
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Band band)) return false;
-        return Objects.equals(id, band.id) && Objects.equals(imageFileId, band.imageFileId) && Objects.equals(name, band.name) && Objects.equals(chats, band.chats) && Objects.equals(events, band.events) && Objects.equals(invitations, band.invitations) && Objects.equals(bandSongVersions, band.bandSongVersions) && Objects.equals(bandUserStageRoles, band.bandUserStageRoles) && Objects.equals(bandUserAccessRoles, band.bandUserAccessRoles) && Objects.equals(users, band.users);
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Band band = (Band) o;
+        return getId() != null && Objects.equals(getId(), band.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, imageFileId, name, chats, events, invitations, bandSongVersions, bandUserStageRoles, bandUserAccessRoles, users);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

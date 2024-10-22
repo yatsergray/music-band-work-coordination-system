@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/stage-roles")
+@RequestMapping("/api/v1/stage-roles")
 public class StageRoleController {
     private final StageRoleServiceImpl stageRoleService;
 
