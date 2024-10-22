@@ -12,8 +12,6 @@ import java.util.UUID;
 @Builder
 public class UserRoleEditableDTO {
 
-    @NotNull(message = "User id is mandatory")
-    private UUID userId;
-
     @NotNull(message = "Role id is mandatory")
-    private UUID roleId;}
+    private UUID roleId;
+}

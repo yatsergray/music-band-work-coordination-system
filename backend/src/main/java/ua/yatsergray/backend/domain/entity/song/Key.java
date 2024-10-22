@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.song;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import ua.yatsergray.backend.domain.entity.band.BandSongVersion;
 
 import java.util.LinkedHashSet;
@@ -34,23 +35,22 @@ public class Key {
     @OneToMany(mappedBy = "key")
     private Set<SongPartKeyChord> songPartKeyChords = new LinkedHashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(
-            name = "song_keys",
-            joinColumns = {@JoinColumn(name = "id_key")},
-            inverseJoinColumns = {@JoinColumn(name = "id_song")}
-    )
+    @ManyToMany(mappedBy = "keys")
     private Set<Song> songs = new LinkedHashSet<>();
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Key key)) return false;
-        return Objects.equals(id, key.id) && Objects.equals(name, key.name) && Objects.equals(bandSongVersions, key.bandSongVersions) && Objects.equals(songsWithOriginalKey, key.songsWithOriginalKey) && Objects.equals(songPartKeyChords, key.songPartKeyChords) && Objects.equals(songs, key.songs);
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Key key = (Key) o;
+        return getId() != null && Objects.equals(getId(), key.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, name, bandSongVersions, songsWithOriginalKey, songPartKeyChords, songs);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

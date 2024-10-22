@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.song;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import ua.yatsergray.backend.domain.entity.band.BandSongVersion;
 
 import java.util.Objects;
@@ -31,22 +32,26 @@ public class SongPartDetails {
     private SongPart songPart;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_song", nullable = false)
+    @JoinColumn(name = "id_song")
     private Song song;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_band_song_version", nullable = false)
+    @JoinColumn(name = "id_band_song_version")
     private BandSongVersion bandSongVersion;
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SongPartDetails that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(sequenceNumber, that.sequenceNumber) && Objects.equals(repeatNumber, that.repeatNumber) && Objects.equals(songPart, that.songPart) && Objects.equals(song, that.song) && Objects.equals(bandSongVersion, that.bandSongVersion);
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        SongPartDetails that = (SongPartDetails) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, sequenceNumber, repeatNumber, songPart, song, bandSongVersion);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.band;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import ua.yatsergray.backend.domain.entity.user.User;
 
 import java.util.Objects;
@@ -20,8 +21,19 @@ public class EventUser {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "id_user", nullable = false)
+//    private User user;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user", nullable = false)
+    @JoinColumn(
+            name = "id_user",
+            foreignKey = @ForeignKey(
+                    name = "fk_event_user_user",
+                    value = ConstraintMode.CONSTRAINT,
+                    foreignKeyDefinition = "FOREIGN KEY (id_user) REFERENCES users (id) ON DELETE SET NULL"
+            )
+    )
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,14 +49,18 @@ public class EventUser {
     private ParticipationStatus participationStatus;
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EventUser eventUser)) return false;
-        return Objects.equals(id, eventUser.id) && Objects.equals(user, eventUser.user) && Objects.equals(event, eventUser.event) && Objects.equals(stageRole, eventUser.stageRole) && Objects.equals(participationStatus, eventUser.participationStatus);
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        EventUser eventUser = (EventUser) o;
+        return getId() != null && Objects.equals(getId(), eventUser.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, user, event, stageRole, participationStatus);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

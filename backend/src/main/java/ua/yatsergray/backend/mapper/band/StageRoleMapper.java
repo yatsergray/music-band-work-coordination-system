@@ -7,7 +7,7 @@ import ua.yatsergray.backend.domain.entity.band.StageRole;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface StageRoleMapper {
 
     StageRoleMapper INSTANCE = Mappers.getMapper(StageRoleMapper.class);

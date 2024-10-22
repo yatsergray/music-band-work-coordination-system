@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/band-song-versions")
+@RequestMapping("/api/v1/band-song-versions")
 public class BandSongVersionController {
     private final BandSongVersionServiceImpl bandSongVersionService;
 

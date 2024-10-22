@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.domain.dto.band.editable;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -20,11 +21,11 @@ public class MessageEditableDTO {
     private String text;
 
     @NotNull(message = "Date is mandatory")
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate date;
 
     @NotNull(message = "Time is mandatory")
-    @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime time;
 
     @NotNull(message = "Chat id is mandatory")

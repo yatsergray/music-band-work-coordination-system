@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.domain.dto.band;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import ua.yatsergray.backend.domain.dto.user.UserDTO;
 
@@ -12,7 +13,13 @@ import java.util.UUID;
 @Builder
 public class EventUserDTO {
     private UUID id;
-    private UserDTO userDTO;
+
+    @JsonProperty("bandUser")
+    private BandUserDTO bandUserDTO;
+
+    @JsonProperty("stageRole")
     private StageRoleDTO stageRoleDTO;
+
+    @JsonProperty("participationStatus")
     private ParticipationStatusDTO participationStatusDTO;
 }

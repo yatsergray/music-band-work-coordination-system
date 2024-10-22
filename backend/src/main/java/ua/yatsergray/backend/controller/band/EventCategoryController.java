@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/event-categories")
+@RequestMapping("/api/v1/event-categories")
 public class EventCategoryController {
     private final EventCategoryServiceImpl eventCategoryService;
 

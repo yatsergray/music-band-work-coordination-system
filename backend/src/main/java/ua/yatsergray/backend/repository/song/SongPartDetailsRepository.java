@@ -12,4 +12,10 @@ public interface SongPartDetailsRepository extends JpaRepository<SongPartDetails
     boolean existsBySongIdAndSequenceNumber(UUID songId, Integer sequenceNumber);
 
     boolean existsByBandSongVersionIdAndSequenceNumber(UUID bandSongVersionId, Integer sequenceNumber);
+
+    void deleteBySongId(UUID songId);
+
+    void deleteByBandSongVersionId(UUID bandSongVersionId);
+
+    void deleteBySongIdAndSongPartId(UUID songId, UUID songPartId);
 }

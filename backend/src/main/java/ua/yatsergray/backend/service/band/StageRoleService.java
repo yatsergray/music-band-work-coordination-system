@@ -2,6 +2,7 @@ package ua.yatsergray.backend.service.band;
 
 import ua.yatsergray.backend.domain.dto.band.StageRoleDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.StageRoleEditableDTO;
+import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchStageRoleException;
 import ua.yatsergray.backend.exception.band.StageRoleAlreadyExistsException;
 
@@ -19,5 +20,5 @@ public interface StageRoleService {
 
     StageRoleDTO modifyStageRoleById(UUID stageRoleId, StageRoleEditableDTO stageRoleEditableDTO) throws NoSuchStageRoleException, StageRoleAlreadyExistsException;
 
-    void removeStageRoleById(UUID stageRoleId) throws NoSuchStageRoleException;
+    void removeStageRoleById(UUID stageRoleId) throws NoSuchStageRoleException, ChildEntityExistsException;
 }

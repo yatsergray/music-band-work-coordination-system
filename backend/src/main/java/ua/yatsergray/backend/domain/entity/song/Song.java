@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.song;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import ua.yatsergray.backend.domain.entity.band.BandSongVersion;
 
 import java.util.LinkedHashSet;
@@ -25,7 +26,7 @@ public class Song {
     @Column(name = "image_file_id", unique = true)
     private UUID imageFileId;
 
-    @Column(name = "audio_file_id", unique = true, nullable = false)
+    @Column(name = "audio_file_id", unique = true)
     private UUID audioFileId;
 
     @Column(name = "media_url", unique = true)
@@ -49,30 +50,39 @@ public class Song {
     @JoinColumn(name = "id_time_signature", nullable = false)
     private TimeSignature timeSignature;
 
-    @OneToMany(mappedBy = "song")
+    @OneToMany(mappedBy = "song") // TODO: Remove , cascade = CascadeType.REMOVE declaration
     private Set<SongPart> songParts = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "song")
     private Set<BandSongVersion> bandSongVersions = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "song")
+    @OneToMany(mappedBy = "song", cascade = CascadeType.REMOVE)
     private Set<SongPartDetails> songPartDetailsSet = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "song")
+    @OneToMany(mappedBy = "song", cascade = CascadeType.REMOVE)
     private Set<SongInstrumentalPart> songInstrumentalParts = new LinkedHashSet<>();
 
-    @ManyToMany(mappedBy = "songs")
+    @ManyToMany
+    @JoinTable(
+            name = "song_keys",
+            joinColumns = {@JoinColumn(name = "id_song")},
+            inverseJoinColumns = {@JoinColumn(name = "id_key")}
+    )
     private Set<Key> keys = new LinkedHashSet<>();
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Song song)) return false;
-        return Objects.equals(id, song.id) && Objects.equals(imageFileId, song.imageFileId) && Objects.equals(audioFileId, song.audioFileId) && Objects.equals(mediaURL, song.mediaURL) && Objects.equals(name, song.name) && Objects.equals(bpm, song.bpm) && Objects.equals(key, song.key) && Objects.equals(artist, song.artist) && Objects.equals(timeSignature, song.timeSignature) && Objects.equals(songParts, song.songParts) && Objects.equals(bandSongVersions, song.bandSongVersions) && Objects.equals(songPartDetailsSet, song.songPartDetailsSet) && Objects.equals(songInstrumentalParts, song.songInstrumentalParts) && Objects.equals(keys, song.keys);
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Song song = (Song) o;
+        return getId() != null && Objects.equals(getId(), song.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, imageFileId, audioFileId, mediaURL, name, bpm, key, artist, timeSignature, songParts, bandSongVersions, songPartDetailsSet, songInstrumentalParts, keys);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

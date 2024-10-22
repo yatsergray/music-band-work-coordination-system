@@ -12,12 +12,6 @@ import java.util.UUID;
 @Builder
 public class BandUserAccessRoleEditableDTO {
 
-    @NotNull(message = "Band id is mandatory")
-    private UUID bandId;
-
-    @NotNull(message = "User id is mandatory")
-    private UUID userId;
-
     @NotNull(message = "Band access role id is mandatory")
     private UUID bandAccessRoleId;
 }

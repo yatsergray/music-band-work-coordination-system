@@ -23,10 +23,6 @@ public class SongPartDetailsEditableDTO {
 
     @NotNull(message = "Song part id is mandatory")
     private UUID songPartId;
-
-    @NotNull(message = "Song id is mandatory")
     private UUID songId;
-
-    @NotNull(message = "Band song version id is mandatory")
     private UUID bandSongVersionId;
 }

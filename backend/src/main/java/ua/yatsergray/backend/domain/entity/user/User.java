@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.user;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import ua.yatsergray.backend.domain.entity.band.*;
 
 import java.util.LinkedHashSet;
@@ -22,7 +23,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "image_file_id", unique = true, nullable = false)
+    @Column(name = "image_file_id", unique = true)
     private UUID imageFileId;
 
     @Column(name = "first_name", nullable = false)
@@ -43,43 +44,36 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<EventUser> eventUsers = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<BandUserStageRole> bandUserStageRoles = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Set<BandUserAccessRole> bandUserAccessRoles = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",  cascade = CascadeType.REMOVE)
     private Set<ChatUserAccessRole> chatUserAccessRoles = new LinkedHashSet<>();
 
-    @ManyToMany(mappedBy = "users")
+    @ManyToMany
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = {@JoinColumn(name = "id_user")},
+            inverseJoinColumns = {@JoinColumn(name = "id_role")}
+    )
     private Set<Role> roles = new LinkedHashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(
-            name = "band_users",
-            joinColumns = {@JoinColumn(name = "id_user")},
-            inverseJoinColumns = {@JoinColumn(name = "id_band")}
-    )
-    private Set<Band> bands = new LinkedHashSet<>();
-
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinTable(
-            name = "chat_users",
-            joinColumns = {@JoinColumn(name = "id_user")},
-            inverseJoinColumns = {@JoinColumn(name = "id_chat")}
-    )
-    private Set<Chat> chats = new LinkedHashSet<>();
-
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User user)) return false;
-        return Objects.equals(id, user.id) && Objects.equals(imageFileId, user.imageFileId) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(messages, user.messages) && Objects.equals(eventUsers, user.eventUsers) && Objects.equals(bandUserStageRoles, user.bandUserStageRoles) && Objects.equals(bandUserAccessRoles, user.bandUserAccessRoles) && Objects.equals(roles, user.roles) && Objects.equals(bands, user.bands) && Objects.equals(chats, user.chats);
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        User user = (User) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, imageFileId, firstName, lastName, email, password, messages, eventUsers, bandUserStageRoles, bandUserAccessRoles, roles, bands, chats);
+    public final int hashCode() {
+        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }

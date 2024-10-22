@@ -10,4 +10,10 @@ import java.util.UUID;
 public interface BandUserStageRoleRepository extends JpaRepository<BandUserStageRole, UUID> {
 
     boolean existsByBandIdAndUserIdAndStageRoleId(UUID bandId, UUID userId, UUID stageRoleId);
+
+    void deleteByBandIdAndUserId(UUID bandId, UUID userId);
+
+    void deleteByBandIdAndUserIdAndStageRoleId(UUID bandId, UUID userId, UUID stageRoleId);
+
+    long countByStageRoleId(UUID stageRoleId);
 }

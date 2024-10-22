@@ -1,9 +1,7 @@
 package ua.yatsergray.backend.domain.dto.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import ua.yatsergray.backend.domain.dto.band.BandAccessRoleDTO;
-import ua.yatsergray.backend.domain.dto.band.ChatAccessRoleDTO;
-import ua.yatsergray.backend.domain.dto.band.StageRoleDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +19,7 @@ public class UserDTO {
     private String lastName;
     private String email;
     private String password;
+
+    @JsonProperty("roles")
     private List<RoleDTO> roleDTOList = new ArrayList<>();
-    private List<BandAccessRoleDTO> bandAccessRoleDTOList = new ArrayList<>();
-    private List<StageRoleDTO> stageRoleDTOList = new ArrayList<>();
-    private List<ChatAccessRoleDTO> chatAccessRoleDTOList = new ArrayList<>();
 }

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/song-parts")
+@RequestMapping("/api/v1/song-parts")
 public class SongPartController {
     private final SongPartServiceImpl songPartService;
 

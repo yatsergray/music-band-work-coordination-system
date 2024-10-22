@@ -7,7 +7,7 @@ import ua.yatsergray.backend.domain.entity.band.BandAccessRole;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public interface BandAccessRoleMapper {
 
     BandAccessRoleMapper INSTANCE = Mappers.getMapper(BandAccessRoleMapper.class);

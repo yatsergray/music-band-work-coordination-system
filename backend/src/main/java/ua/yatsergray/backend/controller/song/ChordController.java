@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/chords")
+@RequestMapping("/api/v1/chords")
 public class ChordController {
     private final ChordServiceImpl chordService;
 

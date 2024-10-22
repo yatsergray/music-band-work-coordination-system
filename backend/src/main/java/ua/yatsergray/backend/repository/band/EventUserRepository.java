@@ -10,4 +10,8 @@ import java.util.UUID;
 public interface EventUserRepository extends JpaRepository<EventUser, UUID> {
 
     boolean existsByEventIdAndUserIdAndStageRoleId(UUID eventId, UUID userId, UUID stageRoleId);
+
+    long countByParticipationStatusId(UUID participationStatusId);
+
+    long countByStageRoleId(UUID stageRoleId);
 }

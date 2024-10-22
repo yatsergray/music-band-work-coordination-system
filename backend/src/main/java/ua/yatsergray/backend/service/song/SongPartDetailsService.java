@@ -19,7 +19,7 @@ public interface SongPartDetailsService {
 
     List<SongPartDetailsDTO> getAllSongPartDetails();
 
-    SongPartDetailsDTO modifySongPartDetailsById(UUID songPartCategoryId, SongPartDetailsEditableDTO songPartDetailsEditableDTO) throws NoSuchSongPartDetailsException, NoSuchSongPartException, SongPartDetailsConflictException, SongPartDetailsAlreadyExistsException;
+    SongPartDetailsDTO modifySongPartDetailsById(UUID songPartDetailsId, SongPartDetailsEditableDTO songPartDetailsEditableDTO) throws NoSuchSongPartDetailsException, NoSuchSongPartException, SongPartDetailsConflictException, SongPartDetailsAlreadyExistsException;
 
-    void removeSongPartDetailsById(UUID songPartCategoryId) throws NoSuchSongPartDetailsException;
+    void removeSongPartDetailsById(UUID songPartDetailsId) throws NoSuchSongPartDetailsException;
 }

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/artists")
+@RequestMapping("/api/v1/artists")
 public class ArtistController {
     private final ArtistServiceImpl artistService;
 

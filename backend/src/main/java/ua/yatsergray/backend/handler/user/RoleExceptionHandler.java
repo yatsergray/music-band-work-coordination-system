@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ua.yatsergray.backend.exception.user.NoSuchRoleException;
-import ua.yatsergray.backend.exception.user.NoSuchUserException;
 import ua.yatsergray.backend.exception.user.RoleAlreadyExistsException;
 
 @ControllerAdvice

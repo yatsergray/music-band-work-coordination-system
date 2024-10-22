@@ -2,6 +2,7 @@ package ua.yatsergray.backend.service.band;
 
 import ua.yatsergray.backend.domain.dto.band.ParticipationStatusDTO;
 import ua.yatsergray.backend.domain.dto.band.editable.ParticipationStatusEditableDTO;
+import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchParticipationStatusException;
 import ua.yatsergray.backend.exception.band.ParticipationStatusAlreadyExistsException;
 
@@ -19,5 +20,5 @@ public interface ParticipationStatusService {
 
     ParticipationStatusDTO modifyParticipationStatusById(UUID participationStatusId, ParticipationStatusEditableDTO participationStatusEditableDTO) throws NoSuchParticipationStatusException, ParticipationStatusAlreadyExistsException;
 
-    void removeParticipationStatusById(UUID participationStatusId) throws NoSuchParticipationStatusException;
+    void removeParticipationStatusById(UUID participationStatusId) throws NoSuchParticipationStatusException, ChildEntityExistsException;
 }
