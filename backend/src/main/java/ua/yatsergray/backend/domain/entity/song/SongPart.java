@@ -50,7 +50,7 @@ public class SongPart {
     @JoinColumn(name = "id_song_part_category", nullable = false)
     private SongPartCategory songPartCategory;
 
-    @OneToMany(mappedBy = "songPart", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "songPart")
     // TODO: REMOVE ALL EXCEPT OF THE Chords WHICH FIT TO BandSongVersion Key, Remove , cascade = CascadeType.REMOVE declaration
     private Set<SongPartKeyChord> songPartKeyChords = new LinkedHashSet<>();
 
