@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.ChatAccessRoleDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.ChatAccessRoleEditableDTO;
+import ua.yatsergray.backend.domain.request.band.ChatAccessRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.band.ChatAccessRoleUpdateRequest;
 import ua.yatsergray.backend.service.band.impl.ChatAccessRoleServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class ChatAccessRoleController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<ChatAccessRoleDTO> createChatAccessRole(@Valid @RequestBody ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) {
-        return ResponseEntity.ok(chatAccessRoleService.addChatAccessRole(chatAccessRoleEditableDTO));
+    public ResponseEntity<ChatAccessRoleDTO> createChatAccessRole(@Valid @RequestBody ChatAccessRoleCreateRequest chatAccessRoleCreateRequest) {
+        return ResponseEntity.ok(chatAccessRoleService.addChatAccessRole(chatAccessRoleCreateRequest));
     }
 
     @GetMapping("/{chatAccessRoleId}")
@@ -42,8 +43,8 @@ public class ChatAccessRoleController {
 
     @SneakyThrows
     @PutMapping("/{chatAccessRoleId}")
-    public ResponseEntity<ChatAccessRoleDTO> updateChatAccessRoleById(@PathVariable("chatAccessRoleId") UUID chatAccessRoleId, @Valid @RequestBody ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) {
-        return ResponseEntity.ok(chatAccessRoleService.modifyChatAccessRoleById(chatAccessRoleId, chatAccessRoleEditableDTO));
+    public ResponseEntity<ChatAccessRoleDTO> updateChatAccessRoleById(@PathVariable("chatAccessRoleId") UUID chatAccessRoleId, @Valid @RequestBody ChatAccessRoleUpdateRequest chatAccessRoleUpdateRequest) {
+        return ResponseEntity.ok(chatAccessRoleService.modifyChatAccessRoleById(chatAccessRoleId, chatAccessRoleUpdateRequest));
     }
 
     @SneakyThrows

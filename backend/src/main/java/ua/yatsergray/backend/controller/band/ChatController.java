@@ -7,9 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.ChatDTO;
 import ua.yatsergray.backend.domain.dto.band.ChatUserDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.ChatEditableDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.ChatUserAccessRoleEditableDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.ChatUserEditableDTO;
+import ua.yatsergray.backend.domain.request.band.ChatCreateRequest;
+import ua.yatsergray.backend.domain.request.band.ChatUpdateRequest;
+import ua.yatsergray.backend.domain.request.band.ChatUserAccessRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.band.ChatUserCreateRequest;
 import ua.yatsergray.backend.service.band.impl.ChatServiceImpl;
 
 import java.util.List;
@@ -27,8 +28,8 @@ public class ChatController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<ChatDTO> createChat(@Valid @RequestBody ChatEditableDTO chatEditableDTO) {
-        return ResponseEntity.ok(chatService.addChat(chatEditableDTO));
+    public ResponseEntity<ChatDTO> createChat(@Valid @RequestBody ChatCreateRequest chatCreateRequest) {
+        return ResponseEntity.ok(chatService.addChat(chatCreateRequest));
     }
 
     @GetMapping("/{chatId}")
@@ -45,8 +46,8 @@ public class ChatController {
 
     @SneakyThrows
     @PutMapping("/{chatId}")
-    public ResponseEntity<ChatDTO> updateChatById(@PathVariable("chatId") UUID chatId, @Valid @RequestBody ChatEditableDTO chatEditableDTO) {
-        return ResponseEntity.ok(chatService.modifyChatById(chatId, chatEditableDTO));
+    public ResponseEntity<ChatDTO> updateChatById(@PathVariable("chatId") UUID chatId, @Valid @RequestBody ChatUpdateRequest chatUpdateRequest) {
+        return ResponseEntity.ok(chatService.modifyChatById(chatId, chatUpdateRequest));
     }
 
     @SneakyThrows
@@ -59,8 +60,8 @@ public class ChatController {
 
     @SneakyThrows
     @PostMapping("/{chatId}/users")
-    public ResponseEntity<ChatUserDTO> createChatUser(@PathVariable("chatId") UUID chatId, @Valid @RequestBody ChatUserEditableDTO chatUserEditableDTO) {
-        return ResponseEntity.ok(chatService.addChatUser(chatId, chatUserEditableDTO));
+    public ResponseEntity<ChatUserDTO> createChatUser(@PathVariable("chatId") UUID chatId, @Valid @RequestBody ChatUserCreateRequest chatUserCreateRequest) {
+        return ResponseEntity.ok(chatService.addChatUser(chatId, chatUserCreateRequest));
     }
 
     @SneakyThrows
@@ -73,8 +74,8 @@ public class ChatController {
 
     @SneakyThrows
     @PostMapping("/{chatId}/users/{userId}/chat-access-roles")
-    public ResponseEntity<ChatUserDTO> createChatUserAccessRole(@PathVariable("chatId") UUID chatId, @PathVariable("userId") UUID userId, @Valid @RequestBody ChatUserAccessRoleEditableDTO chatUserAccessRoleEditableDTO) {
-        return ResponseEntity.ok(chatService.addChatUserAccessRole(chatId, userId, chatUserAccessRoleEditableDTO));
+    public ResponseEntity<ChatUserDTO> createChatUserAccessRole(@PathVariable("chatId") UUID chatId, @PathVariable("userId") UUID userId, @Valid @RequestBody ChatUserAccessRoleCreateRequest chatUserAccessRoleCreateRequest) {
+        return ResponseEntity.ok(chatService.addChatUserAccessRole(chatId, userId, chatUserAccessRoleCreateRequest));
     }
 
     @SneakyThrows

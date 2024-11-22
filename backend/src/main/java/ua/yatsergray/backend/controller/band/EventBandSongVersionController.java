@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.EventBandSongVersionDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.EventBandSongVersionEditableDTO;
+import ua.yatsergray.backend.domain.request.band.EventBandSongVersionCreateRequest;
+import ua.yatsergray.backend.domain.request.band.EventBandSongVersionUpdateRequest;
 import ua.yatsergray.backend.service.band.impl.EventBandSongVersionServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class EventBandSongVersionController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<EventBandSongVersionDTO> createEventBandSongVersion(@Valid @RequestBody EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) {
-        return ResponseEntity.ok(eventBandSongVersionService.addEventBandSongVersion(eventBandSongVersionEditableDTO));
+    public ResponseEntity<EventBandSongVersionDTO> createEventBandSongVersion(@Valid @RequestBody EventBandSongVersionCreateRequest eventBandSongVersionCreateRequest) {
+        return ResponseEntity.ok(eventBandSongVersionService.addEventBandSongVersion(eventBandSongVersionCreateRequest));
     }
 
     @GetMapping("/{eventBandSongVersionId}")
@@ -42,8 +43,8 @@ public class EventBandSongVersionController {
 
     @SneakyThrows
     @PutMapping("/{eventBandSongVersionId}")
-    public ResponseEntity<EventBandSongVersionDTO> updateEventBandSongVersionById(@PathVariable("eventBandSongVersionId") UUID eventBandSongVersionId, @Valid @RequestBody EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) {
-        return ResponseEntity.ok(eventBandSongVersionService.modifyEventBandSongVersionById(eventBandSongVersionId, eventBandSongVersionEditableDTO));
+    public ResponseEntity<EventBandSongVersionDTO> updateEventBandSongVersionById(@PathVariable("eventBandSongVersionId") UUID eventBandSongVersionId, @Valid @RequestBody EventBandSongVersionUpdateRequest eventBandSongVersionUpdateRequest) {
+        return ResponseEntity.ok(eventBandSongVersionService.modifyEventBandSongVersionById(eventBandSongVersionId, eventBandSongVersionUpdateRequest));
     }
 
     @SneakyThrows

@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.song.SongPartDetailsDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.SongPartDetailsEditableDTO;
+import ua.yatsergray.backend.domain.request.song.SongPartDetailsCreateRequest;
+import ua.yatsergray.backend.domain.request.song.SongPartDetailsUpdateRequest;
 import ua.yatsergray.backend.service.song.impl.SongPartDetailsServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class SongPartDetailsController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<SongPartDetailsDTO> createSongPartDetails(@Valid @RequestBody SongPartDetailsEditableDTO songPartDetailsEditableDTO) {
-        return ResponseEntity.ok(songPartDetailsService.addSongPartDetails(songPartDetailsEditableDTO));
+    public ResponseEntity<SongPartDetailsDTO> createSongPartDetails(@Valid @RequestBody SongPartDetailsCreateRequest songPartDetailsCreateRequest) {
+        return ResponseEntity.ok(songPartDetailsService.addSongPartDetails(songPartDetailsCreateRequest));
     }
 
     @GetMapping("/{songPartDetailsId}")
@@ -42,8 +43,8 @@ public class SongPartDetailsController {
 
     @SneakyThrows
     @PutMapping("/{songPartDetailsId}")
-    public ResponseEntity<SongPartDetailsDTO> updateSongPartDetailsById(@PathVariable("songPartDetailsId") UUID songPartDetailsId, @Valid @RequestBody SongPartDetailsEditableDTO songPartDetailsEditableDTO) {
-        return ResponseEntity.ok(songPartDetailsService.modifySongPartDetailsById(songPartDetailsId, songPartDetailsEditableDTO));
+    public ResponseEntity<SongPartDetailsDTO> updateSongPartDetailsById(@PathVariable("songPartDetailsId") UUID songPartDetailsId, @Valid @RequestBody SongPartDetailsUpdateRequest songPartDetailsUpdateRequest) {
+        return ResponseEntity.ok(songPartDetailsService.modifySongPartDetailsById(songPartDetailsId, songPartDetailsUpdateRequest));
     }
 
     @SneakyThrows

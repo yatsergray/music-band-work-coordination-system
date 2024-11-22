@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.song.TimeSignatureDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.TimeSignatureEditableDTO;
+import ua.yatsergray.backend.domain.request.song.TimeSignatureCreateUpdateRequest;
 import ua.yatsergray.backend.service.song.impl.TimeSignatureServiceImpl;
 
 import java.util.List;
@@ -24,8 +24,8 @@ public class TimeSignatureController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<TimeSignatureDTO> createTimeSignature(@Valid @RequestBody TimeSignatureEditableDTO timeSignatureEditableDTO) {
-        return ResponseEntity.ok(timeSignatureService.addTimeSignature(timeSignatureEditableDTO));
+    public ResponseEntity<TimeSignatureDTO> createTimeSignature(@Valid @RequestBody TimeSignatureCreateUpdateRequest timeSignatureCreateUpdateRequest) {
+        return ResponseEntity.ok(timeSignatureService.addTimeSignature(timeSignatureCreateUpdateRequest));
     }
 
     @GetMapping("/{timeSignatureId}")
@@ -42,8 +42,8 @@ public class TimeSignatureController {
 
     @SneakyThrows
     @PutMapping("/{timeSignatureId}")
-    public ResponseEntity<TimeSignatureDTO> updateTimeSignatureById(@PathVariable("timeSignatureId") UUID timeSignatureId, @Valid @RequestBody TimeSignatureEditableDTO timeSignatureEditableDTO) {
-        return ResponseEntity.ok(timeSignatureService.modifyTimeSignatureById(timeSignatureId, timeSignatureEditableDTO));
+    public ResponseEntity<TimeSignatureDTO> updateTimeSignatureById(@PathVariable("timeSignatureId") UUID timeSignatureId, @Valid @RequestBody TimeSignatureCreateUpdateRequest timeSignatureCreateUpdateRequest) {
+        return ResponseEntity.ok(timeSignatureService.modifyTimeSignatureById(timeSignatureId, timeSignatureCreateUpdateRequest));
     }
 
     @SneakyThrows

@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.InvitationDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.InvitationEditableDTO;
+import ua.yatsergray.backend.domain.request.band.InvitationCreateRequest;
+import ua.yatsergray.backend.domain.request.band.InvitationUpdateRequest;
 import ua.yatsergray.backend.service.band.impl.InvitationServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class InvitationController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<InvitationDTO> createInvitation(@Valid @RequestBody InvitationEditableDTO invitationEditableDTO) {
-        return ResponseEntity.ok(invitationService.addInvitation(invitationEditableDTO));
+    public ResponseEntity<InvitationDTO> createInvitation(@Valid @RequestBody InvitationCreateRequest invitationCreateRequest) {
+        return ResponseEntity.ok(invitationService.addInvitation(invitationCreateRequest));
     }
 
     @GetMapping("/{invitationId}")
@@ -42,8 +43,8 @@ public class InvitationController {
 
     @SneakyThrows
     @PutMapping("/{invitationId}")
-    public ResponseEntity<InvitationDTO> updateInvitationById(@PathVariable("invitationId") UUID invitationId, @Valid @RequestBody InvitationEditableDTO invitationEditableDTO) {
-        return ResponseEntity.ok(invitationService.modifyInvitationById(invitationId, invitationEditableDTO));
+    public ResponseEntity<InvitationDTO> updateInvitationById(@PathVariable("invitationId") UUID invitationId, @Valid @RequestBody InvitationUpdateRequest invitationUpdateRequest) {
+        return ResponseEntity.ok(invitationService.modifyInvitationById(invitationId, invitationUpdateRequest));
     }
 
     @SneakyThrows

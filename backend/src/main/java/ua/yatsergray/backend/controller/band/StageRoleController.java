@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.StageRoleDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.StageRoleEditableDTO;
+import ua.yatsergray.backend.domain.request.band.StageRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.band.StageRoleUpdateRequest;
 import ua.yatsergray.backend.service.band.impl.StageRoleServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class StageRoleController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<StageRoleDTO> createStageRole(@Valid @RequestBody StageRoleEditableDTO stageRoleEditableDTO) {
-        return ResponseEntity.ok(stageRoleService.addStageRole(stageRoleEditableDTO));
+    public ResponseEntity<StageRoleDTO> createStageRole(@Valid @RequestBody StageRoleCreateRequest stageRoleCreateRequest) {
+        return ResponseEntity.ok(stageRoleService.addStageRole(stageRoleCreateRequest));
     }
 
     @GetMapping("/{stageRoleId}")
@@ -42,8 +43,8 @@ public class StageRoleController {
 
     @SneakyThrows
     @PutMapping("/{stageRoleId}")
-    public ResponseEntity<StageRoleDTO> updateStageRoleById(@PathVariable("stageRoleId") UUID stageRoleId, @Valid @RequestBody StageRoleEditableDTO stageRoleEditableDTO) {
-        return ResponseEntity.ok(stageRoleService.modifyStageRoleById(stageRoleId, stageRoleEditableDTO));
+    public ResponseEntity<StageRoleDTO> updateStageRoleById(@PathVariable("stageRoleId") UUID stageRoleId, @Valid @RequestBody StageRoleUpdateRequest stageRoleUpdateRequest) {
+        return ResponseEntity.ok(stageRoleService.modifyStageRoleById(stageRoleId, stageRoleUpdateRequest));
     }
 
     @SneakyThrows

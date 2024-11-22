@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.song.SongPartDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.SongPartEditableDTO;
+import ua.yatsergray.backend.domain.request.song.SongPartCreateRequest;
+import ua.yatsergray.backend.domain.request.song.SongPartUpdateRequest;
 import ua.yatsergray.backend.service.song.impl.SongPartServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class SongPartController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<SongPartDTO> createSongPart(@Valid @RequestBody SongPartEditableDTO songPartEditableDTO) {
-        return ResponseEntity.ok(songPartService.addSongPart(songPartEditableDTO));
+    public ResponseEntity<SongPartDTO> createSongPart(@Valid @RequestBody SongPartCreateRequest songPartCreateRequest) {
+        return ResponseEntity.ok(songPartService.addSongPart(songPartCreateRequest));
     }
 
     @GetMapping("/{songPartId}")
@@ -42,8 +43,8 @@ public class SongPartController {
 
     @SneakyThrows
     @PutMapping("/{songPartId}")
-    public ResponseEntity<SongPartDTO> updateSongPartById(@PathVariable("songPartId") UUID songPartId, @Valid @RequestBody SongPartEditableDTO songPartEditableDTO) {
-        return ResponseEntity.ok(songPartService.modifySongPartById(songPartId, songPartEditableDTO));
+    public ResponseEntity<SongPartDTO> updateSongPartById(@PathVariable("songPartId") UUID songPartId, @Valid @RequestBody SongPartUpdateRequest songPartUpdateRequest) {
+        return ResponseEntity.ok(songPartService.modifySongPartById(songPartId, songPartUpdateRequest));
     }
 
     @SneakyThrows

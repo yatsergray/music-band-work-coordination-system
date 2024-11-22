@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.song.SongInstrumentalPartDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.SongInstrumentalPartEditableDTO;
+import ua.yatsergray.backend.domain.request.song.SongInstrumentalPartCreateRequest;
 import ua.yatsergray.backend.service.song.impl.SongInstrumentalPartServiceImpl;
 
 import java.util.List;
@@ -24,8 +24,8 @@ public class SongInstrumentalPartController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<SongInstrumentalPartDTO> createSongInstrumentalPart(@Valid @RequestBody SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) {
-        return ResponseEntity.ok(songInstrumentalPartService.addSongInstrumentalPart(songInstrumentalPartEditableDTO));
+    public ResponseEntity<SongInstrumentalPartDTO> createSongInstrumentalPart(@Valid @RequestBody SongInstrumentalPartCreateRequest songInstrumentalPartCreateRequest) {
+        return ResponseEntity.ok(songInstrumentalPartService.addSongInstrumentalPart(songInstrumentalPartCreateRequest));
     }
 
     @GetMapping("/{songInstrumentalPartId}")
@@ -42,8 +42,8 @@ public class SongInstrumentalPartController {
 
     @SneakyThrows
     @PutMapping("/{songInstrumentalPartId}")
-    public ResponseEntity<SongInstrumentalPartDTO> updateSongInstrumentalPartById(@PathVariable("songInstrumentalPartId") UUID songInstrumentalPartId, @Valid @RequestBody SongInstrumentalPartEditableDTO songInstrumentalPartEditableDTO) {
-        return ResponseEntity.ok(songInstrumentalPartService.modifySongInstrumentalPartById(songInstrumentalPartId, songInstrumentalPartEditableDTO));
+    public ResponseEntity<SongInstrumentalPartDTO> updateSongInstrumentalPartById(@PathVariable("songInstrumentalPartId") UUID songInstrumentalPartId) {
+        return null;
     }
 
     @SneakyThrows
