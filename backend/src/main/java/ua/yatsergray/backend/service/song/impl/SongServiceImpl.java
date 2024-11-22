@@ -4,16 +4,15 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.SongDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.SongEditableDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.SongKeyEditableDTO;
 import ua.yatsergray.backend.domain.entity.song.*;
+import ua.yatsergray.backend.domain.request.song.SongCreateUpdateRequest;
+import ua.yatsergray.backend.domain.request.song.SongKeyCreateRequest;
 import ua.yatsergray.backend.exception.song.*;
 import ua.yatsergray.backend.mapper.song.SongMapper;
 import ua.yatsergray.backend.repository.song.*;
 import ua.yatsergray.backend.service.song.SongService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,8 +41,28 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDTO addSong(SongEditableDTO songEditableDTO) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException {
-        return songMapper.mapToSongDTO(songRepository.save(configureSong(new Song(), songEditableDTO)));
+    public SongDTO addSong(SongCreateUpdateRequest songCreateUpdateRequest) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException {
+        Key key = keyRepository.findById(songCreateUpdateRequest.getKeyId())
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", songCreateUpdateRequest.getKeyId())));
+        Artist artist = artistRepository.findById(songCreateUpdateRequest.getArtistId())
+                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=\"%s\" does not exist", songCreateUpdateRequest.getArtistId())));
+        TimeSignature timeSignature = timeSignatureRepository.findById(songCreateUpdateRequest.getTimeSignatureId())
+                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=\"%s\" does not exist", songCreateUpdateRequest.getTimeSignatureId())));
+
+        if (songRepository.existsByArtistIdAndName(songCreateUpdateRequest.getArtistId(), songCreateUpdateRequest.getName())) {
+            throw new SongAlreadyExistsException(String.format("Song with artistId=\"%s\" and name=\"%s\" already exists", songCreateUpdateRequest.getArtistId(), songCreateUpdateRequest.getName()));
+        }
+
+        Song song = Song.builder()
+                .mediaURL(songCreateUpdateRequest.getMediaURL())
+                .name(songCreateUpdateRequest.getName())
+                .bpm(songCreateUpdateRequest.getBpm())
+                .key(key)
+                .artist(artist)
+                .timeSignature(timeSignature)
+                .build();
+
+        return songMapper.mapToSongDTO(songRepository.save(song));
     }
 
     @Override
@@ -57,11 +76,28 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDTO modifySongById(UUID songId, SongEditableDTO songEditableDTO) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException {
+    public SongDTO modifySongById(UUID songId, SongCreateUpdateRequest songCreateUpdateRequest) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException {
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=\"%s\" does not exist", songId)));
+        Key key = keyRepository.findById(songCreateUpdateRequest.getKeyId())
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", songCreateUpdateRequest.getKeyId())));
+        Artist artist = artistRepository.findById(songCreateUpdateRequest.getArtistId())
+                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=\"%s\" does not exist", songCreateUpdateRequest.getArtistId())));
+        TimeSignature timeSignature = timeSignatureRepository.findById(songCreateUpdateRequest.getTimeSignatureId())
+                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=\"%s\" does not exist", songCreateUpdateRequest.getTimeSignatureId())));
 
-        return songMapper.mapToSongDTO(songRepository.save(configureSong(song, songEditableDTO)));
+        if ((!songCreateUpdateRequest.getArtistId().equals(song.getArtist().getId()) || !songCreateUpdateRequest.getName().equals(song.getName())) && songRepository.existsByArtistIdAndName(songCreateUpdateRequest.getArtistId(), songCreateUpdateRequest.getName())) {
+            throw new SongAlreadyExistsException(String.format("Song with artistId=\"%s\" and name=\"%s\" already exists", songCreateUpdateRequest.getArtistId(), songCreateUpdateRequest.getName()));
+        }
+
+        song.setMediaURL(songCreateUpdateRequest.getMediaURL());
+        song.setName(songCreateUpdateRequest.getName());
+        song.setBpm(songCreateUpdateRequest.getBpm());
+        song.setKey(key);
+        song.setArtist(artist);
+        song.setTimeSignature(timeSignature);
+
+        return songMapper.mapToSongDTO(songRepository.save(song));
     }
 
     @Override
@@ -80,14 +116,14 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDTO addSongKey(UUID songId, SongKeyEditableDTO songKeyEditableDTO) throws NoSuchSongException, NoSuchKeyException, SongKeyConflictException {
+    public SongDTO addSongKey(UUID songId, SongKeyCreateRequest songKeyCreateRequest) throws NoSuchSongException, NoSuchKeyException, SongKeyConflictException {
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=\"%s\" does not exist", songId)));
-        Key key = keyRepository.findById(songKeyEditableDTO.getKeyId())
-                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", songKeyEditableDTO.getKeyId())));
+        Key key = keyRepository.findById(songKeyCreateRequest.getKeyId())
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", songKeyCreateRequest.getKeyId())));
 
         if (song.getKey().equals(key) || song.getKeys().contains(key)) {
-            throw new SongKeyConflictException(String.format("Song with id=\"%s\" already has key with id=\"%s\"", songId, songKeyEditableDTO.getKeyId()));
+            throw new SongKeyConflictException(String.format("Song with id=\"%s\" already has key with id=\"%s\"", songId, songKeyCreateRequest.getKeyId()));
         }
 
         song.getKeys().add(key);
@@ -109,33 +145,5 @@ public class SongServiceImpl implements SongService {
         song.getKeys().remove(key);
 
         songRepository.save(song);
-    }
-
-    private Song configureSong(Song song, SongEditableDTO songEditableDTO) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException {
-        Key key = keyRepository.findById(songEditableDTO.getKeyId())
-                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", songEditableDTO.getKeyId())));
-        Artist artist = artistRepository.findById(songEditableDTO.getArtistId())
-                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=\"%s\" does not exist", songEditableDTO.getArtistId())));
-        TimeSignature timeSignature = timeSignatureRepository.findById(songEditableDTO.getTimeSignatureId())
-                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=\"%s\" does not exist", songEditableDTO.getTimeSignatureId())));
-
-        if (Objects.isNull(song.getId())) {
-            if (songRepository.existsByArtistIdAndName(songEditableDTO.getArtistId(), songEditableDTO.getName())) {
-                throw new SongAlreadyExistsException(String.format("Song with artistId=\"%s\" and name=\"%s\" already exists", songEditableDTO.getArtistId(), songEditableDTO.getName()));
-            }
-        } else {
-            if ((!songEditableDTO.getArtistId().equals(song.getArtist().getId()) || !songEditableDTO.getName().equals(song.getName())) && songRepository.existsByArtistIdAndName(songEditableDTO.getArtistId(), songEditableDTO.getName())) {
-                throw new SongAlreadyExistsException(String.format("Song with artistId=\"%s\" and name=\"%s\" already exists", songEditableDTO.getArtistId(), songEditableDTO.getName()));
-            }
-        }
-
-        song.setMediaURL(songEditableDTO.getMediaURL());
-        song.setName(songEditableDTO.getName());
-        song.setBpm(songEditableDTO.getBpm());
-        song.setKey(key);
-        song.setArtist(artist);
-        song.setTimeSignature(timeSignature);
-
-        return song;
     }
 }

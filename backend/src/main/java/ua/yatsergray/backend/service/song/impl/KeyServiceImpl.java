@@ -4,8 +4,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.KeyDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.KeyEditableDTO;
 import ua.yatsergray.backend.domain.entity.song.Key;
+import ua.yatsergray.backend.domain.request.song.KeyCreateUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.song.KeyAlreadyExistsException;
 import ua.yatsergray.backend.exception.song.NoSuchKeyException;
@@ -17,7 +17,6 @@ import ua.yatsergray.backend.repository.song.SongRepository;
 import ua.yatsergray.backend.service.song.KeyService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,8 +39,15 @@ public class KeyServiceImpl implements KeyService {
     }
 
     @Override
-    public KeyDTO addKey(KeyEditableDTO keyEditableDTO) throws KeyAlreadyExistsException {
-        return keyMapper.mapToKeyDTO(keyRepository.save(configureKey(new Key(), keyEditableDTO)));
+    public KeyDTO addKey(KeyCreateUpdateRequest keyCreateUpdateRequest) throws KeyAlreadyExistsException {
+        if (keyRepository.existsByName(keyCreateUpdateRequest.getName())) {
+            throw new KeyAlreadyExistsException(String.format("Key with name=\"%s\" already exists", keyCreateUpdateRequest.getName()));
+        }
+        Key key = Key.builder()
+                .name(keyCreateUpdateRequest.getName())
+                .build();
+
+        return keyMapper.mapToKeyDTO(keyRepository.save(key));
     }
 
     @Override
@@ -55,11 +61,17 @@ public class KeyServiceImpl implements KeyService {
     }
 
     @Override
-    public KeyDTO modifyKeyById(UUID keyId, KeyEditableDTO keyEditableDTO) throws NoSuchKeyException, KeyAlreadyExistsException {
+    public KeyDTO modifyKeyById(UUID keyId, KeyCreateUpdateRequest keyCreateUpdateRequest) throws NoSuchKeyException, KeyAlreadyExistsException {
         Key key = keyRepository.findById(keyId)
                 .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", keyId)));
 
-        return keyMapper.mapToKeyDTO(keyRepository.save(configureKey(key, keyEditableDTO)));
+        if (!keyCreateUpdateRequest.getName().equals(key.getName()) && keyRepository.existsByName(keyCreateUpdateRequest.getName())) {
+            throw new KeyAlreadyExistsException(String.format("Key with name=\"%s\" already exists", keyCreateUpdateRequest.getName()));
+        }
+
+        key.setName(keyCreateUpdateRequest.getName());
+
+        return keyMapper.mapToKeyDTO(keyRepository.save(key));
     }
 
     @Override
@@ -71,22 +83,6 @@ public class KeyServiceImpl implements KeyService {
         checkIfKeyHasChildEntity(keyId);
 
         keyRepository.deleteById(keyId);
-    }
-
-    private Key configureKey(Key key, KeyEditableDTO keyEditableDTO) throws KeyAlreadyExistsException {
-        if (Objects.isNull(key.getId())) {
-            if (keyRepository.existsByName(keyEditableDTO.getName())) {
-                throw new KeyAlreadyExistsException(String.format("Key with name=\"%s\" already exists", keyEditableDTO.getName()));
-            }
-        } else {
-            if (!keyEditableDTO.getName().equals(key.getName()) && keyRepository.existsByName(keyEditableDTO.getName())) {
-                throw new KeyAlreadyExistsException(String.format("Key with name=\"%s\" already exists", keyEditableDTO.getName()));
-            }
-        }
-
-        key.setName(keyEditableDTO.getName());
-
-        return key;
     }
 
     private void checkIfKeyHasChildEntity(UUID keyId) throws ChildEntityExistsException {

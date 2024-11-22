@@ -4,8 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.StageRoleDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.StageRoleEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.StageRole;
+import ua.yatsergray.backend.domain.request.band.StageRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.band.StageRoleUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchStageRoleException;
 import ua.yatsergray.backend.exception.band.StageRoleAlreadyExistsException;
@@ -17,7 +18,6 @@ import ua.yatsergray.backend.repository.song.SongInstrumentalPartRepository;
 import ua.yatsergray.backend.service.band.StageRoleService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,8 +38,21 @@ public class StageRoleServiceImpl implements StageRoleService {
     }
 
     @Override
-    public StageRoleDTO addStageRole(StageRoleEditableDTO stageRoleEditableDTO) throws StageRoleAlreadyExistsException {
-        return StageRoleMapper.INSTANCE.mapToStageRoleDTO(stageRoleRepository.save(configureStageRole(new StageRole(), stageRoleEditableDTO)));
+    public StageRoleDTO addStageRole(StageRoleCreateRequest stageRoleCreateRequest) throws StageRoleAlreadyExistsException {
+        if (stageRoleRepository.existsByName(stageRoleCreateRequest.getName())) {
+            throw new StageRoleAlreadyExistsException(String.format("Stage role with name=\"%s\" already exists", stageRoleCreateRequest.getName()));
+        }
+
+        if (stageRoleRepository.existsByType(stageRoleCreateRequest.getType())) {
+            throw new StageRoleAlreadyExistsException(String.format("Stage role with type=\"%s\" already exists", stageRoleCreateRequest.getType()));
+        }
+
+        StageRole stageRole = StageRole.builder()
+                .name(stageRoleCreateRequest.getName())
+                .type(stageRoleCreateRequest.getType())
+                .build();
+
+        return StageRoleMapper.INSTANCE.mapToStageRoleDTO(stageRoleRepository.save(stageRole));
     }
 
     @Override
@@ -53,11 +66,17 @@ public class StageRoleServiceImpl implements StageRoleService {
     }
 
     @Override
-    public StageRoleDTO modifyStageRoleById(UUID stageRoleId, StageRoleEditableDTO stageRoleEditableDTO) throws NoSuchStageRoleException, StageRoleAlreadyExistsException {
+    public StageRoleDTO modifyStageRoleById(UUID stageRoleId, StageRoleUpdateRequest stageRoleUpdateRequest) throws NoSuchStageRoleException, StageRoleAlreadyExistsException {
         StageRole stageRole = stageRoleRepository.findById(stageRoleId)
                 .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role with id=\"%s\" does not exist", stageRoleId)));
 
-        return StageRoleMapper.INSTANCE.mapToStageRoleDTO(stageRoleRepository.save(configureStageRole(stageRole, stageRoleEditableDTO)));
+        if (!stageRoleUpdateRequest.getName().equals(stageRole.getName()) && stageRoleRepository.existsByName(stageRoleUpdateRequest.getName())) {
+            throw new StageRoleAlreadyExistsException(String.format("Stage role with name=\"%s\" already exists", stageRoleUpdateRequest.getName()));
+        }
+
+        stageRole.setName(stageRoleUpdateRequest.getName());
+
+        return StageRoleMapper.INSTANCE.mapToStageRoleDTO(stageRoleRepository.save(stageRole));
     }
 
     @Override
@@ -69,31 +88,6 @@ public class StageRoleServiceImpl implements StageRoleService {
         checkIfStageRoleHasChildEntity(stageRoleId);
 
         stageRoleRepository.deleteById(stageRoleId);
-    }
-
-    private StageRole configureStageRole(StageRole stageRole, StageRoleEditableDTO stageRoleEditableDTO) throws StageRoleAlreadyExistsException {
-        if (Objects.isNull(stageRole.getId())) {
-            if (stageRoleRepository.existsByName(stageRoleEditableDTO.getName())) {
-                throw new StageRoleAlreadyExistsException(String.format("Stage role with name=\"%s\" already exists", stageRoleEditableDTO.getName()));
-            }
-
-            if (stageRoleRepository.existsByType(stageRoleEditableDTO.getType())) {
-                throw new StageRoleAlreadyExistsException(String.format("Stage role with type=\"%s\" already exists", stageRoleEditableDTO.getType()));
-            }
-        } else {
-            if (!stageRoleEditableDTO.getName().equals(stageRole.getName()) && stageRoleRepository.existsByName(stageRoleEditableDTO.getName())) {
-                throw new StageRoleAlreadyExistsException(String.format("Stage role with name=\"%s\" already exists", stageRoleEditableDTO.getName()));
-            }
-
-            if (!stageRoleEditableDTO.getType().equals(stageRole.getType()) && stageRoleRepository.existsByType(stageRoleEditableDTO.getType())) {
-                throw new StageRoleAlreadyExistsException(String.format("Stage role with type=\"%s\" already exists", stageRoleEditableDTO.getType()));
-            }
-        }
-
-        stageRole.setName(stageRoleEditableDTO.getName());
-        stageRole.setType(stageRoleEditableDTO.getType());
-
-        return stageRoleRepository.save(stageRole);
     }
 
     private void checkIfStageRoleHasChildEntity(UUID stageRoleId) throws ChildEntityExistsException {

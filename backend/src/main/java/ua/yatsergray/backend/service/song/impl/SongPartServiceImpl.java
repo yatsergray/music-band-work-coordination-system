@@ -4,11 +4,12 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.SongPartDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.SongPartEditableDTO;
 import ua.yatsergray.backend.domain.entity.song.Song;
 import ua.yatsergray.backend.domain.entity.song.SongPart;
 import ua.yatsergray.backend.domain.entity.song.SongPartCategory;
 import ua.yatsergray.backend.domain.entity.song.SongPartKeyChord;
+import ua.yatsergray.backend.domain.request.song.SongPartCreateRequest;
+import ua.yatsergray.backend.domain.request.song.SongPartUpdateRequest;
 import ua.yatsergray.backend.exception.song.NoSuchSongException;
 import ua.yatsergray.backend.exception.song.NoSuchSongPartCategoryException;
 import ua.yatsergray.backend.exception.song.NoSuchSongPartException;
@@ -18,7 +19,6 @@ import ua.yatsergray.backend.repository.song.*;
 import ua.yatsergray.backend.service.song.SongPartService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,8 +43,25 @@ public class SongPartServiceImpl implements SongPartService {
     }
 
     @Override
-    public SongPartDTO addSongPart(SongPartEditableDTO songPartEditableDTO) throws NoSuchSongException, NoSuchSongPartCategoryException, SongPartAlreadyExistsException {
-        return songPartMapper.mapToSongPartDTO(songPartRepository.save(configureSongPart(new SongPart(), songPartEditableDTO)));
+    public SongPartDTO addSongPart(SongPartCreateRequest songPartCreateRequest) throws NoSuchSongException, NoSuchSongPartCategoryException, SongPartAlreadyExistsException {
+        Song song = songRepository.findById(songPartCreateRequest.getSongId())
+                .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=\"%s\" does not exist", songPartCreateRequest.getSongId())));
+        SongPartCategory songPartCategory = songPartCategoryRepository.findById(songPartCreateRequest.getSongPartCategoryId())
+                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category with id=\"%s\" does not exist", songPartCreateRequest.getSongPartCategoryId())));
+
+        if (songPartRepository.existsBySongIdAndSongPartCategoryIdAndTypeNumber(songPartCreateRequest.getSongId(), songPartCreateRequest.getSongPartCategoryId(), songPartCreateRequest.getTypeNumber())) {
+            throw new SongPartAlreadyExistsException(String.format("Song part with songId=\"%s\", songPartCategoryId=\"%s\" and typeNumber=\"%s\" already exists", songPartCreateRequest.getSongId(), songPartCreateRequest.getSongPartCategoryId(), songPartCreateRequest.getTypeNumber()));
+        }
+
+        SongPart songPart = SongPart.builder()
+                .text(songPartCreateRequest.getText())
+                .typeNumber(songPartCreateRequest.getTypeNumber())
+                .measuresNumber(songPartCreateRequest.getMeasuresNumber())
+                .song(song)
+                .songPartCategory(songPartCategory)
+                .build();
+
+        return songPartMapper.mapToSongPartDTO(songPartRepository.save(songPart));
     }
 
     @Override
@@ -58,11 +75,22 @@ public class SongPartServiceImpl implements SongPartService {
     }
 
     @Override
-    public SongPartDTO modifySongPartById(UUID songPartId, SongPartEditableDTO songPartEditableDTO) throws NoSuchSongPartException, NoSuchSongException, NoSuchSongPartCategoryException, SongPartAlreadyExistsException {
+    public SongPartDTO modifySongPartById(UUID songPartId, SongPartUpdateRequest songPartUpdateRequest) throws NoSuchSongPartException, NoSuchSongException, NoSuchSongPartCategoryException, SongPartAlreadyExistsException {
         SongPart songPart = songPartRepository.findById(songPartId)
                 .orElseThrow(() -> new NoSuchSongPartException(String.format("Song part with id=\"%s\" does not exist", songPartId)));
+        SongPartCategory songPartCategory = songPartCategoryRepository.findById(songPartUpdateRequest.getSongPartCategoryId())
+                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category with id=\"%s\" does not exist", songPartUpdateRequest.getSongPartCategoryId())));
 
-        return songPartMapper.mapToSongPartDTO(songPartRepository.save(configureSongPart(songPart, songPartEditableDTO)));
+        if ((!songPartUpdateRequest.getSongPartCategoryId().equals(songPart.getSongPartCategory().getId()) || !songPartUpdateRequest.getTypeNumber().equals(songPart.getTypeNumber())) && songPartRepository.existsBySongIdAndSongPartCategoryIdAndTypeNumber(songPart.getSong().getId(), songPartUpdateRequest.getSongPartCategoryId(), songPartUpdateRequest.getTypeNumber())) {
+            throw new SongPartAlreadyExistsException(String.format("Song part with songId=\"%s\", songPartCategoryId=\"%s\" and typeNumber=\"%s\" already exists", songPart.getSong().getId(), songPartUpdateRequest.getSongPartCategoryId(), songPartUpdateRequest.getTypeNumber()));
+        }
+
+        songPart.setText(songPartUpdateRequest.getText());
+        songPart.setTypeNumber(songPartUpdateRequest.getTypeNumber());
+        songPart.setMeasuresNumber(songPartUpdateRequest.getMeasuresNumber());
+        songPart.setSongPartCategory(songPartCategory);
+
+        return songPartMapper.mapToSongPartDTO(songPartRepository.save(songPart));
     }
 
     @Override
@@ -83,30 +111,5 @@ public class SongPartServiceImpl implements SongPartService {
             songPartDetailsRepository.deleteBySongIdAndSongPartId(songPart.getSong().getId(), songPartId);
             songPartRepository.deleteById(songPartId);
         }
-    }
-
-    private SongPart configureSongPart(SongPart songPart, SongPartEditableDTO songPartEditableDTO) throws NoSuchSongException, NoSuchSongPartCategoryException, SongPartAlreadyExistsException {
-        Song song = songRepository.findById(songPartEditableDTO.getSongId())
-                .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=\"%s\" does not exist", songPartEditableDTO.getSongId())));
-        SongPartCategory songPartCategory = songPartCategoryRepository.findById(songPartEditableDTO.getSongPartCategoryId())
-                .orElseThrow(() -> new NoSuchSongPartCategoryException(String.format("Song part category with id=\"%s\" does not exist", songPartEditableDTO.getSongPartCategoryId())));
-
-        if (Objects.isNull(songPart.getId())) {
-            if (songPartRepository.existsBySongIdAndSongPartCategoryIdAndTypeNumber(songPartEditableDTO.getSongId(), songPartEditableDTO.getSongPartCategoryId(), songPartEditableDTO.getTypeNumber())) {
-                throw new SongPartAlreadyExistsException(String.format("Song part with songId=\"%s\", songPartCategoryId=\"%s\" and typeNumber=\"%s\" already exists", songPartEditableDTO.getSongId(), songPartEditableDTO.getSongPartCategoryId(), songPartEditableDTO.getTypeNumber()));
-            }
-        } else {
-            if ((!songPartEditableDTO.getSongId().equals(songPart.getSong().getId()) || !songPartEditableDTO.getSongPartCategoryId().equals(songPart.getSongPartCategory().getId()) || !songPartEditableDTO.getTypeNumber().equals(songPart.getTypeNumber())) && songPartRepository.existsBySongIdAndSongPartCategoryIdAndTypeNumber(songPartEditableDTO.getSongId(), songPartEditableDTO.getSongPartCategoryId(), songPartEditableDTO.getTypeNumber())) {
-                throw new SongPartAlreadyExistsException(String.format("Song part with songId=\"%s\", songPartCategoryId=\"%s\" and typeNumber=\"%s\" already exists", songPartEditableDTO.getSongId(), songPartEditableDTO.getSongPartCategoryId(), songPartEditableDTO.getTypeNumber()));
-            }
-        }
-
-        songPart.setText(songPartEditableDTO.getText());
-        songPart.setTypeNumber(songPartEditableDTO.getTypeNumber());
-        songPart.setMeasuresNumber(songPartEditableDTO.getMeasuresNumber());
-        songPart.setSong(song);
-        songPart.setSongPartCategory(songPartCategory);
-
-        return songPart;
     }
 }

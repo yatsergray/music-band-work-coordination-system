@@ -4,8 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.EventCategoryDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.EventCategoryEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.EventCategory;
+import ua.yatsergray.backend.domain.request.band.EventCategoryCreateRequest;
+import ua.yatsergray.backend.domain.request.band.EventCategoryUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.band.EventCategoryAlreadyExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchEventCategoryException;
@@ -15,7 +16,6 @@ import ua.yatsergray.backend.repository.band.EventRepository;
 import ua.yatsergray.backend.service.band.EventCategoryService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,8 +34,21 @@ public class EventCategoryServiceImpl implements EventCategoryService {
     }
 
     @Override
-    public EventCategoryDTO addEventCategory(EventCategoryEditableDTO eventCategoryEditableDTO) throws EventCategoryAlreadyExistsException {
-        return eventCategoryMapper.mapToEventCategoryDTO(eventCategoryRepository.save(configureEventCategory(new EventCategory(), eventCategoryEditableDTO)));
+    public EventCategoryDTO addEventCategory(EventCategoryCreateRequest eventCategoryCreateRequest) throws EventCategoryAlreadyExistsException {
+        if (eventCategoryRepository.existsByName(eventCategoryCreateRequest.getName())) {
+            throw new EventCategoryAlreadyExistsException(String.format("Event category with name=\"%s\" already exists", eventCategoryCreateRequest.getName()));
+        }
+
+        if (eventCategoryRepository.existsByType(eventCategoryCreateRequest.getType())) {
+            throw new EventCategoryAlreadyExistsException(String.format("Event category with type=\"%s\" already exists", eventCategoryCreateRequest.getType()));
+        }
+
+        EventCategory eventCategory = EventCategory.builder()
+                .name(eventCategoryCreateRequest.getName())
+                .type(eventCategoryCreateRequest.getType())
+                .build();
+
+        return eventCategoryMapper.mapToEventCategoryDTO(eventCategoryRepository.save(eventCategory));
     }
 
     @Override
@@ -49,11 +62,17 @@ public class EventCategoryServiceImpl implements EventCategoryService {
     }
 
     @Override
-    public EventCategoryDTO modifyEventCategoryById(UUID eventCategoryId, EventCategoryEditableDTO eventCategoryEditableDTO) throws NoSuchEventCategoryException, EventCategoryAlreadyExistsException {
+    public EventCategoryDTO modifyEventCategoryById(UUID eventCategoryId, EventCategoryUpdateRequest eventCategoryUpdateRequest) throws NoSuchEventCategoryException, EventCategoryAlreadyExistsException {
         EventCategory eventCategory = eventCategoryRepository.findById(eventCategoryId)
                 .orElseThrow(() -> new NoSuchEventCategoryException(String.format("Event category with id=\"%s\" does not exist", eventCategoryId)));
 
-        return eventCategoryMapper.mapToEventCategoryDTO(eventCategoryRepository.save(configureEventCategory(eventCategory, eventCategoryEditableDTO)));
+        if (!eventCategoryUpdateRequest.getName().equals(eventCategory.getName()) && eventCategoryRepository.existsByName(eventCategoryUpdateRequest.getName())) {
+            throw new EventCategoryAlreadyExistsException(String.format("Event category with name=\"%s\" already exists", eventCategoryUpdateRequest.getName()));
+        }
+
+        eventCategory.setName(eventCategoryUpdateRequest.getName());
+
+        return eventCategoryMapper.mapToEventCategoryDTO(eventCategoryRepository.save(eventCategory));
     }
 
     @Override
@@ -65,31 +84,6 @@ public class EventCategoryServiceImpl implements EventCategoryService {
         checkIfEventCategoryHasChildEntity(eventCategoryId);
 
         eventCategoryRepository.deleteById(eventCategoryId);
-    }
-
-    private EventCategory configureEventCategory(EventCategory eventCategory, EventCategoryEditableDTO eventCategoryEditableDTO) throws EventCategoryAlreadyExistsException {
-        if (Objects.isNull(eventCategory.getId())) {
-            if (eventCategoryRepository.existsByName(eventCategoryEditableDTO.getName())) {
-                throw new EventCategoryAlreadyExistsException(String.format("Event category with name=\"%s\" already exists", eventCategoryEditableDTO.getName()));
-            }
-
-            if (eventCategoryRepository.existsByType(eventCategoryEditableDTO.getType())) {
-                throw new EventCategoryAlreadyExistsException(String.format("Event category with type=\"%s\" already exists", eventCategoryEditableDTO.getType()));
-            }
-        } else {
-            if (!eventCategoryEditableDTO.getName().equals(eventCategory.getName()) && eventCategoryRepository.existsByName(eventCategoryEditableDTO.getName())) {
-                throw new EventCategoryAlreadyExistsException(String.format("Event category with name=\"%s\" already exists", eventCategoryEditableDTO.getName()));
-            }
-
-            if (!eventCategoryEditableDTO.getType().equals(eventCategory.getType()) && eventCategoryRepository.existsByType(eventCategoryEditableDTO.getType())) {
-                throw new EventCategoryAlreadyExistsException(String.format("Event category with type=\"%s\" already exists", eventCategoryEditableDTO.getType()));
-            }
-        }
-
-        eventCategory.setName(eventCategoryEditableDTO.getName());
-        eventCategory.setType(eventCategoryEditableDTO.getType());
-
-        return eventCategory;
     }
 
     private void checkIfEventCategoryHasChildEntity(UUID eventCategoryId) throws ChildEntityExistsException {

@@ -4,10 +4,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.EventBandSongVersionDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.EventBandSongVersionEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.BandSongVersion;
 import ua.yatsergray.backend.domain.entity.band.Event;
 import ua.yatsergray.backend.domain.entity.band.EventBandSongVersion;
+import ua.yatsergray.backend.domain.request.band.EventBandSongVersionCreateRequest;
+import ua.yatsergray.backend.domain.request.band.EventBandSongVersionUpdateRequest;
 import ua.yatsergray.backend.exception.band.*;
 import ua.yatsergray.backend.mapper.band.EventBandSongVersionMapper;
 import ua.yatsergray.backend.repository.band.BandSongVersionRepository;
@@ -16,7 +17,6 @@ import ua.yatsergray.backend.repository.band.EventRepository;
 import ua.yatsergray.backend.service.band.EventBandSongVersionService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,8 +38,27 @@ public class EventBandSongVersionServiceImpl implements EventBandSongVersionServ
     }
 
     @Override
-    public EventBandSongVersionDTO addEventBandSongVersion(EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) throws NoSuchEventException, NoSuchBandSongVersionException, EventBandSongVersionConflictException, EventBandSongVersionAlreadyExistsException {
-        return eventBandSongVersionMapper.mapToEventBandSongVersionDTO(eventBandSongVersionRepository.save(configureEventBandSongVersion(new EventBandSongVersion(), eventBandSongVersionEditableDTO)));
+    public EventBandSongVersionDTO addEventBandSongVersion(EventBandSongVersionCreateRequest eventBandSongVersionCreateRequest) throws NoSuchEventException, NoSuchBandSongVersionException, EventBandSongVersionConflictException, EventBandSongVersionAlreadyExistsException {
+        Event event = eventRepository.findById(eventBandSongVersionCreateRequest.getEventId())
+                .orElseThrow(() -> new NoSuchEventException(String.format("Event with id=\"%s\" does not exist", eventBandSongVersionCreateRequest.getEventId())));
+        BandSongVersion bandSongVersion = bandSongVersionRepository.findById(eventBandSongVersionCreateRequest.getBandSongVersionId())
+                .orElseThrow(() -> new NoSuchBandSongVersionException(String.format("Band song version with id=\"%s\" does not exist", eventBandSongVersionCreateRequest.getBandSongVersionId())));
+
+        if (!event.getBand().getBandSongVersions().contains(bandSongVersion)) {
+            throw new EventBandSongVersionConflictException(String.format("Band song version with id=\"%s\" does not belong to the Band with id=\"%s\"", eventBandSongVersionCreateRequest.getBandSongVersionId(), eventBandSongVersionCreateRequest.getEventId()));
+        }
+
+        if (eventBandSongVersionRepository.existsByEventIdAndSequenceNumber(eventBandSongVersionCreateRequest.getEventId(), eventBandSongVersionCreateRequest.getSequenceNumber())) {
+            throw new EventBandSongVersionAlreadyExistsException(String.format("Event band song version with eventId=\"%s\" and sequenceNumber=\"%s\" already exists", eventBandSongVersionCreateRequest.getEventId(), eventBandSongVersionCreateRequest.getSequenceNumber()));
+        }
+
+        EventBandSongVersion eventBandSongVersion = EventBandSongVersion.builder()
+                .sequenceNumber(eventBandSongVersionCreateRequest.getSequenceNumber())
+                .event(event)
+                .bandSongVersion(bandSongVersion)
+                .build();
+
+        return eventBandSongVersionMapper.mapToEventBandSongVersionDTO(eventBandSongVersionRepository.save(eventBandSongVersion));
     }
 
     @Override
@@ -53,11 +72,17 @@ public class EventBandSongVersionServiceImpl implements EventBandSongVersionServ
     }
 
     @Override
-    public EventBandSongVersionDTO modifyEventBandSongVersionById(UUID eventBandSongVersionId, EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) throws NoSuchEventBandSongVersionException, NoSuchEventException, NoSuchBandSongVersionException, EventBandSongVersionConflictException, EventBandSongVersionAlreadyExistsException {
+    public EventBandSongVersionDTO modifyEventBandSongVersionById(UUID eventBandSongVersionId, EventBandSongVersionUpdateRequest eventBandSongVersionUpdateRequest) throws NoSuchEventBandSongVersionException, EventBandSongVersionAlreadyExistsException {
         EventBandSongVersion eventBandSongVersion = eventBandSongVersionRepository.findById(eventBandSongVersionId)
                 .orElseThrow(() -> new NoSuchEventBandSongVersionException(String.format("Event band song version with id=\"%s\" does not exist", eventBandSongVersionId)));
 
-        return eventBandSongVersionMapper.mapToEventBandSongVersionDTO(eventBandSongVersionRepository.save(configureEventBandSongVersion(eventBandSongVersion, eventBandSongVersionEditableDTO)));
+        if (!eventBandSongVersionUpdateRequest.getSequenceNumber().equals(eventBandSongVersion.getSequenceNumber()) && eventBandSongVersionRepository.existsByEventIdAndSequenceNumber(eventBandSongVersion.getEvent().getId(), eventBandSongVersionUpdateRequest.getSequenceNumber())) {
+            throw new EventBandSongVersionAlreadyExistsException(String.format("Event band song version with eventId=\"%s\" and sequenceNumber=\"%s\" already exists", eventBandSongVersion.getEvent().getId(), eventBandSongVersionUpdateRequest.getSequenceNumber()));
+        }
+
+        eventBandSongVersion.setSequenceNumber(eventBandSongVersionUpdateRequest.getSequenceNumber());
+
+        return eventBandSongVersionMapper.mapToEventBandSongVersionDTO(eventBandSongVersionRepository.save(eventBandSongVersion));
     }
 
     @Override
@@ -67,32 +92,5 @@ public class EventBandSongVersionServiceImpl implements EventBandSongVersionServ
         }
 
         eventBandSongVersionRepository.deleteById(eventBandSongVersionId);
-    }
-
-    private EventBandSongVersion configureEventBandSongVersion(EventBandSongVersion eventBandSongVersion, EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) throws NoSuchEventException, NoSuchBandSongVersionException, EventBandSongVersionConflictException, EventBandSongVersionAlreadyExistsException {
-        Event event = eventRepository.findById(eventBandSongVersionEditableDTO.getEventId())
-                .orElseThrow(() -> new NoSuchEventException(String.format("Event with id=\"%s\" does not exist", eventBandSongVersionEditableDTO.getEventId())));
-        BandSongVersion bandSongVersion = bandSongVersionRepository.findById(eventBandSongVersionEditableDTO.getBandSongVersionId())
-                .orElseThrow(() -> new NoSuchBandSongVersionException(String.format("Band song version with id=\"%s\" does not exist", eventBandSongVersionEditableDTO.getBandSongVersionId())));
-
-        if (!event.getBand().getBandSongVersions().contains(bandSongVersion)) {
-            throw new EventBandSongVersionConflictException(String.format("Band song version with id=\"%s\" does not belong to the Band with id=\"%s\"", eventBandSongVersionEditableDTO.getBandSongVersionId(), eventBandSongVersionEditableDTO.getEventId()));
-        }
-
-        if (Objects.isNull(eventBandSongVersion.getId())) {
-            if (eventBandSongVersionRepository.existsByEventIdAndSequenceNumber(eventBandSongVersionEditableDTO.getEventId(), eventBandSongVersionEditableDTO.getSequenceNumber())) {
-                throw new EventBandSongVersionAlreadyExistsException(String.format("Event band song version with eventId=\"%s\" and sequenceNumber=\"%s\" already exists", eventBandSongVersionEditableDTO.getEventId(), eventBandSongVersionEditableDTO.getSequenceNumber()));
-            }
-        } else {
-            if (!eventBandSongVersionEditableDTO.getEventId().equals(eventBandSongVersion.getEvent().getId()) || !eventBandSongVersionEditableDTO.getSequenceNumber().equals(eventBandSongVersion.getSequenceNumber()) && eventBandSongVersionRepository.existsByEventIdAndSequenceNumber(eventBandSongVersionEditableDTO.getEventId(), eventBandSongVersionEditableDTO.getSequenceNumber())) {
-                throw new EventBandSongVersionAlreadyExistsException(String.format("Event band song version with eventId=\"%s\" and sequenceNumber=\"%s\" already exists", eventBandSongVersionEditableDTO.getEventId(), eventBandSongVersionEditableDTO.getSequenceNumber()));
-            }
-        }
-
-        eventBandSongVersion.setSequenceNumber(eventBandSongVersionEditableDTO.getSequenceNumber());
-        eventBandSongVersion.setEvent(event);
-        eventBandSongVersion.setBandSongVersion(bandSongVersion);
-
-        return eventBandSongVersion;
     }
 }

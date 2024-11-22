@@ -4,8 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.user.RoleDTO;
-import ua.yatsergray.backend.domain.dto.user.editable.RoleEditableDTO;
 import ua.yatsergray.backend.domain.entity.user.Role;
+import ua.yatsergray.backend.domain.request.user.RoleCreateRequest;
+import ua.yatsergray.backend.domain.request.user.RoleUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.user.NoSuchRoleException;
 import ua.yatsergray.backend.exception.user.RoleAlreadyExistsException;
@@ -15,7 +16,6 @@ import ua.yatsergray.backend.repository.user.UserRepository;
 import ua.yatsergray.backend.service.user.RoleService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,8 +34,21 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleDTO addRole(RoleEditableDTO roleEditableDTO) throws RoleAlreadyExistsException {
-        return roleMapper.mapToRoleDTO(roleRepository.save(configureRole(new Role(), roleEditableDTO)));
+    public RoleDTO addRole(RoleCreateRequest roleCreateRequest) throws RoleAlreadyExistsException {
+        if (roleRepository.existsByName(roleCreateRequest.getName())) {
+            throw new RoleAlreadyExistsException(String.format("Role with name=\"%s\" already exists", roleCreateRequest.getName()));
+        }
+
+        if (roleRepository.existsByType(roleCreateRequest.getType())) {
+            throw new RoleAlreadyExistsException(String.format("Role with type=\"%s\" already exists", roleCreateRequest.getType()));
+        }
+
+        Role role = Role.builder()
+                .name(roleCreateRequest.getName())
+                .type(roleCreateRequest.getType())
+                .build();
+
+        return roleMapper.mapToRoleDTO(roleRepository.save(role));
     }
 
     @Override
@@ -49,11 +62,17 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public RoleDTO modifyRoleById(UUID roleId, RoleEditableDTO roleEditableDTO) throws NoSuchRoleException, RoleAlreadyExistsException {
+    public RoleDTO modifyRoleById(UUID roleId, RoleUpdateRequest roleUpdateRequest) throws NoSuchRoleException, RoleAlreadyExistsException {
         Role role = roleRepository.findById(roleId)
                 .orElseThrow(() -> new NoSuchRoleException(String.format("Role with id=\"%s\" does not exist", roleId)));
 
-        return roleMapper.mapToRoleDTO(roleRepository.save(configureRole(role, roleEditableDTO)));
+        if (!roleUpdateRequest.getName().equals(role.getName()) && roleRepository.existsByName(roleUpdateRequest.getName())) {
+            throw new RoleAlreadyExistsException(String.format("Role with name=\"%s\" already exists", roleUpdateRequest.getName()));
+        }
+
+        role.setName(roleUpdateRequest.getName());
+
+        return roleMapper.mapToRoleDTO(roleRepository.save(role));
     }
 
     @Override
@@ -65,31 +84,6 @@ public class RoleServiceImpl implements RoleService {
         checkIfRoleHasChildEntity(roleId);
 
         roleRepository.deleteById(roleId);
-    }
-
-    private Role configureRole(Role role, RoleEditableDTO roleEditableDTO) throws RoleAlreadyExistsException {
-        if (Objects.isNull(role.getId())) {
-            if (roleRepository.existsByName(roleEditableDTO.getName())) {
-                throw new RoleAlreadyExistsException(String.format("Role with name=\"%s\" already exists", roleEditableDTO.getName()));
-            }
-
-            if (roleRepository.existsByType(roleEditableDTO.getType())) {
-                throw new RoleAlreadyExistsException(String.format("Role with type=\"%s\" already exists", roleEditableDTO.getType()));
-            }
-        } else {
-            if (!roleEditableDTO.getName().equals(role.getName()) && roleRepository.existsByName(roleEditableDTO.getName())) {
-                throw new RoleAlreadyExistsException(String.format("Role with name=\"%s\" already exists", roleEditableDTO.getName()));
-            }
-
-            if (!roleEditableDTO.getType().equals(role.getType()) && roleRepository.existsByType(roleEditableDTO.getType())) {
-                throw new RoleAlreadyExistsException(String.format("Role with type=\"%s\" already exists", roleEditableDTO.getType()));
-            }
-        }
-
-        role.setName(roleEditableDTO.getName());
-        role.setType(roleEditableDTO.getType());
-
-        return role;
     }
 
     private void checkIfRoleHasChildEntity(UUID roleId) throws ChildEntityExistsException {

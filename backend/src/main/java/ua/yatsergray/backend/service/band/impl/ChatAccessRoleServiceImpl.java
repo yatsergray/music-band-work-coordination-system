@@ -4,8 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.ChatAccessRoleDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.ChatAccessRoleEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.ChatAccessRole;
+import ua.yatsergray.backend.domain.request.band.ChatAccessRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.band.ChatAccessRoleUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.band.ChatAccessRoleAlreadyExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchChatAccessRoleException;
@@ -15,7 +16,6 @@ import ua.yatsergray.backend.repository.band.ChatUserAccessRoleRepository;
 import ua.yatsergray.backend.service.band.ChatAccessRoleService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,8 +34,21 @@ public class ChatAccessRoleServiceImpl implements ChatAccessRoleService {
     }
 
     @Override
-    public ChatAccessRoleDTO addChatAccessRole(ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) throws ChatAccessRoleAlreadyExistsException {
-        return chatAccessRoleMapper.mapToChatAccessRoleDTO(chatAccessRoleRepository.save(configureChatAccessRole(new ChatAccessRole(), chatAccessRoleEditableDTO)));
+    public ChatAccessRoleDTO addChatAccessRole(ChatAccessRoleCreateRequest chatAccessRoleCreateRequest) throws ChatAccessRoleAlreadyExistsException {
+        if (chatAccessRoleRepository.existsByName(chatAccessRoleCreateRequest.getName())) {
+            throw new ChatAccessRoleAlreadyExistsException(String.format("Chat access role with name=\"%s\" already exists", chatAccessRoleCreateRequest.getName()));
+        }
+
+        if (chatAccessRoleRepository.existsByType(chatAccessRoleCreateRequest.getType())) {
+            throw new ChatAccessRoleAlreadyExistsException(String.format("Chat access role with type=\"%s\" already exists", chatAccessRoleCreateRequest.getType()));
+        }
+
+        ChatAccessRole chatAccessRole = ChatAccessRole.builder()
+                .name(chatAccessRoleCreateRequest.getName())
+                .type(chatAccessRoleCreateRequest.getType())
+                .build();
+
+        return chatAccessRoleMapper.mapToChatAccessRoleDTO(chatAccessRoleRepository.save(chatAccessRole));
     }
 
     @Override
@@ -49,11 +62,17 @@ public class ChatAccessRoleServiceImpl implements ChatAccessRoleService {
     }
 
     @Override
-    public ChatAccessRoleDTO modifyChatAccessRoleById(UUID chatAccessRoleId, ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) throws NoSuchChatAccessRoleException, ChatAccessRoleAlreadyExistsException {
+    public ChatAccessRoleDTO modifyChatAccessRoleById(UUID chatAccessRoleId, ChatAccessRoleUpdateRequest chatAccessRoleUpdateRequest) throws NoSuchChatAccessRoleException, ChatAccessRoleAlreadyExistsException {
         ChatAccessRole chatAccessRole = chatAccessRoleRepository.findById(chatAccessRoleId)
                 .orElseThrow(() -> new NoSuchChatAccessRoleException(String.format("Chat access role with id=\"%s\" does not exist", chatAccessRoleId)));
 
-        return chatAccessRoleMapper.mapToChatAccessRoleDTO(chatAccessRoleRepository.save(configureChatAccessRole(chatAccessRole, chatAccessRoleEditableDTO)));
+        if (!chatAccessRoleUpdateRequest.getName().equals(chatAccessRole.getName()) && chatAccessRoleRepository.existsByName(chatAccessRoleUpdateRequest.getName())) {
+            throw new ChatAccessRoleAlreadyExistsException(String.format("Chat access role with name=\"%s\" already exists", chatAccessRoleUpdateRequest.getName()));
+        }
+
+        chatAccessRole.setName(chatAccessRoleUpdateRequest.getName());
+
+        return chatAccessRoleMapper.mapToChatAccessRoleDTO(chatAccessRoleRepository.save(chatAccessRole));
     }
 
     @Override
@@ -65,31 +84,6 @@ public class ChatAccessRoleServiceImpl implements ChatAccessRoleService {
         checkIfChatAccessRoleHasChildEntity(chatAccessRoleId);
 
         chatAccessRoleRepository.deleteById(chatAccessRoleId);
-    }
-
-    private ChatAccessRole configureChatAccessRole(ChatAccessRole chatAccessRole, ChatAccessRoleEditableDTO chatAccessRoleEditableDTO) throws ChatAccessRoleAlreadyExistsException {
-        if (Objects.isNull(chatAccessRole.getId())) {
-            if (chatAccessRoleRepository.existsByName(chatAccessRoleEditableDTO.getName())) {
-                throw new ChatAccessRoleAlreadyExistsException(String.format("Chat access role with name=\"%s\" already exists", chatAccessRoleEditableDTO.getName()));
-            }
-
-            if (chatAccessRoleRepository.existsByType(chatAccessRoleEditableDTO.getType())) {
-                throw new ChatAccessRoleAlreadyExistsException(String.format("Chat access role with type=\"%s\" already exists", chatAccessRoleEditableDTO.getType()));
-            }
-        } else {
-            if (!chatAccessRoleEditableDTO.getName().equals(chatAccessRole.getName()) && chatAccessRoleRepository.existsByName(chatAccessRoleEditableDTO.getName())) {
-                throw new ChatAccessRoleAlreadyExistsException(String.format("Chat access role with name=\"%s\" already exists", chatAccessRoleEditableDTO.getName()));
-            }
-
-            if (!chatAccessRoleEditableDTO.getType().equals(chatAccessRole.getType()) && chatAccessRoleRepository.existsByType(chatAccessRoleEditableDTO.getType())) {
-                throw new ChatAccessRoleAlreadyExistsException(String.format("Chat access role with type=\"%s\" already exists", chatAccessRoleEditableDTO.getType()));
-            }
-        }
-
-        chatAccessRole.setName(chatAccessRoleEditableDTO.getName());
-        chatAccessRole.setType(chatAccessRoleEditableDTO.getType());
-
-        return chatAccessRole;
     }
 
     private void checkIfChatAccessRoleHasChildEntity(UUID chatAccessRoleId) throws ChildEntityExistsException {

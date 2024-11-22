@@ -1,7 +1,7 @@
 package ua.yatsergray.backend.service.song;
 
 import ua.yatsergray.backend.domain.dto.song.ChordDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.ChordEditableDTO;
+import ua.yatsergray.backend.domain.request.song.ChordCreateUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.song.ChordAlreadyExistsException;
 import ua.yatsergray.backend.exception.song.NoSuchChordException;
@@ -12,13 +12,13 @@ import java.util.UUID;
 
 public interface ChordService {
 
-    ChordDTO addChord(ChordEditableDTO chordEditableDTO) throws ChordAlreadyExistsException;
+    ChordDTO addChord(ChordCreateUpdateRequest chordCreateUpdateRequest) throws ChordAlreadyExistsException;
 
     Optional<ChordDTO> getChordById(UUID chordId);
 
     List<ChordDTO> getAllChords();
 
-    ChordDTO modifyChordById(UUID chordId, ChordEditableDTO chordEditableDTO) throws NoSuchChordException, ChordAlreadyExistsException;
+    ChordDTO modifyChordById(UUID chordId, ChordCreateUpdateRequest chordCreateUpdateRequest) throws NoSuchChordException, ChordAlreadyExistsException;
 
     void removeChordById(UUID chordId) throws NoSuchChordException, ChildEntityExistsException;
 }
