@@ -27,5 +27,6 @@ public class TimeSignature {
     private Integer duration;
 
     @OneToMany(mappedBy = "timeSignature")
+    @Builder.Default
     private Set<Song> songs = new LinkedHashSet<>();
 }

@@ -33,9 +33,11 @@ public class Chat {
     private Band band;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<Message> messages = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<ChatUserAccessRole> chatUserAccessRoles = new LinkedHashSet<>();
 
     @Override

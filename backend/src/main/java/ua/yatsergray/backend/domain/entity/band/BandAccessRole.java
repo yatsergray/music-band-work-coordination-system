@@ -29,5 +29,6 @@ public class BandAccessRole {
     private BandAccessRoleType type;
 
     @OneToMany(mappedBy = "bandAccessRole")
+    @Builder.Default
     private Set<BandUserAccessRole> bandUserAccessRoles = new LinkedHashSet<>();
 }

@@ -31,6 +31,7 @@ public class Role {
     private RoleType type;
 
     @ManyToMany(mappedBy = "roles")
+    @Builder.Default
     private Set<User> users = new LinkedHashSet<>();
 
     @Override

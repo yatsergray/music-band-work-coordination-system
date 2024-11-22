@@ -39,18 +39,23 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user")
+    @Builder.Default
     private Set<Message> messages = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "user")
+    @Builder.Default
     private Set<EventUser> eventUsers = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<BandUserStageRole> bandUserStageRoles = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<BandUserAccessRole> bandUserAccessRoles = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "user",  cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<ChatUserAccessRole> chatUserAccessRoles = new LinkedHashSet<>();
 
     @ManyToMany
@@ -59,6 +64,7 @@ public class User {
             joinColumns = {@JoinColumn(name = "id_user")},
             inverseJoinColumns = {@JoinColumn(name = "id_role")}
     )
+    @Builder.Default
     private Set<Role> roles = new LinkedHashSet<>();
 
     @Override

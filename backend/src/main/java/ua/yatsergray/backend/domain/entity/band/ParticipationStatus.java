@@ -29,8 +29,10 @@ public class ParticipationStatus {
     private ParticipationStatusType type;
 
     @OneToMany(mappedBy = "participationStatus")
+    @Builder.Default
     private Set<EventUser> eventUsers = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "participationStatus")
+    @Builder.Default
     private Set<Invitation> invitations = new LinkedHashSet<>();
 }

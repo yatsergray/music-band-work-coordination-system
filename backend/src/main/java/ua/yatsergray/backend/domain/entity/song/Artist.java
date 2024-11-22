@@ -27,5 +27,6 @@ public class Artist {
     private String name;
 
     @OneToMany(mappedBy = "artist")
+    @Builder.Default
     private Set<Song> songs = new LinkedHashSet<>();
 }

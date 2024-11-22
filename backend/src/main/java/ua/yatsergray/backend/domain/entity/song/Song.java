@@ -50,16 +50,21 @@ public class Song {
     @JoinColumn(name = "id_time_signature", nullable = false)
     private TimeSignature timeSignature;
 
-    @OneToMany(mappedBy = "song") // TODO: Remove , cascade = CascadeType.REMOVE declaration
+    @OneToMany(mappedBy = "song")
+    @Builder.Default
+    // TODO: Remove , cascade = CascadeType.REMOVE declaration
     private Set<SongPart> songParts = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "song")
+    @Builder.Default
     private Set<BandSongVersion> bandSongVersions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "song", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<SongPartDetails> songPartDetailsSet = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "song", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<SongInstrumentalPart> songInstrumentalParts = new LinkedHashSet<>();
 
     @ManyToMany
@@ -68,6 +73,7 @@ public class Song {
             joinColumns = {@JoinColumn(name = "id_song")},
             inverseJoinColumns = {@JoinColumn(name = "id_key")}
     )
+    @Builder.Default
     private Set<Key> keys = new LinkedHashSet<>();
 
     @Override

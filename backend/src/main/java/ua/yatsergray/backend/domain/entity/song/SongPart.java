@@ -51,10 +51,12 @@ public class SongPart {
     private SongPartCategory songPartCategory;
 
     @OneToMany(mappedBy = "songPart")
+    @Builder.Default
     // TODO: REMOVE ALL EXCEPT OF THE Chords WHICH FIT TO BandSongVersion Key, Remove , cascade = CascadeType.REMOVE declaration
     private Set<SongPartKeyChord> songPartKeyChords = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "songPart")
+    @Builder.Default
     // TODO: Remove , cascade = CascadeType.REMOVE declaration
     private Set<SongPartDetails> songPartDetailsSet = new LinkedHashSet<>();
 
