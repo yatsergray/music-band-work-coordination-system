@@ -29,21 +29,27 @@ public class Band {
     private String name;
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<Chat> chats = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<Event> events = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<Invitation> invitations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<BandSongVersion> bandSongVersions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<BandUserStageRole> bandUserStageRoles = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<BandUserAccessRole> bandUserAccessRoles = new LinkedHashSet<>();
 
     @Override

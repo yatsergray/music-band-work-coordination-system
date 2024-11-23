@@ -24,5 +24,6 @@ public class Chord {
     private String name;
 
     @OneToMany(mappedBy = "chord")
+    @Builder.Default
     private Set<SongPartKeyChord> songPartKeyChords = new LinkedHashSet<>();
 }

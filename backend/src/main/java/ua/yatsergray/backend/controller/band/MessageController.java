@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.MessageDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.MessageEditableDTO;
+import ua.yatsergray.backend.domain.request.band.MessageCreateRequest;
+import ua.yatsergray.backend.domain.request.band.MessageUpdateRequest;
 import ua.yatsergray.backend.service.band.impl.MessageServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class MessageController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<MessageDTO> createMessage(@Valid @RequestBody MessageEditableDTO messageEditableDTO) {
-        return ResponseEntity.ok(messageService.addMessage(messageEditableDTO));
+    public ResponseEntity<MessageDTO> createMessage(@Valid @RequestBody MessageCreateRequest messageCreateRequest) {
+        return ResponseEntity.ok(messageService.addMessage(messageCreateRequest));
     }
 
     @GetMapping("/{messageId}")
@@ -42,8 +43,8 @@ public class MessageController {
 
     @SneakyThrows
     @PutMapping("/{messageId}")
-    public ResponseEntity<MessageDTO> updateMessageById(@PathVariable("messageId") UUID messageId, @Valid @RequestBody MessageEditableDTO messageEditableDTO) {
-        return ResponseEntity.ok(messageService.modifyMessageById(messageId, messageEditableDTO));
+    public ResponseEntity<MessageDTO> updateMessageById(@PathVariable("messageId") UUID messageId, @Valid @RequestBody MessageUpdateRequest messageUpdateRequest) {
+        return ResponseEntity.ok(messageService.modifyMessageById(messageId, messageUpdateRequest));
     }
 
     @SneakyThrows

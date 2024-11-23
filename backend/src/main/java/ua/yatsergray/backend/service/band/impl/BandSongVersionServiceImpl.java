@@ -4,13 +4,14 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.BandSongVersionDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandSongVersionEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.Band;
 import ua.yatsergray.backend.domain.entity.band.BandSongVersion;
 import ua.yatsergray.backend.domain.entity.song.Key;
 import ua.yatsergray.backend.domain.entity.song.Song;
 import ua.yatsergray.backend.domain.entity.song.SongPart;
 import ua.yatsergray.backend.domain.entity.song.SongPartKeyChord;
+import ua.yatsergray.backend.domain.request.band.BandSongVersionCreateRequest;
+import ua.yatsergray.backend.domain.request.band.BandSongVersionUpdateRequest;
 import ua.yatsergray.backend.exception.band.BandSongVersionConflictException;
 import ua.yatsergray.backend.exception.band.NoSuchBandException;
 import ua.yatsergray.backend.exception.band.NoSuchBandSongVersionException;
@@ -51,10 +52,27 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
     }
 
     @Override
-    public BandSongVersionDTO addBandSongVersion(BandSongVersionEditableDTO bandSongVersionEditableDTO) throws NoSuchKeyException, NoSuchBandException, NoSuchSongException, BandSongVersionConflictException {
+    public BandSongVersionDTO addBandSongVersion(BandSongVersionCreateRequest bandSongVersionCreateRequest) throws NoSuchKeyException, NoSuchBandException, NoSuchSongException, BandSongVersionConflictException {
         // TODO: inherit original song structure
 
-        return bandSongVersionMapper.mapToBandSongVersionDTO(bandSongVersionRepository.save(configureBandSongVersion(new BandSongVersion(), bandSongVersionEditableDTO)));
+        Key key = keyRepository.findById(bandSongVersionCreateRequest.getKeyId())
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", bandSongVersionCreateRequest.getKeyId())));
+        Band band = bandRepository.findById(bandSongVersionCreateRequest.getBandId())
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=\"%s\" does not exist", bandSongVersionCreateRequest.getBandId())));
+        Song song = songRepository.findById(bandSongVersionCreateRequest.getSongId())
+                .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=\"%s\" does not exist", bandSongVersionCreateRequest.getSongId())));
+
+        if (!song.getKey().equals(key) && !song.getKeys().contains(key)) {
+            throw new BandSongVersionConflictException(String.format("Song with id=\"%s\" does not have Key with id=\"%s\"", bandSongVersionCreateRequest.getSongId(), bandSongVersionCreateRequest.getKeyId()));
+        }
+
+        BandSongVersion bandSongVersion = BandSongVersion.builder()
+                .key(key)
+                .band(band)
+                .song(song)
+                .build();
+
+        return bandSongVersionMapper.mapToBandSongVersionDTO(bandSongVersionRepository.save(bandSongVersion));
     }
 
     @Override
@@ -68,11 +86,19 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
     }
 
     @Override
-    public BandSongVersionDTO modifyBandSongVersionById(UUID bandSongVersionId, BandSongVersionEditableDTO bandSongVersionEditableDTO) throws NoSuchBandSongVersionException, NoSuchKeyException, NoSuchBandException, NoSuchSongException, BandSongVersionConflictException {
+    public BandSongVersionDTO modifyBandSongVersionById(UUID bandSongVersionId, BandSongVersionUpdateRequest bandSongVersionUpdateRequest) throws NoSuchBandSongVersionException, NoSuchKeyException, BandSongVersionConflictException {
         BandSongVersion bandSongVersion = bandSongVersionRepository.findById(bandSongVersionId)
                 .orElseThrow(() -> new NoSuchBandSongVersionException(String.format("Band song version with id=\"%s\" does not exist", bandSongVersionId)));
+        Key key = keyRepository.findById(bandSongVersionUpdateRequest.getKeyId())
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", bandSongVersionUpdateRequest.getKeyId())));
 
-        return bandSongVersionMapper.mapToBandSongVersionDTO(bandSongVersionRepository.save(configureBandSongVersion(bandSongVersion, bandSongVersionEditableDTO)));
+        if (!bandSongVersion.getSong().getKey().equals(key) && !bandSongVersion.getSong().getKeys().contains(key)) {
+            throw new BandSongVersionConflictException(String.format("Song with id=\"%s\" does not have Key with id=\"%s\"", bandSongVersion.getSong().getId(), bandSongVersionUpdateRequest.getKeyId()));
+        }
+
+        bandSongVersion.setKey(key);
+
+        return bandSongVersionMapper.mapToBandSongVersionDTO(bandSongVersionRepository.save(bandSongVersion));
     }
 
     @Override
@@ -88,24 +114,5 @@ public class BandSongVersionServiceImpl implements BandSongVersionService {
         songPartKeyChordRepository.deleteAll(availableToDeleteSongPartKeyChords);
         songPartRepository.deleteAll(availableToDeleteSongParts);
         bandSongVersionRepository.deleteById(bandSongVersionId);
-    }
-
-    private BandSongVersion configureBandSongVersion(BandSongVersion bandSongVersion, BandSongVersionEditableDTO bandSongVersionEditableDTO) throws NoSuchKeyException, NoSuchBandException, NoSuchSongException, BandSongVersionConflictException {
-        Key key = keyRepository.findById(bandSongVersionEditableDTO.getKeyId())
-                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", bandSongVersionEditableDTO.getKeyId())));
-        Band band = bandRepository.findById(bandSongVersionEditableDTO.getBandId())
-                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=\"%s\" does not exist", bandSongVersionEditableDTO.getBandId())));
-        Song song = songRepository.findById(bandSongVersionEditableDTO.getSongId())
-                .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=\"%s\" does not exist", bandSongVersionEditableDTO.getSongId())));
-
-        if (!song.getKey().equals(key) && !song.getKeys().contains(key)) {
-            throw new BandSongVersionConflictException(String.format("Song with id=\"%s\" does not have Key with id=\"%s\"", bandSongVersionEditableDTO.getSongId(), bandSongVersionEditableDTO.getKeyId()));
-        }
-
-        bandSongVersion.setKey(key);
-        bandSongVersion.setBand(band);
-        bandSongVersion.setSong(song);
-
-        return bandSongVersion;
     }
 }

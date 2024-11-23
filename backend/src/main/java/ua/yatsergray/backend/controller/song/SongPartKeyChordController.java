@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.song.SongPartKeyChordDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.SongPartKeyChordEditableDTO;
+import ua.yatsergray.backend.domain.request.song.SongPartKeyChordCreateRequest;
+import ua.yatsergray.backend.domain.request.song.SongPartKeyChordUpdateRequest;
 import ua.yatsergray.backend.service.song.impl.SongPartKeyChordServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class SongPartKeyChordController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<SongPartKeyChordDTO> createSongPartKeyChord(@Valid @RequestBody SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) {
-        return ResponseEntity.ok(songPartKeyChordService.addSongPartKeyChord(songPartKeyChordEditableDTO));
+    public ResponseEntity<SongPartKeyChordDTO> createSongPartKeyChord(@Valid @RequestBody SongPartKeyChordCreateRequest songPartKeyChordCreateRequest) {
+        return ResponseEntity.ok(songPartKeyChordService.addSongPartKeyChord(songPartKeyChordCreateRequest));
     }
 
     @GetMapping("/{songPartKeyChordId}")
@@ -42,8 +43,8 @@ public class SongPartKeyChordController {
 
     @SneakyThrows
     @PutMapping("/{songPartKeyChordId}")
-    public ResponseEntity<SongPartKeyChordDTO> updateSongPartKeyChordById(@PathVariable("songPartKeyChordId") UUID songPartKeyChordId, @Valid @RequestBody SongPartKeyChordEditableDTO songPartKeyChordEditableDTO) {
-        return ResponseEntity.ok(songPartKeyChordService.modifySongPartKeyChordById(songPartKeyChordId, songPartKeyChordEditableDTO));
+    public ResponseEntity<SongPartKeyChordDTO> updateSongPartKeyChordById(@PathVariable("songPartKeyChordId") UUID songPartKeyChordId, @Valid @RequestBody SongPartKeyChordUpdateRequest songPartKeyChordUpdateRequest) {
+        return ResponseEntity.ok(songPartKeyChordService.modifySongPartKeyChordById(songPartKeyChordId, songPartKeyChordUpdateRequest));
     }
 
     @SneakyThrows

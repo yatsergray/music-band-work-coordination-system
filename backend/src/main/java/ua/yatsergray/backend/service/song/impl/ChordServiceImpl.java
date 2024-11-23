@@ -4,8 +4,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.ChordDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.ChordEditableDTO;
 import ua.yatsergray.backend.domain.entity.song.Chord;
+import ua.yatsergray.backend.domain.request.song.ChordCreateUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.song.ChordAlreadyExistsException;
 import ua.yatsergray.backend.exception.song.NoSuchChordException;
@@ -15,7 +15,6 @@ import ua.yatsergray.backend.repository.song.SongPartKeyChordRepository;
 import ua.yatsergray.backend.service.song.ChordService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,8 +33,16 @@ public class ChordServiceImpl implements ChordService {
     }
 
     @Override
-    public ChordDTO addChord(ChordEditableDTO chordEditableDTO) throws ChordAlreadyExistsException {
-        return chordMapper.mapToChordDTO(chordRepository.save(configureChord(new Chord(), chordEditableDTO)));
+    public ChordDTO addChord(ChordCreateUpdateRequest chordCreateUpdateRequest) throws ChordAlreadyExistsException {
+        if (chordRepository.existsByName(chordCreateUpdateRequest.getName())) {
+            throw new ChordAlreadyExistsException(String.format("Chord with name=\"%s\" already exists", chordCreateUpdateRequest.getName()));
+        }
+
+        Chord chord = Chord.builder()
+                .name(chordCreateUpdateRequest.getName())
+                .build();
+
+        return chordMapper.mapToChordDTO(chordRepository.save(chord));
     }
 
     @Override
@@ -49,11 +56,17 @@ public class ChordServiceImpl implements ChordService {
     }
 
     @Override
-    public ChordDTO modifyChordById(UUID chordId, ChordEditableDTO chordEditableDTO) throws NoSuchChordException, ChordAlreadyExistsException {
+    public ChordDTO modifyChordById(UUID chordId, ChordCreateUpdateRequest chordCreateUpdateRequest) throws NoSuchChordException, ChordAlreadyExistsException {
         Chord chord = chordRepository.findById(chordId)
                 .orElseThrow(() -> new NoSuchChordException(String.format("Chord with id=\"%s\" not exist", chordId)));
 
-        return chordMapper.mapToChordDTO(chordRepository.save(configureChord(chord, chordEditableDTO)));
+        if (!chordCreateUpdateRequest.getName().equals(chord.getName()) && chordRepository.existsByName(chordCreateUpdateRequest.getName())) {
+            throw new ChordAlreadyExistsException(String.format("Chord with name=\"%s\" already exists", chordCreateUpdateRequest.getName()));
+        }
+
+        chord.setName(chordCreateUpdateRequest.getName());
+
+        return chordMapper.mapToChordDTO(chordRepository.save(chord));
     }
 
     @Override
@@ -65,22 +78,6 @@ public class ChordServiceImpl implements ChordService {
         checkIfChordHasChildEntity(chordId);
 
         chordRepository.deleteById(chordId);
-    }
-
-    private Chord configureChord(Chord chord, ChordEditableDTO chordEditableDTO) throws ChordAlreadyExistsException {
-        if (Objects.isNull(chord.getId())) {
-            if (chordRepository.existsByName(chordEditableDTO.getName())) {
-                throw new ChordAlreadyExistsException(String.format("Chord with name=\"%s\" already exists", chordEditableDTO.getName()));
-            }
-        } else {
-            if (!chordEditableDTO.getName().equals(chord.getName()) && chordRepository.existsByName(chordEditableDTO.getName())) {
-                throw new ChordAlreadyExistsException(String.format("Chord with name=\"%s\" already exists", chordEditableDTO.getName()));
-            }
-        }
-
-        chord.setName(chordEditableDTO.getName());
-
-        return chord;
     }
 
     private void checkIfChordHasChildEntity(UUID chordId) throws ChildEntityExistsException {

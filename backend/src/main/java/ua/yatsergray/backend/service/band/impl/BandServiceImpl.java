@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.BandDTO;
 import ua.yatsergray.backend.domain.dto.band.BandUserDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandEditableDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandUserAccessRoleEditableDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandUserEditableDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandUserStageRoleEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.*;
 import ua.yatsergray.backend.domain.entity.user.User;
+import ua.yatsergray.backend.domain.request.band.BandCreateUpdateRequest;
+import ua.yatsergray.backend.domain.request.band.BandUserAccessRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.band.BandUserCreateRequest;
+import ua.yatsergray.backend.domain.request.band.BandUserStageRoleCreateRequest;
 import ua.yatsergray.backend.domain.type.band.BandAccessRoleType;
 import ua.yatsergray.backend.domain.type.band.ChatAccessRoleType;
 import ua.yatsergray.backend.exception.band.BandUserConflictException;
@@ -59,8 +59,12 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public BandDTO addBand(BandEditableDTO bandEditableDTO) {
-        return bandMapper.mapToBandDTO(bandRepository.save(configureBand(new Band(), bandEditableDTO)));
+    public BandDTO addBand(BandCreateUpdateRequest bandCreateUpdateRequest) {
+        Band band = Band.builder()
+                .name(bandCreateUpdateRequest.getName())
+                .build();
+
+        return bandMapper.mapToBandDTO(bandRepository.save(band));
     }
 
     @Override
@@ -74,11 +78,13 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public BandDTO modifyBandById(UUID bandId, BandEditableDTO bandEditableDTO) throws NoSuchBandException {
+    public BandDTO modifyBandById(UUID bandId, BandCreateUpdateRequest bandCreateUpdateRequest) throws NoSuchBandException {
         Band band = bandRepository.findById(bandId)
                 .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=\"%s\" does not exist", bandId)));
 
-        return bandMapper.mapToBandDTO(bandRepository.save(configureBand(band, bandEditableDTO)));
+        band.setName(bandCreateUpdateRequest.getName());
+
+        return bandMapper.mapToBandDTO(bandRepository.save(band));
 
     }
 
@@ -92,16 +98,16 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public BandUserDTO addBandUser(UUID bandId, BandUserEditableDTO bandUserEditableDTO) throws NoSuchBandException, NoSuchUserException, NoSuchBandAccessRoleException, BandUserConflictException {
+    public BandUserDTO addBandUser(UUID bandId, BandUserCreateRequest bandUserCreateRequest) throws NoSuchBandException, NoSuchUserException, NoSuchBandAccessRoleException, BandUserConflictException {
         Band band = bandRepository.findById(bandId)
                 .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=\"%s\" does not exist", bandId)));
-        User user = userRepository.findById(bandUserEditableDTO.getUserId())
-                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=\"%s\" does not exist", bandUserEditableDTO.getUserId())));
+        User user = userRepository.findById(bandUserCreateRequest.getUserId())
+                .orElseThrow(() -> new NoSuchUserException(String.format("User with id=\"%s\" does not exist", bandUserCreateRequest.getUserId())));
         BandAccessRole bandAccessRole = bandAccessRoleRepository.findByType(BandAccessRoleType.MEMBER)
                 .orElseThrow(() -> new NoSuchBandAccessRoleException(String.format("Band access role with type=\"%s\" does not exist", BandAccessRoleType.MEMBER)));
 
-        if (bandUserAccessRoleRepository.existsByBandIdAndUserId(bandId, bandUserEditableDTO.getUserId())) {
-            throw new BandUserConflictException(String.format("User with id=%s already belongs to the Band with id=\"%s\"", bandUserEditableDTO.getUserId(), bandId));
+        if (bandUserAccessRoleRepository.existsByBandIdAndUserId(bandId, bandUserCreateRequest.getUserId())) {
+            throw new BandUserConflictException(String.format("User with id=%s already belongs to the Band with id=\"%s\"", bandUserCreateRequest.getUserId(), bandId));
         }
 
         BandUserAccessRole bandUserAccessRole = BandUserAccessRole.builder()
@@ -138,20 +144,20 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public BandUserDTO addBandUserAccessRole(UUID bandId, UUID userId, BandUserAccessRoleEditableDTO bandUserAccessRoleEditableDTO) throws NoSuchBandException, NoSuchUserException, NoSuchBandAccessRoleException, BandUserConflictException {
+    public BandUserDTO addBandUserAccessRole(UUID bandId, UUID userId, BandUserAccessRoleCreateRequest bandUserAccessRoleCreateRequest) throws NoSuchBandException, NoSuchUserException, NoSuchBandAccessRoleException, BandUserConflictException {
         Band band = bandRepository.findById(bandId)
                 .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=\"%s\" does not exist", bandId)));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchUserException(String.format("User with id=\"%s\" does not exist", userId)));
-        BandAccessRole bandAccessRole = bandAccessRoleRepository.findById(bandUserAccessRoleEditableDTO.getBandAccessRoleId())
-                .orElseThrow(() -> new NoSuchBandAccessRoleException(String.format("Band access role with id=\"%s\" does not exist", bandUserAccessRoleEditableDTO.getBandAccessRoleId())));
+        BandAccessRole bandAccessRole = bandAccessRoleRepository.findById(bandUserAccessRoleCreateRequest.getBandAccessRoleId())
+                .orElseThrow(() -> new NoSuchBandAccessRoleException(String.format("Band access role with id=\"%s\" does not exist", bandUserAccessRoleCreateRequest.getBandAccessRoleId())));
 
         if (!bandUserAccessRoleRepository.existsByBandIdAndUserId(bandId, userId)) {
             throw new BandUserConflictException(String.format("User with id=\"%s\" does not belong to the Band with id=\"%s\"", userId, bandId));
         }
 
-        if (bandUserAccessRoleRepository.existsByBandIdAndUserIdAndBandAccessRoleId(bandId, userId, bandUserAccessRoleEditableDTO.getBandAccessRoleId())) {
-            throw new BandUserConflictException(String.format("Band user access role with bandId=\"%s\", userId=\"%s\" and bandAccessRoleId=\"%s\" already exists", bandId, userId, bandUserAccessRoleEditableDTO.getBandAccessRoleId()));
+        if (bandUserAccessRoleRepository.existsByBandIdAndUserIdAndBandAccessRoleId(bandId, userId, bandUserAccessRoleCreateRequest.getBandAccessRoleId())) {
+            throw new BandUserConflictException(String.format("Band user access role with bandId=\"%s\", userId=\"%s\" and bandAccessRoleId=\"%s\" already exists", bandId, userId, bandUserAccessRoleCreateRequest.getBandAccessRoleId()));
         }
 
         BandUserAccessRole bandUserAccessRole = BandUserAccessRole.builder()
@@ -197,20 +203,20 @@ public class BandServiceImpl implements BandService {
     }
 
     @Override
-    public BandUserDTO addBandUserStageRole(UUID bandId, UUID userId, BandUserStageRoleEditableDTO bandUserStageRoleEditableDTO) throws NoSuchBandException, NoSuchUserException, NoSuchStageRoleException, BandUserConflictException {
+    public BandUserDTO addBandUserStageRole(UUID bandId, UUID userId, BandUserStageRoleCreateRequest bandUserStageRoleCreateRequest) throws NoSuchBandException, NoSuchUserException, NoSuchStageRoleException, BandUserConflictException {
         Band band = bandRepository.findById(bandId)
                 .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=\"%s\" does not exist", bandId)));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchUserException(String.format("User with id=\"%s\" does not exist", userId)));
-        StageRole stageRole = stageRoleRepository.findById(bandUserStageRoleEditableDTO.getStageRoleId())
-                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role with id=\"%s\" does not exist", bandUserStageRoleEditableDTO.getStageRoleId())));
+        StageRole stageRole = stageRoleRepository.findById(bandUserStageRoleCreateRequest.getStageRoleId())
+                .orElseThrow(() -> new NoSuchStageRoleException(String.format("Stage role with id=\"%s\" does not exist", bandUserStageRoleCreateRequest.getStageRoleId())));
 
         if (!bandUserAccessRoleRepository.existsByBandIdAndUserId(bandId, userId)) {
             throw new BandUserConflictException(String.format("User with id=\"%s\" does not belong to the Band with id=\"%s\"", userId, bandId));
         }
 
-        if (bandUserStageRoleRepository.existsByBandIdAndUserIdAndStageRoleId(bandId, userId, bandUserStageRoleEditableDTO.getStageRoleId())) {
-            throw new BandUserConflictException(String.format("Band user stage role with bandId=\"%s\", userId=\"%s\" and stageRoleId=\"%s\" already exists", bandId, userId, bandUserStageRoleEditableDTO.getStageRoleId()));
+        if (bandUserStageRoleRepository.existsByBandIdAndUserIdAndStageRoleId(bandId, userId, bandUserStageRoleCreateRequest.getStageRoleId())) {
+            throw new BandUserConflictException(String.format("Band user stage role with bandId=\"%s\", userId=\"%s\" and stageRoleId=\"%s\" already exists", bandId, userId, bandUserStageRoleCreateRequest.getStageRoleId()));
         }
 
         BandUserStageRole bandUserStageRole = BandUserStageRole.builder()
@@ -250,11 +256,5 @@ public class BandServiceImpl implements BandService {
         }
 
         bandUserStageRoleRepository.deleteByBandIdAndUserIdAndStageRoleId(bandId, userId, stageRoleId);
-    }
-
-    private Band configureBand(Band band, BandEditableDTO bandEditableDTO) {
-        band.setName(bandEditableDTO.getName());
-
-        return band;
     }
 }

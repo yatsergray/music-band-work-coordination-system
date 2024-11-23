@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.BandAccessRoleDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandAccessRoleEditableDTO;
+import ua.yatsergray.backend.domain.request.band.BandAccessRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.band.BandAccessRoleUpdateRequest;
 import ua.yatsergray.backend.service.band.impl.BandAccessRoleServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class BandAccessRoleController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<BandAccessRoleDTO> createBandAccessRole(@Valid @RequestBody BandAccessRoleEditableDTO bandAccessRoleEditableDTO) {
-        return ResponseEntity.ok(bandAccessRoleService.addBandAccessRole(bandAccessRoleEditableDTO));
+    public ResponseEntity<BandAccessRoleDTO> createBandAccessRole(@Valid @RequestBody BandAccessRoleCreateRequest bandAccessRoleCreateRequest) {
+        return ResponseEntity.ok(bandAccessRoleService.addBandAccessRole(bandAccessRoleCreateRequest));
     }
 
     @GetMapping("/{bandAccessRoleId}")
@@ -42,8 +43,8 @@ public class BandAccessRoleController {
 
     @SneakyThrows
     @PutMapping("/{bandAccessRoleId}")
-    public ResponseEntity<BandAccessRoleDTO> updateBandAccessRoleById(@PathVariable("bandAccessRoleId") UUID bandAccessRoleId, @Valid @RequestBody BandAccessRoleEditableDTO bandAccessRoleEditableDTO) {
-        return ResponseEntity.ok(bandAccessRoleService.modifyBandAccessRoleById(bandAccessRoleId, bandAccessRoleEditableDTO));
+    public ResponseEntity<BandAccessRoleDTO> updateBandAccessRoleById(@PathVariable("bandAccessRoleId") UUID bandAccessRoleId, @Valid @RequestBody BandAccessRoleUpdateRequest bandAccessRoleUpdateRequest) {
+        return ResponseEntity.ok(bandAccessRoleService.modifyBandAccessRoleById(bandAccessRoleId, bandAccessRoleUpdateRequest));
     }
 
     @SneakyThrows

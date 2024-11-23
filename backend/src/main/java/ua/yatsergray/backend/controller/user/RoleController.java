@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.user.RoleDTO;
-import ua.yatsergray.backend.domain.dto.user.editable.RoleEditableDTO;
+import ua.yatsergray.backend.domain.request.user.RoleCreateRequest;
+import ua.yatsergray.backend.domain.request.user.RoleUpdateRequest;
 import ua.yatsergray.backend.service.user.impl.RoleServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class RoleController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<RoleDTO> createRole(@Valid @RequestBody RoleEditableDTO roleEditableDTO) {
-        return ResponseEntity.ok(roleService.addRole(roleEditableDTO));
+    public ResponseEntity<RoleDTO> createRole(@Valid @RequestBody RoleCreateRequest roleCreateRequest) {
+        return ResponseEntity.ok(roleService.addRole(roleCreateRequest));
     }
 
     @GetMapping("/{roleId}")
@@ -42,8 +43,8 @@ public class RoleController {
 
     @SneakyThrows
     @PutMapping("/{roleId}")
-    public ResponseEntity<RoleDTO> updateRoleById(@PathVariable("roleId") UUID roleId, @Valid @RequestBody RoleEditableDTO roleEditableDTO) {
-        return ResponseEntity.ok(roleService.modifyRoleById(roleId, roleEditableDTO));
+    public ResponseEntity<RoleDTO> updateRoleById(@PathVariable("roleId") UUID roleId, @Valid @RequestBody RoleUpdateRequest roleUpdateRequest) {
+        return ResponseEntity.ok(roleService.modifyRoleById(roleId, roleUpdateRequest));
     }
 
     @SneakyThrows

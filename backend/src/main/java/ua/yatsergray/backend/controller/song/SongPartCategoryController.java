@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.song.SongPartCategoryDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.SongPartCategoryEditableDTO;
+import ua.yatsergray.backend.domain.request.song.SongPartCategoryCreateRequest;
+import ua.yatsergray.backend.domain.request.song.SongPartCategoryUpdateRequest;
 import ua.yatsergray.backend.service.song.impl.SongPartCategoryServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class SongPartCategoryController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<SongPartCategoryDTO> createSongPartCategory(@Valid @RequestBody SongPartCategoryEditableDTO songPartCategoryEditableDTO) {
-        return ResponseEntity.ok(songPartCategoryService.addSongPartCategory(songPartCategoryEditableDTO));
+    public ResponseEntity<SongPartCategoryDTO> createSongPartCategory(@Valid @RequestBody SongPartCategoryCreateRequest songPartCategoryCreateRequest) {
+        return ResponseEntity.ok(songPartCategoryService.addSongPartCategory(songPartCategoryCreateRequest));
     }
 
     @GetMapping("/{songPartCategoryId}")
@@ -42,8 +43,8 @@ public class SongPartCategoryController {
 
     @SneakyThrows
     @PutMapping("/{songPartCategoryId}")
-    public ResponseEntity<SongPartCategoryDTO> updateSongPartCategoryById(@PathVariable("songPartCategoryId") UUID songPartCategoryId, @Valid @RequestBody SongPartCategoryEditableDTO songPartCategoryEditableDTO) {
-        return ResponseEntity.ok(songPartCategoryService.modifySongPartCategoryById(songPartCategoryId, songPartCategoryEditableDTO));
+    public ResponseEntity<SongPartCategoryDTO> updateSongPartCategoryById(@PathVariable("songPartCategoryId") UUID songPartCategoryId, @Valid @RequestBody SongPartCategoryUpdateRequest songPartCategoryUpdateRequest) {
+        return ResponseEntity.ok(songPartCategoryService.modifySongPartCategoryById(songPartCategoryId, songPartCategoryUpdateRequest));
     }
 
     @SneakyThrows

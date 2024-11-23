@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.user.UserDTO;
-import ua.yatsergray.backend.domain.dto.user.editable.UserEditableDTO;
-import ua.yatsergray.backend.domain.dto.user.editable.UserRoleEditableDTO;
+import ua.yatsergray.backend.domain.request.user.UserCreateRequest;
+import ua.yatsergray.backend.domain.request.user.UserRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.user.UserUpdateRequest;
 import ua.yatsergray.backend.service.user.impl.UserServiceImpl;
 
 import java.util.List;
@@ -25,8 +26,8 @@ public class UserController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserEditableDTO userEditableDTO) {
-        return ResponseEntity.ok(userService.addUser(userEditableDTO));
+    public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserCreateRequest userCreateRequest) {
+        return ResponseEntity.ok(userService.addUser(userCreateRequest));
     }
 
     @SneakyThrows
@@ -44,8 +45,8 @@ public class UserController {
 
     @SneakyThrows
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDTO> updateUserById(@PathVariable("userId") UUID userId, @Valid @RequestBody UserEditableDTO userEditableDTO) {
-        return ResponseEntity.ok(userService.modifyUserById(userId, userEditableDTO));
+    public ResponseEntity<UserDTO> updateUserById(@PathVariable("userId") UUID userId, @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
+        return ResponseEntity.ok(userService.modifyUserById(userId, userUpdateRequest));
     }
 
     @SneakyThrows
@@ -58,8 +59,8 @@ public class UserController {
 
     @SneakyThrows
     @PostMapping("/{userId}/roles")
-    public ResponseEntity<UserDTO> createUserRole(@PathVariable("userId") UUID userId, @Valid @RequestBody UserRoleEditableDTO userRoleEditableDTO) {
-        return ResponseEntity.ok(userService.addUserRole(userId, userRoleEditableDTO));
+    public ResponseEntity<UserDTO> createUserRole(@PathVariable("userId") UUID userId, @Valid @RequestBody UserRoleCreateRequest userRoleCreateRequest) {
+        return ResponseEntity.ok(userService.addUserRole(userId, userRoleCreateRequest));
     }
 
     @SneakyThrows

@@ -1,7 +1,8 @@
 package ua.yatsergray.backend.service.band;
 
 import ua.yatsergray.backend.domain.dto.band.EventBandSongVersionDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.EventBandSongVersionEditableDTO;
+import ua.yatsergray.backend.domain.request.band.EventBandSongVersionCreateRequest;
+import ua.yatsergray.backend.domain.request.band.EventBandSongVersionUpdateRequest;
 import ua.yatsergray.backend.exception.band.*;
 
 import java.util.List;
@@ -10,13 +11,13 @@ import java.util.UUID;
 
 public interface EventBandSongVersionService {
 
-    EventBandSongVersionDTO addEventBandSongVersion(EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) throws NoSuchEventException, NoSuchBandSongVersionException, EventBandSongVersionConflictException, EventBandSongVersionAlreadyExistsException;
+    EventBandSongVersionDTO addEventBandSongVersion(EventBandSongVersionCreateRequest eventBandSongVersionCreateRequest) throws NoSuchEventException, NoSuchBandSongVersionException, EventBandSongVersionConflictException, EventBandSongVersionAlreadyExistsException;
 
     Optional<EventBandSongVersionDTO> getEventBandSongVersionById(UUID eventBandSongVersionId);
 
     List<EventBandSongVersionDTO> getAllEventBandSongVersions();
 
-    EventBandSongVersionDTO modifyEventBandSongVersionById(UUID eventBandSongVersionId, EventBandSongVersionEditableDTO eventBandSongVersionEditableDTO) throws NoSuchEventBandSongVersionException, NoSuchEventException, NoSuchBandSongVersionException, EventBandSongVersionConflictException, EventBandSongVersionAlreadyExistsException;
+    EventBandSongVersionDTO modifyEventBandSongVersionById(UUID eventBandSongVersionId, EventBandSongVersionUpdateRequest eventBandSongVersionUpdateRequest) throws NoSuchEventBandSongVersionException, EventBandSongVersionAlreadyExistsException;
 
     void removeEventBandSongVersionById(UUID eventBandSongVersionId) throws NoSuchEventBandSongVersionException;
 }

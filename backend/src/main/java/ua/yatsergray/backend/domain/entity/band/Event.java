@@ -46,9 +46,11 @@ public class Event {
     private EventCategory eventCategory;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<EventUser> eventUsers = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<EventBandSongVersion> eventBandSongVersions = new LinkedHashSet<>();
 
     @Override

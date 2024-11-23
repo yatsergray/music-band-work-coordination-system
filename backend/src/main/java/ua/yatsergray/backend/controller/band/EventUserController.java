@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.EventUserDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.EventUserEditableDTO;
+import ua.yatsergray.backend.domain.request.band.EventUserCreateRequest;
+import ua.yatsergray.backend.domain.request.band.EventUserUpdateRequest;
 import ua.yatsergray.backend.service.band.impl.EventUserServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class EventUserController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<EventUserDTO> createEventUser(@Valid @RequestBody EventUserEditableDTO eventUserEditableDTO) {
-        return ResponseEntity.ok(eventUserService.addEventUser(eventUserEditableDTO));
+    public ResponseEntity<EventUserDTO> createEventUser(@Valid @RequestBody EventUserCreateRequest eventUserCreateRequest) {
+        return ResponseEntity.ok(eventUserService.addEventUser(eventUserCreateRequest));
     }
 
     @GetMapping("/{eventUserId}")
@@ -42,8 +43,8 @@ public class EventUserController {
 
     @SneakyThrows
     @PutMapping("/{eventUserId}")
-    public ResponseEntity<EventUserDTO> updateEventUserById(@PathVariable("eventUserId") UUID eventUserId, @Valid @RequestBody EventUserEditableDTO eventUserEditableDTO) {
-        return ResponseEntity.ok(eventUserService.modifyEventUserById(eventUserId, eventUserEditableDTO));
+    public ResponseEntity<EventUserDTO> updateEventUserById(@PathVariable("eventUserId") UUID eventUserId, @Valid @RequestBody EventUserUpdateRequest eventUserUpdateRequest) {
+        return ResponseEntity.ok(eventUserService.modifyEventUserById(eventUserId, eventUserUpdateRequest));
     }
 
     @SneakyThrows

@@ -4,8 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.BandAccessRoleDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandAccessRoleEditableDTO;
 import ua.yatsergray.backend.domain.entity.band.BandAccessRole;
+import ua.yatsergray.backend.domain.request.band.BandAccessRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.band.BandAccessRoleUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.band.BandAccessRoleAlreadyExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchBandAccessRoleException;
@@ -15,7 +16,6 @@ import ua.yatsergray.backend.repository.band.BandUserAccessRoleRepository;
 import ua.yatsergray.backend.service.band.BandAccessRoleService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,8 +32,21 @@ public class BandAccessRoleServiceImpl implements BandAccessRoleService {
     }
 
     @Override
-    public BandAccessRoleDTO addBandAccessRole(BandAccessRoleEditableDTO bandAccessRoleEditableDTO) throws BandAccessRoleAlreadyExistsException {
-        return BandAccessRoleMapper.INSTANCE.mapToBandAccessRoleDTO(bandAccessRoleRepository.save(configureBandAccessRole(new BandAccessRole(), bandAccessRoleEditableDTO)));
+    public BandAccessRoleDTO addBandAccessRole(BandAccessRoleCreateRequest bandAccessRoleCreateRequest) throws BandAccessRoleAlreadyExistsException {
+        if (bandAccessRoleRepository.existsByName(bandAccessRoleCreateRequest.getName())) {
+            throw new BandAccessRoleAlreadyExistsException(String.format("Band access role with name=\"%s\" already exists", bandAccessRoleCreateRequest.getName()));
+        }
+
+        if (bandAccessRoleRepository.existsByType(bandAccessRoleCreateRequest.getType())) {
+            throw new BandAccessRoleAlreadyExistsException(String.format("Band access role with type=\"%s\" already exists", bandAccessRoleCreateRequest.getType()));
+        }
+
+        BandAccessRole bandAccessRole = BandAccessRole.builder()
+                .name(bandAccessRoleCreateRequest.getName())
+                .type(bandAccessRoleCreateRequest.getType())
+                .build();
+
+        return BandAccessRoleMapper.INSTANCE.mapToBandAccessRoleDTO(bandAccessRoleRepository.save(bandAccessRole));
     }
 
     @Override
@@ -47,11 +60,17 @@ public class BandAccessRoleServiceImpl implements BandAccessRoleService {
     }
 
     @Override
-    public BandAccessRoleDTO modifyBandAccessRoleById(UUID bandAccessRoleId, BandAccessRoleEditableDTO bandAccessRoleEditableDTO) throws NoSuchBandAccessRoleException, BandAccessRoleAlreadyExistsException {
+    public BandAccessRoleDTO modifyBandAccessRoleById(UUID bandAccessRoleId, BandAccessRoleUpdateRequest bandAccessRoleUpdateRequest) throws NoSuchBandAccessRoleException, BandAccessRoleAlreadyExistsException {
         BandAccessRole bandAccessRole = bandAccessRoleRepository.findById(bandAccessRoleId)
                 .orElseThrow(() -> new NoSuchBandAccessRoleException(String.format("Band access role with id=\"%s\" does not exist", bandAccessRoleId)));
 
-        return BandAccessRoleMapper.INSTANCE.mapToBandAccessRoleDTO(bandAccessRoleRepository.save(configureBandAccessRole(bandAccessRole, bandAccessRoleEditableDTO)));
+        if (!bandAccessRoleUpdateRequest.getName().equals(bandAccessRole.getName()) && bandAccessRoleRepository.existsByName(bandAccessRoleUpdateRequest.getName())) {
+            throw new BandAccessRoleAlreadyExistsException(String.format("Band access role with name=\"%s\" already exists", bandAccessRoleUpdateRequest.getName()));
+        }
+
+        bandAccessRole.setName(bandAccessRoleUpdateRequest.getName());
+
+        return BandAccessRoleMapper.INSTANCE.mapToBandAccessRoleDTO(bandAccessRoleRepository.save(bandAccessRole));
     }
 
     @Override
@@ -63,31 +82,6 @@ public class BandAccessRoleServiceImpl implements BandAccessRoleService {
         checkIfBandAccessRoleHasChildEntity(bandAccessRoleId);
 
         bandAccessRoleRepository.deleteById(bandAccessRoleId);
-    }
-
-    private BandAccessRole configureBandAccessRole(BandAccessRole bandAccessRole, BandAccessRoleEditableDTO bandAccessRoleEditableDTO) throws BandAccessRoleAlreadyExistsException {
-        if (Objects.isNull(bandAccessRole.getId())) {
-            if (bandAccessRoleRepository.existsByName(bandAccessRoleEditableDTO.getName())) {
-                throw new BandAccessRoleAlreadyExistsException(String.format("Band access role with name=\"%s\" already exists", bandAccessRoleEditableDTO.getName()));
-            }
-
-            if (bandAccessRoleRepository.existsByType(bandAccessRoleEditableDTO.getType())) {
-                throw new BandAccessRoleAlreadyExistsException(String.format("Band access role with type=\"%s\" already exists", bandAccessRoleEditableDTO.getType()));
-            }
-        } else {
-            if (!bandAccessRoleEditableDTO.getName().equals(bandAccessRole.getName()) && bandAccessRoleRepository.existsByName(bandAccessRoleEditableDTO.getName())) {
-                throw new BandAccessRoleAlreadyExistsException(String.format("Band access role with name=\"%s\" already exists", bandAccessRoleEditableDTO.getName()));
-            }
-
-            if (!bandAccessRoleEditableDTO.getType().equals(bandAccessRole.getType()) && bandAccessRoleRepository.existsByType(bandAccessRoleEditableDTO.getType())) {
-                throw new BandAccessRoleAlreadyExistsException(String.format("Band access role with type=\"%s\" already exists", bandAccessRoleEditableDTO.getType()));
-            }
-        }
-
-        bandAccessRole.setName(bandAccessRoleEditableDTO.getName());
-        bandAccessRole.setType(bandAccessRoleEditableDTO.getType());
-
-        return bandAccessRole;
     }
 
     private void checkIfBandAccessRoleHasChildEntity(UUID bandAccessRoleId) throws ChildEntityExistsException {

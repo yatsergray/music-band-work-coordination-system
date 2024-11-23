@@ -29,5 +29,6 @@ public class EventCategory {
     private EventCategoryType type;
 
     @OneToMany(mappedBy = "eventCategory")
+    @Builder.Default
     private Set<Event> events = new LinkedHashSet<>();
 }

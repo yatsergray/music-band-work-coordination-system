@@ -52,9 +52,11 @@ public class BandSongVersion {
     private Song song;
 
     @OneToMany(mappedBy = "bandSongVersion", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<SongPartDetails> songPartDetailsSet = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "bandSongVersion")
+    @Builder.Default
     private Set<EventBandSongVersion> eventBandSongVersions = new LinkedHashSet<>();
 
     @Override

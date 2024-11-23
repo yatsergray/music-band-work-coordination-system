@@ -29,5 +29,6 @@ public class SongPartCategory {
     private SongPartCategoryType type;
 
     @OneToMany(mappedBy = "songPartCategory")
+    @Builder.Default
     private Set<SongPart> songParts = new LinkedHashSet<>();
 }

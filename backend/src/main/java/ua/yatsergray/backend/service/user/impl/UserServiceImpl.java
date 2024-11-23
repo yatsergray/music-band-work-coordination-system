@@ -4,10 +4,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.user.UserDTO;
-import ua.yatsergray.backend.domain.dto.user.editable.UserEditableDTO;
-import ua.yatsergray.backend.domain.dto.user.editable.UserRoleEditableDTO;
 import ua.yatsergray.backend.domain.entity.user.Role;
 import ua.yatsergray.backend.domain.entity.user.User;
+import ua.yatsergray.backend.domain.request.user.UserCreateRequest;
+import ua.yatsergray.backend.domain.request.user.UserRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.user.UserUpdateRequest;
 import ua.yatsergray.backend.domain.type.user.RoleType;
 import ua.yatsergray.backend.exception.user.NoSuchRoleException;
 import ua.yatsergray.backend.exception.user.NoSuchUserException;
@@ -19,7 +20,6 @@ import ua.yatsergray.backend.repository.user.UserRepository;
 import ua.yatsergray.backend.service.user.UserService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -36,19 +36,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO addUser(UserEditableDTO userEditableDTO) throws UserAlreadyExistsException, NoSuchRoleException {
+    public UserDTO addUser(UserCreateRequest userCreateRequest) throws UserAlreadyExistsException, NoSuchRoleException {
         Role role = roleRepository.findByType(RoleType.USER)
                 .orElseThrow(() -> new NoSuchRoleException(String.format("Role with type=\"%s\" does not exist", RoleType.USER)));
 
-        User user = new User();
+        if (userRepository.existsByEmail(userCreateRequest.getEmail())) {
+            throw new UserAlreadyExistsException(String.format("User with email=\"%s\" already exists", userCreateRequest.getEmail()));
+        }
+
+        User user = User.builder()
+                .firstName(userCreateRequest.getFirstName())
+                .lastName(userCreateRequest.getLastName())
+                .email(userCreateRequest.getEmail())
+                .password(userCreateRequest.getPassword())
+                .build();
 
         user.getRoles().add(role);
 
-        return UserMapper.INSTANCE.mapToUserDTO(userRepository.save(configureUser(user, userEditableDTO)));
+        return UserMapper.INSTANCE.mapToUserDTO(userRepository.save(user));
     }
 
     @Override
-    public Optional<UserDTO> getUserById(UUID userId) throws NoSuchUserException {
+    public Optional<UserDTO> getUserById(UUID userId) {
         return userRepository.findById(userId).map(UserMapper.INSTANCE::mapToUserDTO);
     }
 
@@ -58,11 +67,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO modifyUserById(UUID userId, UserEditableDTO userEditableDTO) throws NoSuchUserException, UserAlreadyExistsException {
+    public UserDTO modifyUserById(UUID userId, UserUpdateRequest userUpdateRequest) throws NoSuchUserException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchUserException(String.format("User with id=\"%s\" does not exist", userId)));
 
-        return UserMapper.INSTANCE.mapToUserDTO(userRepository.save(configureUser(user, userEditableDTO)));
+        user.setFirstName(userUpdateRequest.getFirstName());
+        user.setLastName(userUpdateRequest.getLastName());
+
+        return UserMapper.INSTANCE.mapToUserDTO(userRepository.save(user));
     }
 
     @Override
@@ -75,14 +87,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO addUserRole(UUID userId, UserRoleEditableDTO userRoleEditableDTO) throws NoSuchUserException, NoSuchRoleException, UserRoleConflictException {
+    public UserDTO addUserRole(UUID userId, UserRoleCreateRequest userRoleCreateRequest) throws NoSuchUserException, NoSuchRoleException, UserRoleConflictException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchUserException(String.format("User with id=\"%s\" does not exist", userId)));
-        Role role = roleRepository.findById(userRoleEditableDTO.getRoleId())
-                .orElseThrow(() -> new NoSuchRoleException(String.format("Role with id=\"%s\" does not exist", userRoleEditableDTO.getRoleId())));
+        Role role = roleRepository.findById(userRoleCreateRequest.getRoleId())
+                .orElseThrow(() -> new NoSuchRoleException(String.format("Role with id=\"%s\" does not exist", userRoleCreateRequest.getRoleId())));
 
         if (user.getRoles().contains(role)) {
-            throw new UserRoleConflictException(String.format("User with id=\"%s\" already has role with id=\"%s\"", userId, userRoleEditableDTO.getRoleId()));
+            throw new UserRoleConflictException(String.format("User with id=\"%s\" already has role with id=\"%s\"", userId, userRoleCreateRequest.getRoleId()));
         }
 
         user.getRoles().add(role);
@@ -104,24 +116,5 @@ public class UserServiceImpl implements UserService {
         user.getRoles().remove(role);
 
         userRepository.save(user);
-    }
-
-    private User configureUser(User user, UserEditableDTO userEditableDTO) throws UserAlreadyExistsException {
-        if (Objects.isNull(user.getId())) {
-            if (userRepository.existsByEmail(userEditableDTO.getEmail())) {
-                throw new UserAlreadyExistsException(String.format("User with email=\"%s\" already exists", userEditableDTO.getEmail()));
-            }
-        } else {
-            if (!userEditableDTO.getEmail().equals(user.getEmail()) && userRepository.existsByEmail(userEditableDTO.getEmail())) {
-                throw new UserAlreadyExistsException(String.format("User with email=\"%s\" already exists", userEditableDTO.getEmail()));
-            }
-        }
-
-        user.setFirstName(userEditableDTO.getFirstName());
-        user.setLastName(userEditableDTO.getLastName());
-        user.setEmail(userEditableDTO.getEmail());
-        user.setPassword(userEditableDTO.getPassword());
-
-        return user;
     }
 }

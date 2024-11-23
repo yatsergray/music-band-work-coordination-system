@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.BandDTO;
 import ua.yatsergray.backend.domain.dto.band.BandUserDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandEditableDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandUserAccessRoleEditableDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandUserEditableDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.BandUserStageRoleEditableDTO;
+import ua.yatsergray.backend.domain.request.band.BandCreateUpdateRequest;
+import ua.yatsergray.backend.domain.request.band.BandUserAccessRoleCreateRequest;
+import ua.yatsergray.backend.domain.request.band.BandUserCreateRequest;
+import ua.yatsergray.backend.domain.request.band.BandUserStageRoleCreateRequest;
 import ua.yatsergray.backend.service.band.impl.BandServiceImpl;
 
 import java.util.List;
@@ -27,8 +27,8 @@ public class BandController {
     }
 
     @PostMapping
-    public ResponseEntity<BandDTO> createBand(@Valid @RequestBody BandEditableDTO bandEditableDTO) {
-        return ResponseEntity.ok(bandService.addBand(bandEditableDTO));
+    public ResponseEntity<BandDTO> createBand(@Valid @RequestBody BandCreateUpdateRequest bandCreateUpdateRequest) {
+        return ResponseEntity.ok(bandService.addBand(bandCreateUpdateRequest));
     }
 
     @GetMapping("/{bandId}")
@@ -45,8 +45,8 @@ public class BandController {
 
     @SneakyThrows
     @PutMapping("/{bandId}")
-    public ResponseEntity<BandDTO> updateBandById(@PathVariable("bandId") UUID bandId, @Valid @RequestBody BandEditableDTO bandEditableDTO) {
-        return ResponseEntity.ok(bandService.modifyBandById(bandId, bandEditableDTO));
+    public ResponseEntity<BandDTO> updateBandById(@PathVariable("bandId") UUID bandId, @Valid @RequestBody BandCreateUpdateRequest bandCreateUpdateRequest) {
+        return ResponseEntity.ok(bandService.modifyBandById(bandId, bandCreateUpdateRequest));
     }
 
     @SneakyThrows
@@ -59,8 +59,8 @@ public class BandController {
 
     @SneakyThrows
     @PostMapping("/{bandId}/users")
-    public ResponseEntity<BandUserDTO> createBandUser(@PathVariable("bandId") UUID bandId, @Valid @RequestBody BandUserEditableDTO bandUserEditableDTO) {
-        return ResponseEntity.ok(bandService.addBandUser(bandId, bandUserEditableDTO));
+    public ResponseEntity<BandUserDTO> createBandUser(@PathVariable("bandId") UUID bandId, @Valid @RequestBody BandUserCreateRequest bandUserCreateRequest) {
+        return ResponseEntity.ok(bandService.addBandUser(bandId, bandUserCreateRequest));
     }
 
     @SneakyThrows
@@ -73,8 +73,8 @@ public class BandController {
 
     @SneakyThrows
     @PostMapping("/{bandId}/users/{userId}/band-access-roles")
-    public ResponseEntity<BandUserDTO> createBandUserAccessRole(@PathVariable("bandId") UUID bandId, @PathVariable("userId") UUID userId, @Valid @RequestBody BandUserAccessRoleEditableDTO bandUserAccessRoleEditableDTO) {
-        return ResponseEntity.ok(bandService.addBandUserAccessRole(bandId, userId, bandUserAccessRoleEditableDTO));
+    public ResponseEntity<BandUserDTO> createBandUserAccessRole(@PathVariable("bandId") UUID bandId, @PathVariable("userId") UUID userId, @Valid @RequestBody BandUserAccessRoleCreateRequest bandUserAccessRoleCreateRequest) {
+        return ResponseEntity.ok(bandService.addBandUserAccessRole(bandId, userId, bandUserAccessRoleCreateRequest));
     }
 
     @SneakyThrows
@@ -87,8 +87,8 @@ public class BandController {
 
     @SneakyThrows
     @PostMapping("/{bandId}/users/{userId}/stage-roles")
-    public ResponseEntity<BandUserDTO> createBandUserStageRole(@PathVariable("bandId") UUID bandId, @PathVariable("userId") UUID userId, @Valid @RequestBody BandUserStageRoleEditableDTO bandUserStageRoleEditableDTO) {
-        return ResponseEntity.ok(bandService.addBandUserStageRole(bandId, userId, bandUserStageRoleEditableDTO));
+    public ResponseEntity<BandUserDTO> createBandUserStageRole(@PathVariable("bandId") UUID bandId, @PathVariable("userId") UUID userId, @Valid @RequestBody BandUserStageRoleCreateRequest bandUserStageRoleCreateRequest) {
+        return ResponseEntity.ok(bandService.addBandUserStageRole(bandId, userId, bandUserStageRoleCreateRequest));
     }
 
     @SneakyThrows

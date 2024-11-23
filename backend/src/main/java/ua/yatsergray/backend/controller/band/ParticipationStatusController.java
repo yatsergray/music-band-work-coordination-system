@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.ParticipationStatusDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.ParticipationStatusEditableDTO;
+import ua.yatsergray.backend.domain.request.band.ParticipationStatusCreateRequest;
+import ua.yatsergray.backend.domain.request.band.ParticipationStatusUpdateRequest;
 import ua.yatsergray.backend.exception.band.ParticipationStatusAlreadyExistsException;
 import ua.yatsergray.backend.service.band.impl.ParticipationStatusServiceImpl;
 
@@ -24,8 +25,8 @@ public class ParticipationStatusController {
     }
 
     @PostMapping
-    public ResponseEntity<ParticipationStatusDTO> createParticipationStatus(@Valid @RequestBody ParticipationStatusEditableDTO participationStatusEditableDTO) throws ParticipationStatusAlreadyExistsException {
-        return ResponseEntity.ok(participationStatusService.addParticipationStatus(participationStatusEditableDTO));
+    public ResponseEntity<ParticipationStatusDTO> createParticipationStatus(@Valid @RequestBody ParticipationStatusCreateRequest participationStatusCreateRequest) throws ParticipationStatusAlreadyExistsException {
+        return ResponseEntity.ok(participationStatusService.addParticipationStatus(participationStatusCreateRequest));
     }
 
     @GetMapping("/{participationStatusId}")
@@ -42,8 +43,8 @@ public class ParticipationStatusController {
 
     @SneakyThrows
     @PutMapping("/{participationStatusId}")
-    public ResponseEntity<ParticipationStatusDTO> updateParticipationStatusById(@PathVariable("participationStatusId") UUID participationStatusId, @Valid @RequestBody ParticipationStatusEditableDTO participationStatusEditableDTO) {
-        return ResponseEntity.ok(participationStatusService.modifyParticipationStatusById(participationStatusId, participationStatusEditableDTO));
+    public ResponseEntity<ParticipationStatusDTO> updateParticipationStatusById(@PathVariable("participationStatusId") UUID participationStatusId, @Valid @RequestBody ParticipationStatusUpdateRequest participationStatusUpdateRequest) {
+        return ResponseEntity.ok(participationStatusService.modifyParticipationStatusById(participationStatusId, participationStatusUpdateRequest));
     }
 
     @SneakyThrows

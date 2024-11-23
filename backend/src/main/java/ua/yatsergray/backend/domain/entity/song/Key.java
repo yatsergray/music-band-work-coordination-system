@@ -27,15 +27,19 @@ public class Key {
     private String name;
 
     @OneToMany(mappedBy = "key")
+    @Builder.Default
     private Set<BandSongVersion> bandSongVersions = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "key")
+    @Builder.Default
     private Set<Song> songsWithOriginalKey = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "key")
+    @Builder.Default
     private Set<SongPartKeyChord> songPartKeyChords = new LinkedHashSet<>();
 
     @ManyToMany(mappedBy = "keys")
+    @Builder.Default
     private Set<Song> songs = new LinkedHashSet<>();
 
     @Override

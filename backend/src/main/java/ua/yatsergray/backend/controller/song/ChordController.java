@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.song.ChordDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.ChordEditableDTO;
+import ua.yatsergray.backend.domain.request.song.ChordCreateUpdateRequest;
 import ua.yatsergray.backend.service.song.impl.ChordServiceImpl;
 
 import java.util.List;
@@ -24,8 +24,8 @@ public class ChordController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<ChordDTO> createChord(@Valid @RequestBody ChordEditableDTO chordEditableDTO) {
-        return ResponseEntity.ok(chordService.addChord(chordEditableDTO));
+    public ResponseEntity<ChordDTO> createChord(@Valid @RequestBody ChordCreateUpdateRequest chordCreateUpdateRequest) {
+        return ResponseEntity.ok(chordService.addChord(chordCreateUpdateRequest));
     }
 
     @GetMapping("/{chordId}")
@@ -42,8 +42,8 @@ public class ChordController {
 
     @SneakyThrows
     @PutMapping("/{chordId}")
-    public ResponseEntity<ChordDTO> updateChordById(@PathVariable("chordId") UUID chordId, @Valid @RequestBody ChordEditableDTO chordEditableDTO) {
-        return ResponseEntity.ok(chordService.modifyChordById(chordId, chordEditableDTO));
+    public ResponseEntity<ChordDTO> updateChordById(@PathVariable("chordId") UUID chordId, @Valid @RequestBody ChordCreateUpdateRequest chordCreateUpdateRequest) {
+        return ResponseEntity.ok(chordService.modifyChordById(chordId, chordCreateUpdateRequest));
     }
 
     @SneakyThrows

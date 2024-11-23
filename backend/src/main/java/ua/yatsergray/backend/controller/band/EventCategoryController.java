@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.EventCategoryDTO;
-import ua.yatsergray.backend.domain.dto.band.editable.EventCategoryEditableDTO;
+import ua.yatsergray.backend.domain.request.band.EventCategoryCreateRequest;
+import ua.yatsergray.backend.domain.request.band.EventCategoryUpdateRequest;
 import ua.yatsergray.backend.service.band.impl.EventCategoryServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class EventCategoryController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<EventCategoryDTO> createEventCategory(@Valid @RequestBody EventCategoryEditableDTO eventCategoryEditableDTO) {
-        return ResponseEntity.ok(eventCategoryService.addEventCategory(eventCategoryEditableDTO));
+    public ResponseEntity<EventCategoryDTO> createEventCategory(@Valid @RequestBody EventCategoryCreateRequest eventCategoryCreateRequest) {
+        return ResponseEntity.ok(eventCategoryService.addEventCategory(eventCategoryCreateRequest));
     }
 
     @GetMapping("/{eventCategoryId}")
@@ -42,8 +43,8 @@ public class EventCategoryController {
 
     @SneakyThrows
     @PutMapping("/{eventCategoryId}")
-    public ResponseEntity<EventCategoryDTO> updateEventCategoryById(@PathVariable("eventCategoryId") UUID eventCategoryId, @Valid @RequestBody EventCategoryEditableDTO eventCategoryEditableDTO) {
-        return ResponseEntity.ok(eventCategoryService.modifyEventCategoryById(eventCategoryId, eventCategoryEditableDTO));
+    public ResponseEntity<EventCategoryDTO> updateEventCategoryById(@PathVariable("eventCategoryId") UUID eventCategoryId, @Valid @RequestBody EventCategoryUpdateRequest eventCategoryUpdateRequest) {
+        return ResponseEntity.ok(eventCategoryService.modifyEventCategoryById(eventCategoryId, eventCategoryUpdateRequest));
     }
 
     @SneakyThrows

@@ -4,8 +4,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.TimeSignatureDTO;
-import ua.yatsergray.backend.domain.dto.song.editable.TimeSignatureEditableDTO;
 import ua.yatsergray.backend.domain.entity.song.TimeSignature;
+import ua.yatsergray.backend.domain.request.song.TimeSignatureCreateUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
 import ua.yatsergray.backend.exception.song.NoSuchTimeSignatureException;
 import ua.yatsergray.backend.exception.song.TimeSignatureAlreadyExistsException;
@@ -15,7 +15,6 @@ import ua.yatsergray.backend.repository.song.TimeSignatureRepository;
 import ua.yatsergray.backend.service.song.TimeSignatureService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -34,8 +33,17 @@ public class TimeSignatureServiceImpl implements TimeSignatureService {
     }
 
     @Override
-    public TimeSignatureDTO addTimeSignature(TimeSignatureEditableDTO timeSignatureEditableDTO) throws TimeSignatureAlreadyExistsException {
-        return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(configureTimeSignature(new TimeSignature(), timeSignatureEditableDTO)));
+    public TimeSignatureDTO addTimeSignature(TimeSignatureCreateUpdateRequest timeSignatureCreateUpdateRequest) throws TimeSignatureAlreadyExistsException {
+        if (timeSignatureRepository.existsByBeatsAndDuration(timeSignatureCreateUpdateRequest.getBeats(), timeSignatureCreateUpdateRequest.getDuration())) {
+            throw new TimeSignatureAlreadyExistsException(String.format("Time signature with beats=\"%s\" and duration=\"%s\" already exists", timeSignatureCreateUpdateRequest.getBeats(), timeSignatureCreateUpdateRequest.getDuration()));
+        }
+
+        TimeSignature timeSignature = TimeSignature.builder()
+                .beats(timeSignatureCreateUpdateRequest.getBeats())
+                .duration(timeSignatureCreateUpdateRequest.getDuration())
+                .build();
+
+        return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(timeSignature));
     }
 
     @Override
@@ -49,11 +57,18 @@ public class TimeSignatureServiceImpl implements TimeSignatureService {
     }
 
     @Override
-    public TimeSignatureDTO modifyTimeSignatureById(UUID timeSignatureId, TimeSignatureEditableDTO timeSignatureEditableDTO) throws NoSuchTimeSignatureException, TimeSignatureAlreadyExistsException {
+    public TimeSignatureDTO modifyTimeSignatureById(UUID timeSignatureId, TimeSignatureCreateUpdateRequest timeSignatureCreateUpdateRequest) throws NoSuchTimeSignatureException, TimeSignatureAlreadyExistsException {
         TimeSignature timeSignature = timeSignatureRepository.findById(timeSignatureId)
                 .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=\"%s\" does not exist", timeSignatureId)));
 
-        return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(configureTimeSignature(timeSignature, timeSignatureEditableDTO)));
+        if ((!timeSignatureCreateUpdateRequest.getBeats().equals(timeSignature.getBeats()) || !timeSignatureCreateUpdateRequest.getDuration().equals(timeSignature.getDuration())) && timeSignatureRepository.existsByBeatsAndDuration(timeSignatureCreateUpdateRequest.getBeats(), timeSignatureCreateUpdateRequest.getDuration())) {
+            throw new TimeSignatureAlreadyExistsException(String.format("Time signature with beats=\"%s\" and duration=\"%s\" already exists", timeSignatureCreateUpdateRequest.getBeats(), timeSignatureCreateUpdateRequest.getDuration()));
+        }
+
+        timeSignature.setBeats(timeSignatureCreateUpdateRequest.getBeats());
+        timeSignature.setDuration(timeSignatureCreateUpdateRequest.getDuration());
+
+        return timeSignatureMapper.mapToTimeSignatureDTO(timeSignatureRepository.save(timeSignature));
     }
 
     @Override
@@ -65,23 +80,6 @@ public class TimeSignatureServiceImpl implements TimeSignatureService {
         checkIfTimeSignatureHasChildEntity(timeSignatureId);
 
         timeSignatureRepository.deleteById(timeSignatureId);
-    }
-
-    private TimeSignature configureTimeSignature(TimeSignature timeSignature, TimeSignatureEditableDTO timeSignatureEditableDTO) throws TimeSignatureAlreadyExistsException {
-        if (Objects.isNull(timeSignature.getId())) {
-            if (timeSignatureRepository.existsByBeatsAndDuration(timeSignatureEditableDTO.getBeats(), timeSignatureEditableDTO.getDuration())) {
-                throw new TimeSignatureAlreadyExistsException(String.format("Time signature with beats=\"%s\" and duration=\"%s\" already exists", timeSignatureEditableDTO.getBeats(), timeSignatureEditableDTO.getDuration()));
-            }
-        } else {
-            if ((!timeSignatureEditableDTO.getBeats().equals(timeSignature.getBeats()) || !timeSignatureEditableDTO.getDuration().equals(timeSignature.getDuration())) && timeSignatureRepository.existsByBeatsAndDuration(timeSignatureEditableDTO.getBeats(), timeSignatureEditableDTO.getDuration())) {
-                throw new TimeSignatureAlreadyExistsException(String.format("Time signature with beats=\"%s\" and duration=\"%s\" already exists", timeSignatureEditableDTO.getBeats(), timeSignatureEditableDTO.getDuration()));
-            }
-        }
-
-        timeSignature.setBeats(timeSignatureEditableDTO.getBeats());
-        timeSignature.setDuration(timeSignatureEditableDTO.getDuration());
-
-        return timeSignature;
     }
 
     private void checkIfTimeSignatureHasChildEntity(UUID timeSignatureId) throws ChildEntityExistsException {

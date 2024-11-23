@@ -30,11 +30,14 @@ public class StageRole {
     private StageRoleType type;
 
     @OneToMany(mappedBy = "stageRole")
+    @Builder.Default
     private Set<EventUser> eventUsers = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "stageRole")
+    @Builder.Default
     private Set<BandUserStageRole> bandUserStageRoles = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "stageRole")
+    @Builder.Default
     private Set<SongInstrumentalPart> songInstrumentalParts = new LinkedHashSet<>();
 }

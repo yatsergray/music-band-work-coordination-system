@@ -29,5 +29,6 @@ public class ChatAccessRole {
     private ChatAccessRoleType type;
 
     @OneToMany(mappedBy = "chatAccessRole")
+    @Builder.Default
     private Set<ChatUserAccessRole> chatUserAccessRoles = new LinkedHashSet<>();
 }
