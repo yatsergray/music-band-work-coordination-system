@@ -20,7 +20,7 @@ public interface EventService {
 
     List<EventDTO> getAllEvents();
 
-    EventDTO modifyEventById(UUID eventId, EventUpdateRequest eventUpdateRequest) throws NoSuchEventException, NoSuchBandException, NoSuchEventCategoryException, EventConflictException;
+    EventDTO modifyEventById(UUID eventId, EventUpdateRequest eventUpdateRequest) throws NoSuchEventException, NoSuchEventCategoryException, EventConflictException;
 
     void removeEventById(UUID eventId) throws NoSuchEventException;
 }

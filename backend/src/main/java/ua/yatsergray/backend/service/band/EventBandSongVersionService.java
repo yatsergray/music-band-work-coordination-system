@@ -17,7 +17,7 @@ public interface EventBandSongVersionService {
 
     List<EventBandSongVersionDTO> getAllEventBandSongVersions();
 
-    EventBandSongVersionDTO modifyEventBandSongVersionById(UUID eventBandSongVersionId, EventBandSongVersionUpdateRequest eventBandSongVersionUpdateRequest) throws NoSuchEventBandSongVersionException, NoSuchEventException, NoSuchBandSongVersionException, EventBandSongVersionConflictException, EventBandSongVersionAlreadyExistsException;
+    EventBandSongVersionDTO modifyEventBandSongVersionById(UUID eventBandSongVersionId, EventBandSongVersionUpdateRequest eventBandSongVersionUpdateRequest) throws NoSuchEventBandSongVersionException, EventBandSongVersionAlreadyExistsException;
 
     void removeEventBandSongVersionById(UUID eventBandSongVersionId) throws NoSuchEventBandSongVersionException;
 }

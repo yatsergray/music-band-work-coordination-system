@@ -15,13 +15,13 @@ import java.util.UUID;
 
 public interface BandSongVersionService {
 
-    BandSongVersionDTO addBandSongVersion(BandSongVersionCreateRequest bandSongVersionCreateRequest) throws NoSuchBandException, NoSuchSongException, NoSuchKeyException, BandSongVersionConflictException;
+    BandSongVersionDTO addBandSongVersion(BandSongVersionCreateRequest bandSongVersionCreateRequest) throws NoSuchKeyException, NoSuchBandException, NoSuchSongException, BandSongVersionConflictException;
 
     Optional<BandSongVersionDTO> getBandSongVersionById(UUID bandSongVersionId);
 
     List<BandSongVersionDTO> getAllBandSongVersions();
 
-    BandSongVersionDTO modifyBandSongVersionById(UUID bandSongVersionId, BandSongVersionUpdateRequest bandSongVersionUpdateRequest) throws NoSuchBandSongVersionException, NoSuchBandException, NoSuchSongException, NoSuchKeyException, BandSongVersionConflictException;
+    BandSongVersionDTO modifyBandSongVersionById(UUID bandSongVersionId, BandSongVersionUpdateRequest bandSongVersionUpdateRequest) throws NoSuchBandSongVersionException, NoSuchKeyException, BandSongVersionConflictException;
 
     void removeBandSongVersionById(UUID bandSongVersionId) throws NoSuchBandSongVersionException;
 }

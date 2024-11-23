@@ -21,7 +21,7 @@ public interface ChatService {
 
     List<ChatDTO> getAllChats();
 
-    ChatDTO modifyChatById(UUID chatId, ChatUpdateRequest chatUpdateRequest) throws NoSuchChatException, NoSuchBandException, ChatAlreadyExistsException;
+    ChatDTO modifyChatById(UUID chatId, ChatUpdateRequest chatUpdateRequest) throws NoSuchChatException, ChatAlreadyExistsException;
 
     void removeChatById(UUID chatId) throws NoSuchChatException;
 

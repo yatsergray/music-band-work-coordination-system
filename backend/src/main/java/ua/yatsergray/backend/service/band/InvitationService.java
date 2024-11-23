@@ -17,7 +17,7 @@ public interface InvitationService {
 
     List<InvitationDTO> getAllInvitations();
 
-    InvitationDTO modifyInvitationById(UUID invitationId, InvitationUpdateRequest invitationUpdateRequest) throws NoSuchInvitationException, NoSuchBandException, NoSuchParticipationStatusException, InvitationAlreadyExistsException, InvitationConflictException;
+    InvitationDTO modifyInvitationById(UUID invitationId, InvitationUpdateRequest invitationUpdateRequest) throws NoSuchInvitationException, NoSuchParticipationStatusException;
 
     void removeInvitationById(UUID invitationId) throws NoSuchInvitationException;
 }

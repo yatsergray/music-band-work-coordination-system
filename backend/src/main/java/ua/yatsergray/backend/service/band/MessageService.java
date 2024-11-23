@@ -20,7 +20,7 @@ public interface MessageService {
 
     List<MessageDTO> getAllMessages();
 
-    MessageDTO modifyMessageById(UUID messageId, MessageUpdateRequest messageUpdateRequest) throws NoSuchMessageException, NoSuchChatException, NoSuchUserException, MessageConflictException;
+    MessageDTO modifyMessageById(UUID messageId, MessageUpdateRequest messageUpdateRequest) throws NoSuchMessageException;
 
     void removeMessageById(UUID messageId) throws NoSuchMessageException;
 }
