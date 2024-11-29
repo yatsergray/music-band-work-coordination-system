@@ -1,7 +1,22 @@
 package ua.yatsergray.backend;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import ua.yatsergray.backend.domain.dto.band.BandDTO;
+import ua.yatsergray.backend.domain.dto.band.BandSongVersionDTO;
+import ua.yatsergray.backend.domain.dto.band.RoomDTO;
+import ua.yatsergray.backend.domain.dto.song.*;
+import ua.yatsergray.backend.domain.request.band.BandCreateUpdateRequest;
+import ua.yatsergray.backend.domain.request.band.BandSongVersionCreateRequest;
+import ua.yatsergray.backend.domain.request.band.RoomCreateRequest;
+import ua.yatsergray.backend.domain.request.song.*;
+import ua.yatsergray.backend.domain.type.song.SongPartCategoryType;
+import ua.yatsergray.backend.service.band.impl.BandServiceImpl;
+import ua.yatsergray.backend.service.band.impl.BandSongVersionServiceImpl;
+import ua.yatsergray.backend.service.band.impl.RoomServiceImpl;
+import ua.yatsergray.backend.service.song.impl.*;
 
 @SpringBootApplication
 public class BackendApplication {
@@ -18,7 +33,12 @@ public class BackendApplication {
 //            SongServiceImpl songServiceImpl,
 //            SongPartServiceImpl songPartServiceImpl,
 //            SongPartCategoryServiceImpl songPartCategoryServiceImpl,
-//            SongPartDetailsServiceImpl songPartDetailsServiceImpl, SongPartKeyChordServiceImpl songPartKeyChordServiceImpl, ChordServiceImpl chordServiceImpl, BandServiceImpl bandServiceImpl, BandSongVersionServiceImpl bandSongVersionServiceImpl) {
+//            SongPartDetailsServiceImpl songPartDetailsServiceImpl,
+//            SongPartKeyChordServiceImpl songPartKeyChordServiceImpl,
+//            ChordServiceImpl chordServiceImpl,
+//            BandServiceImpl bandServiceImpl,
+//            BandSongVersionServiceImpl bandSongVersionServiceImpl,
+//            RoomServiceImpl roomServiceImpl) {
 //        return args -> {
 //            ArtistDTO artist1 = artistService.addArtist(
 //                    ArtistCreateUpdateRequest.builder()
@@ -727,6 +747,13 @@ public class BackendApplication {
 //            BandDTO band1 = bandServiceImpl.addBand(
 //                    BandCreateUpdateRequest.builder()
 //                            .name("band1")
+//                            .build()
+//            );
+//
+//            RoomDTO room1 = roomServiceImpl.addRoom(
+//                    RoomCreateRequest.builder()
+//                            .name("room1")
+//                            .bandId(band1.getId())
 //                            .build()
 //            );
 //

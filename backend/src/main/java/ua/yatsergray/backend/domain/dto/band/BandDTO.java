@@ -23,6 +23,9 @@ public class BandDTO {
     @JsonProperty("events")
     private List<EventDTO> eventDTOList = new ArrayList<>();
 
+    @JsonProperty("rooms")
+    private List<RoomDTO> roomDTOList = new ArrayList<>();
+
     @JsonProperty("invitations")
     private List<InvitationDTO> invitationDTOList = new ArrayList<>();
 

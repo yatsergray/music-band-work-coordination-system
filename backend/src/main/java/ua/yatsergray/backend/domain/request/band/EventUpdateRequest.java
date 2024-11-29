@@ -29,4 +29,7 @@ public class EventUpdateRequest {
 
     @NotNull(message = "Event category id is mandatory")
     private UUID eventCategoryId;
+
+    @NotNull(message = "Room id is mandatory")
+    private UUID roomId;
 }

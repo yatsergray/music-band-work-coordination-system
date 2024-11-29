@@ -3,6 +3,7 @@ package ua.yatsergray.backend.handler.band;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ua.yatsergray.backend.exception.band.EventRoomConflictException;
 import ua.yatsergray.backend.exception.band.EventConflictException;
 import ua.yatsergray.backend.exception.band.NoSuchEventException;
 
@@ -16,6 +17,11 @@ public class EventExceptionHandler {
 
     @ExceptionHandler(NoSuchEventException.class)
     public ResponseEntity<String> handleNoSuchEventException(NoSuchEventException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(EventRoomConflictException.class)
+    public ResponseEntity<String> handleEventRoomConflictException(EventRoomConflictException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

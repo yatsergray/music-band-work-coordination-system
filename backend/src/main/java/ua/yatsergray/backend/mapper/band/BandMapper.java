@@ -11,13 +11,14 @@ import ua.yatsergray.backend.domain.entity.user.User;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {ChatMapper.class, EventMapper.class, InvitationMapper.class, BandSongVersionMapper.class})
+@Mapper(componentModel = "spring", uses = {ChatMapper.class, EventMapper.class, RoomMapper.class, InvitationMapper.class, BandSongVersionMapper.class})
 public interface BandMapper {
 
     BandMapper INSTANCE = Mappers.getMapper(BandMapper.class);
 
     @Mapping(source = "chats", target = "chatDTOList")
     @Mapping(source = "events", target = "eventDTOList")
+    @Mapping(source = "rooms", target = "roomDTOList")
     @Mapping(source = "invitations", target = "invitationDTOList")
     @Mapping(source = "bandSongVersions", target = "bandSongVersionDTOList")
     @Mapping(target = "bandUserDTOList", expression = "java(mapAllToBandUserDTOList(band))")

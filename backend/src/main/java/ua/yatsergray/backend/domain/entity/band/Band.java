@@ -38,6 +38,10 @@ public class Band {
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     @Builder.Default
+    private Set<Room> rooms = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<Invitation> invitations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
