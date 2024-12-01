@@ -33,6 +33,9 @@ public class EventDTO {
     @JsonProperty("room")
     private RoomDTO roomDTO;
 
+    @JsonProperty("eventStatus")
+    private EventStatusDTO eventStatusDTO;
+
     @JsonProperty("eventUsers")
     private List<EventUserDTO> eventUserDTOList = new ArrayList<>();
 

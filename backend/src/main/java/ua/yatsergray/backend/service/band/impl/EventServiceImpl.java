@@ -4,18 +4,13 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.EventDTO;
-import ua.yatsergray.backend.domain.entity.band.Band;
-import ua.yatsergray.backend.domain.entity.band.Event;
-import ua.yatsergray.backend.domain.entity.band.EventCategory;
-import ua.yatsergray.backend.domain.entity.band.Room;
+import ua.yatsergray.backend.domain.entity.band.*;
 import ua.yatsergray.backend.domain.request.band.EventCreateRequest;
 import ua.yatsergray.backend.domain.request.band.EventUpdateRequest;
+import ua.yatsergray.backend.domain.type.band.EventStatusType;
 import ua.yatsergray.backend.exception.band.*;
 import ua.yatsergray.backend.mapper.band.EventMapper;
-import ua.yatsergray.backend.repository.band.BandRepository;
-import ua.yatsergray.backend.repository.band.EventCategoryRepository;
-import ua.yatsergray.backend.repository.band.EventRepository;
-import ua.yatsergray.backend.repository.band.RoomRepository;
+import ua.yatsergray.backend.repository.band.*;
 import ua.yatsergray.backend.service.band.EventService;
 
 import java.util.List;
@@ -30,14 +25,16 @@ public class EventServiceImpl implements EventService {
     private final BandRepository bandRepository;
     private final EventCategoryRepository eventCategoryRepository;
     private final RoomRepository roomRepository;
+    private final EventStatusRepository eventStatusRepository;
 
     @Autowired
-    public EventServiceImpl(EventMapper eventMapper, EventRepository eventRepository, BandRepository bandRepository, EventCategoryRepository eventCategoryRepository, RoomRepository roomRepository) {
+    public EventServiceImpl(EventMapper eventMapper, EventRepository eventRepository, BandRepository bandRepository, EventCategoryRepository eventCategoryRepository, RoomRepository roomRepository, EventStatusRepository eventStatusRepository) {
         this.eventMapper = eventMapper;
         this.eventRepository = eventRepository;
         this.bandRepository = bandRepository;
         this.eventCategoryRepository = eventCategoryRepository;
         this.roomRepository = roomRepository;
+        this.eventStatusRepository = eventStatusRepository;
     }
 
     @Override
@@ -56,6 +53,8 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NoSuchEventCategoryException(String.format("Event category with id=\"%s\" does not exist", eventCreateRequest.getEventCategoryId())));
         Room room = roomRepository.findById(eventCreateRequest.getRoomId())
                 .orElseThrow(() -> new NoSuchRoomException(String.format("Room with id=\"%s\" does not exist", eventCreateRequest.getRoomId())));
+        EventStatus eventStatus = eventStatusRepository.findByType(EventStatusType.IN_DRAFT)
+                .orElseThrow(() -> new NoSuchEventCategoryException(String.format("Event status with type=\"%s\" does not exist", EventStatusType.IN_DRAFT)));
 
         if (eventRepository.existsOverlappingEvent(eventCreateRequest.getBandId(), eventCreateRequest.getDate(), eventCreateRequest.getStartTime(), eventCreateRequest.getEndTime())) {
             throw new EventConflictException(String.format("Event with startTime=\"%s\" and endTime=\"%s\" overlaps other event", eventCreateRequest.getStartTime(), eventCreateRequest.getEndTime()));
@@ -72,6 +71,7 @@ public class EventServiceImpl implements EventService {
                 .band(band)
                 .eventCategory(eventCategory)
                 .room(room)
+                .eventStatus(eventStatus)
                 .build();
 
         return eventMapper.mapToEventDTO(eventRepository.save(event));
@@ -129,5 +129,17 @@ public class EventServiceImpl implements EventService {
         }
 
         eventRepository.deleteById(eventId);
+    }
+
+    @Override
+    public EventDTO changeEventStatus(UUID eventId, EventStatusType eventStatusType) throws NoSuchEventException, NoSuchEventStatusException {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NoSuchEventException(String.format("Event with id=\"%s\" does not exist", eventId)));
+        EventStatus eventStatus = eventStatusRepository.findByType(eventStatusType)
+                .orElseThrow(() -> new NoSuchEventStatusException(String.format("Event status with type=\"%s\" does not exist", eventStatusType)));
+
+        event.setEventStatus(eventStatus);
+
+        return eventMapper.mapToEventDTO(eventRepository.save(event));
     }
 }

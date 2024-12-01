@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.band.EventDTO;
 import ua.yatsergray.backend.domain.request.band.EventCreateRequest;
 import ua.yatsergray.backend.domain.request.band.EventUpdateRequest;
+import ua.yatsergray.backend.domain.type.band.EventStatusType;
 import ua.yatsergray.backend.service.band.impl.EventServiceImpl;
 
 import java.util.List;
@@ -53,5 +54,17 @@ public class EventController {
         eventService.removeEventById(eventId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @SneakyThrows
+    @PutMapping("/{eventId}/publish")
+    public ResponseEntity<EventDTO> publishEventStatusById(@PathVariable("eventId") UUID eventId) {
+        return ResponseEntity.ok(eventService.changeEventStatus(eventId, EventStatusType.PUBLISHED));
+    }
+
+    @SneakyThrows
+    @PutMapping("/{eventId}/draft")
+    public ResponseEntity<EventDTO> draftEventStatusById(@PathVariable("eventId") UUID eventId) {
+        return ResponseEntity.ok(eventService.changeEventStatus(eventId, EventStatusType.IN_DRAFT));
     }
 }

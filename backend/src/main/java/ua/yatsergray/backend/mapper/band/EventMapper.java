@@ -15,6 +15,7 @@ public interface EventMapper {
 
     @Mapping(source = "eventCategory", target = "eventCategoryDTO")
     @Mapping(source = "room", target = "roomDTO")
+    @Mapping(source = "eventStatus", target = "eventStatusDTO")
     @Mapping(source = "eventUsers", target = "eventUserDTOList")
     @Mapping(source = "eventBandSongVersions", target = "eventBandSongVersionDTOList")
     EventDTO mapToEventDTO(Event event);

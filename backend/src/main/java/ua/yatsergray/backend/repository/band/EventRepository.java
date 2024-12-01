@@ -23,4 +23,6 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     long countByEventCategoryId(UUID eventCategoryId);
 
     long countByRoomId(UUID roomId);
+
+    long countByEventStatusId(UUID eventStatusId);
 }

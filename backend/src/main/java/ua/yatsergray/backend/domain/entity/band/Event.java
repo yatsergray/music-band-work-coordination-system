@@ -49,6 +49,10 @@ public class Event {
     @JoinColumn(name = "id_room", nullable = false)
     private Room room;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_event_status", nullable = false)
+    private EventStatus eventStatus;
+
     @OneToMany(mappedBy = "event", cascade = CascadeType.REMOVE)
     @Builder.Default
     private Set<EventUser> eventUsers = new LinkedHashSet<>();

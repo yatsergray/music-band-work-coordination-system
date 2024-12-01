@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.service.band.impl;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.band.RoomDTO;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Transactional
 @Service
 public class RoomServiceImpl implements RoomService {
     private final RoomRepository roomRepository;
