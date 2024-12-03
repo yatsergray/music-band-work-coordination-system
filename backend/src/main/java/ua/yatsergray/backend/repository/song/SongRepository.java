@@ -18,4 +18,6 @@ public interface SongRepository extends JpaRepository<Song, UUID> {
     long countByKeysId(UUID keyId);
 
     long countByTimeSignatureId(UUID timeSignatureId);
+
+    long countBySongCategoryId(UUID songCategoryId);
 }

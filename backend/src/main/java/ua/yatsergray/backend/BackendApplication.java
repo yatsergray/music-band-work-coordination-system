@@ -38,8 +38,16 @@ public class BackendApplication {
 //            ChordServiceImpl chordServiceImpl,
 //            BandServiceImpl bandServiceImpl,
 //            BandSongVersionServiceImpl bandSongVersionServiceImpl,
-//            RoomServiceImpl roomServiceImpl) {
+//            RoomServiceImpl roomServiceImpl,
+//            SongCategoryServiceImpl songCategoryServiceImpl
+//    ) {
 //        return args -> {
+//            BandDTO band1 = bandServiceImpl.addBand(
+//                    BandCreateUpdateRequest.builder()
+//                            .name("band1")
+//                            .build()
+//            );
+//
 //            ArtistDTO artist1 = artistService.addArtist(
 //                    ArtistCreateUpdateRequest.builder()
 //                            .name("artist1")
@@ -74,6 +82,13 @@ public class BackendApplication {
 //                            .build()
 //            );
 //
+//            SongCategoryDTO songCategory1 = songCategoryServiceImpl.addSongCategory(
+//                    SongCategoryCreateRequest.builder()
+//                            .name("songCategory1")
+//                            .bandId(band1.getId())
+//                            .build()
+//            );
+//
 //            SongDTO song1 = songServiceImpl.addSong(
 //                    SongCreateUpdateRequest.builder()
 //                            .name("song1")
@@ -81,6 +96,7 @@ public class BackendApplication {
 //                            .keyId(key1.getId())
 //                            .timeSignatureId(timeSignature1.getId())
 //                            .bpm(60)
+//                            .songCategoryId(songCategory1.getId())
 //                            .build()
 //            );
 //            SongDTO song2 = songServiceImpl.addSong(
@@ -90,6 +106,7 @@ public class BackendApplication {
 //                            .keyId(key2.getId())
 //                            .timeSignatureId(timeSignature1.getId())
 //                            .bpm(80)
+//                            .songCategoryId(songCategory1.getId())
 //                            .build()
 //            );
 //
@@ -741,12 +758,6 @@ public class BackendApplication {
 //                            .keyId(key4.getId())
 //                            .chordId(chord19.getId())
 //                            .sequenceNumber(4)
-//                            .build()
-//            );
-//
-//            BandDTO band1 = bandServiceImpl.addBand(
-//                    BandCreateUpdateRequest.builder()
-//                            .name("band1")
 //                            .build()
 //            );
 //

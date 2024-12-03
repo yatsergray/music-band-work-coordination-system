@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.dto.band;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import ua.yatsergray.backend.domain.dto.song.SongCategoryDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,9 @@ public class BandDTO {
 
     @JsonProperty("rooms")
     private List<RoomDTO> roomDTOList = new ArrayList<>();
+
+    @JsonProperty("songCategories")
+    private List<SongCategoryDTO> songCategoryDTOList = new ArrayList<>();
 
     @JsonProperty("invitations")
     private List<InvitationDTO> invitationDTOList = new ArrayList<>();

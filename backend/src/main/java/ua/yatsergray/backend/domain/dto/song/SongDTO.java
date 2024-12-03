@@ -29,6 +29,9 @@ public class SongDTO {
     @JsonProperty("timeSignature")
     private TimeSignatureDTO timeSignatureDTO;
 
+    @JsonProperty("songCategory")
+    private SongCategoryDTO songCategoryDTO;
+
     @JsonProperty("songParts")
     private List<SongPartDTO> songPartDTOList = new ArrayList<>();
 

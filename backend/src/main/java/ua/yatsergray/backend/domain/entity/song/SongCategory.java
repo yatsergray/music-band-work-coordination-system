@@ -1,8 +1,9 @@
-package ua.yatsergray.backend.domain.entity.band;
+package ua.yatsergray.backend.domain.entity.song;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
+import ua.yatsergray.backend.domain.entity.band.Band;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -15,8 +16,8 @@ import java.util.UUID;
 @Setter
 @Builder
 @Entity
-@Table(name = "rooms")
-public class Room {
+@Table(name = "song_categories")
+public class SongCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,13 +26,13 @@ public class Room {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "id_band", nullable = false)
     private Band band;
 
-    @OneToMany(mappedBy = "room")
+    @OneToMany(mappedBy = "songCategory")
     @Builder.Default
-    private Set<Event> events = new LinkedHashSet<>();
+    private Set<Song> songs = new LinkedHashSet<>();
 
     @Override
     public final boolean equals(Object o) {
@@ -40,8 +41,8 @@ public class Room {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Room room = (Room) o;
-        return getId() != null && Objects.equals(getId(), room.getId());
+        SongCategory songCategory = (SongCategory) o;
+        return getId() != null && Objects.equals(getId(), songCategory.getId());
     }
 
     @Override

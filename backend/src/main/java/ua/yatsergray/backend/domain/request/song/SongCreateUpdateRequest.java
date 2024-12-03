@@ -33,4 +33,7 @@ public class SongCreateUpdateRequest {
 
     @NotNull(message = "Time signature id is mandatory")
     private UUID timeSignatureId;
+
+    @NotNull(message = "Song category id is mandatory")
+    private UUID songCategoryId;
 }

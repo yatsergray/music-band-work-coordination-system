@@ -8,10 +8,11 @@ import ua.yatsergray.backend.domain.dto.band.BandUserDTO;
 import ua.yatsergray.backend.domain.entity.band.Band;
 import ua.yatsergray.backend.domain.entity.band.BandUserAccessRole;
 import ua.yatsergray.backend.domain.entity.user.User;
+import ua.yatsergray.backend.mapper.song.SongCategoryMapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {ChatMapper.class, EventMapper.class, RoomMapper.class, InvitationMapper.class, BandSongVersionMapper.class})
+@Mapper(componentModel = "spring", uses = {ChatMapper.class, EventMapper.class, RoomMapper.class, SongCategoryMapper.class, InvitationMapper.class, BandSongVersionMapper.class})
 public interface BandMapper {
 
     BandMapper INSTANCE = Mappers.getMapper(BandMapper.class);
@@ -19,6 +20,7 @@ public interface BandMapper {
     @Mapping(source = "chats", target = "chatDTOList")
     @Mapping(source = "events", target = "eventDTOList")
     @Mapping(source = "rooms", target = "roomDTOList")
+    @Mapping(source = "songCategories", target = "songCategoryDTOList")
     @Mapping(source = "invitations", target = "invitationDTOList")
     @Mapping(source = "bandSongVersions", target = "bandSongVersionDTOList")
     @Mapping(target = "bandUserDTOList", expression = "java(mapAllToBandUserDTOList(band))")

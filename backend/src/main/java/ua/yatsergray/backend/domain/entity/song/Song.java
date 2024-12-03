@@ -50,6 +50,10 @@ public class Song {
     @JoinColumn(name = "id_time_signature", nullable = false)
     private TimeSignature timeSignature;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_song_category", nullable = false)
+    private SongCategory songCategory;
+
     @OneToMany(mappedBy = "song")
     @Builder.Default
     // TODO: Remove , cascade = CascadeType.REMOVE declaration

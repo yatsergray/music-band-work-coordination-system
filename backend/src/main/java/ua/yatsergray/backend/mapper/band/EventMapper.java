@@ -8,7 +8,7 @@ import ua.yatsergray.backend.domain.entity.band.Event;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {EventCategoryMapper.class, EventUserMapper.class, EventBandSongVersionMapper.class})
+@Mapper(componentModel = "spring", uses = {EventCategoryMapper.class, RoomMapper.class, EventStatusMapper.class, EventUserMapper.class, EventBandSongVersionMapper.class})
 public interface EventMapper {
 
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);

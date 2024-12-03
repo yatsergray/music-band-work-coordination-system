@@ -9,9 +9,9 @@ import ua.yatsergray.backend.domain.entity.band.Room;
 import ua.yatsergray.backend.domain.request.band.RoomCreateRequest;
 import ua.yatsergray.backend.domain.request.band.RoomUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
-import ua.yatsergray.backend.exception.band.RoomAlreadyExistsException;
 import ua.yatsergray.backend.exception.band.NoSuchBandException;
 import ua.yatsergray.backend.exception.band.NoSuchRoomException;
+import ua.yatsergray.backend.exception.band.RoomAlreadyExistsException;
 import ua.yatsergray.backend.mapper.band.RoomMapper;
 import ua.yatsergray.backend.repository.band.BandRepository;
 import ua.yatsergray.backend.repository.band.EventRepository;
@@ -25,15 +25,15 @@ import java.util.UUID;
 @Transactional
 @Service
 public class RoomServiceImpl implements RoomService {
-    private final RoomRepository roomRepository;
     private final RoomMapper roomMapper;
+    private final RoomRepository roomRepository;
     private final BandRepository bandRepository;
     private final EventRepository eventRepository;
 
     @Autowired
-    public RoomServiceImpl(RoomRepository roomRepository, RoomMapper roomMapper, BandRepository bandRepository, EventRepository eventRepository) {
-        this.roomRepository = roomRepository;
+    public RoomServiceImpl(RoomMapper roomMapper, RoomRepository roomRepository, BandRepository bandRepository, EventRepository eventRepository) {
         this.roomMapper = roomMapper;
+        this.roomRepository = roomRepository;
         this.bandRepository = bandRepository;
         this.eventRepository = eventRepository;
     }
