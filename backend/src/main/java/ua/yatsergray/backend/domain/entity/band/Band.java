@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 import ua.yatsergray.backend.domain.entity.song.SongCategory;
+import ua.yatsergray.backend.domain.entity.song.SongMood;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -44,6 +45,10 @@ public class Band {
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     @Builder.Default
     private Set<SongCategory> songCategories = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private Set<SongMood> songMoods = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     @Builder.Default

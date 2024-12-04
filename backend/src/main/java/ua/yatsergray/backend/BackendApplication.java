@@ -39,8 +39,8 @@ public class BackendApplication {
 //            BandServiceImpl bandServiceImpl,
 //            BandSongVersionServiceImpl bandSongVersionServiceImpl,
 //            RoomServiceImpl roomServiceImpl,
-//            SongCategoryServiceImpl songCategoryServiceImpl
-//    ) {
+//            SongCategoryServiceImpl songCategoryServiceImpl,
+//            SongMoodServiceImpl songMoodServiceImpl) {
 //        return args -> {
 //            BandDTO band1 = bandServiceImpl.addBand(
 //                    BandCreateUpdateRequest.builder()
@@ -89,6 +89,13 @@ public class BackendApplication {
 //                            .build()
 //            );
 //
+//            SongMoodDTO songMood1 = songMoodServiceImpl.addSongMood(
+//                    SongMoodCreateRequest.builder()
+//                            .name("songMood1")
+//                            .bandId(band1.getId())
+//                            .build()
+//            );
+//
 //            SongDTO song1 = songServiceImpl.addSong(
 //                    SongCreateUpdateRequest.builder()
 //                            .name("song1")
@@ -97,6 +104,7 @@ public class BackendApplication {
 //                            .timeSignatureId(timeSignature1.getId())
 //                            .bpm(60)
 //                            .songCategoryId(songCategory1.getId())
+//                            .songMoodId(songMood1.getId())
 //                            .build()
 //            );
 //            SongDTO song2 = songServiceImpl.addSong(
@@ -107,6 +115,7 @@ public class BackendApplication {
 //                            .timeSignatureId(timeSignature1.getId())
 //                            .bpm(80)
 //                            .songCategoryId(songCategory1.getId())
+//                            .songMoodId(songMood1.getId())
 //                            .build()
 //            );
 //

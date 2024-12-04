@@ -36,4 +36,7 @@ public class SongCreateUpdateRequest {
 
     @NotNull(message = "Song category id is mandatory")
     private UUID songCategoryId;
+
+    @NotNull(message = "Song mood id is mandatory")
+    private UUID songMoodId;
 }
