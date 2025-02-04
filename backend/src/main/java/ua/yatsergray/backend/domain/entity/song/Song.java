@@ -3,6 +3,7 @@ package ua.yatsergray.backend.domain.entity.song;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
+import ua.yatsergray.backend.domain.entity.band.Band;
 import ua.yatsergray.backend.domain.entity.band.BandSongVersion;
 
 import java.util.LinkedHashSet;
@@ -57,6 +58,10 @@ public class Song {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_song_mood", nullable = false)
     private SongMood songMood;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_band", nullable = false)
+    private Band band;
 
     @OneToMany(mappedBy = "song")
     @Builder.Default

@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class SongCreateUpdateRequest {
+public class SongUpdateRequest {
 
     @Pattern(regexp = "^(http|https)://.*$", message = "Media URL must be a valid URL")
     private String mediaURL;

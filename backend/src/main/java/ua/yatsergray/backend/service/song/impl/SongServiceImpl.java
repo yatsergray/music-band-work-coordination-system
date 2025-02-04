@@ -4,11 +4,15 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.SongDTO;
+import ua.yatsergray.backend.domain.entity.band.Band;
 import ua.yatsergray.backend.domain.entity.song.*;
-import ua.yatsergray.backend.domain.request.song.SongCreateUpdateRequest;
+import ua.yatsergray.backend.domain.request.song.SongCreateRequest;
 import ua.yatsergray.backend.domain.request.song.SongKeyCreateRequest;
+import ua.yatsergray.backend.domain.request.song.SongUpdateRequest;
+import ua.yatsergray.backend.exception.band.NoSuchBandException;
 import ua.yatsergray.backend.exception.song.*;
 import ua.yatsergray.backend.mapper.song.SongMapper;
+import ua.yatsergray.backend.repository.band.BandRepository;
 import ua.yatsergray.backend.repository.song.*;
 import ua.yatsergray.backend.service.song.SongService;
 
@@ -29,9 +33,10 @@ public class SongServiceImpl implements SongService {
     private final SongPartKeyChordRepository songPartKeyChordRepository;
     private final SongCategoryRepository songCategoryRepository;
     private final SongMoodRepository songMoodRepository;
+    private final BandRepository bandRepository;
 
     @Autowired
-    public SongServiceImpl(SongMapper songMapper, SongRepository songRepository, KeyRepository keyRepository, ArtistRepository artistRepository, TimeSignatureRepository timeSignatureRepository, SongPartRepository songPartRepository, SongPartDetailsRepository songPartDetailsRepository, SongPartKeyChordRepository songPartKeyChordRepository, SongCategoryRepository songCategoryRepository, SongMoodRepository songMoodRepository) {
+    public SongServiceImpl(SongMapper songMapper, SongRepository songRepository, KeyRepository keyRepository, ArtistRepository artistRepository, TimeSignatureRepository timeSignatureRepository, SongPartRepository songPartRepository, SongPartDetailsRepository songPartDetailsRepository, SongPartKeyChordRepository songPartKeyChordRepository, SongCategoryRepository songCategoryRepository, SongMoodRepository songMoodRepository, BandRepository bandRepository) {
         this.songMapper = songMapper;
         this.songRepository = songRepository;
         this.keyRepository = keyRepository;
@@ -42,37 +47,41 @@ public class SongServiceImpl implements SongService {
         this.songPartKeyChordRepository = songPartKeyChordRepository;
         this.songCategoryRepository = songCategoryRepository;
         this.songMoodRepository = songMoodRepository;
+        this.bandRepository = bandRepository;
     }
 
     @Override
-    public SongDTO addSong(SongCreateUpdateRequest songCreateUpdateRequest) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException, NoSuchSongCategoryException, NoSuchSongMoodException {
-        Key key = keyRepository.findById(songCreateUpdateRequest.getKeyId())
-                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", songCreateUpdateRequest.getKeyId())));
-        Artist artist = artistRepository.findById(songCreateUpdateRequest.getArtistId())
-                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=\"%s\" does not exist", songCreateUpdateRequest.getArtistId())));
-        TimeSignature timeSignature = timeSignatureRepository.findById(songCreateUpdateRequest.getTimeSignatureId())
-                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=\"%s\" does not exist", songCreateUpdateRequest.getTimeSignatureId())));
-        SongCategory songCategory = songCategoryRepository.findById(songCreateUpdateRequest.getSongCategoryId())
-                .orElseThrow(() -> new NoSuchSongCategoryException(String.format("Song category with id=\"%s\" does not exist", songCreateUpdateRequest.getSongCategoryId())));
-        SongMood songMood = songMoodRepository.findById(songCreateUpdateRequest.getSongMoodId())
-                .orElseThrow(() -> new NoSuchSongMoodException(String.format("Song mood with id=\"%s\" does not exist", songCreateUpdateRequest.getSongMoodId())));
+    public SongDTO addSong(SongCreateRequest songCreateRequest) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException, NoSuchSongCategoryException, NoSuchSongMoodException, NoSuchBandException {
+        Key key = keyRepository.findById(songCreateRequest.getKeyId())
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", songCreateRequest.getKeyId())));
+        Artist artist = artistRepository.findById(songCreateRequest.getArtistId())
+                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=\"%s\" does not exist", songCreateRequest.getArtistId())));
+        TimeSignature timeSignature = timeSignatureRepository.findById(songCreateRequest.getTimeSignatureId())
+                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=\"%s\" does not exist", songCreateRequest.getTimeSignatureId())));
+        SongCategory songCategory = songCategoryRepository.findById(songCreateRequest.getSongCategoryId())
+                .orElseThrow(() -> new NoSuchSongCategoryException(String.format("Song category with id=\"%s\" does not exist", songCreateRequest.getSongCategoryId())));
+        SongMood songMood = songMoodRepository.findById(songCreateRequest.getSongMoodId())
+                .orElseThrow(() -> new NoSuchSongMoodException(String.format("Song mood with id=\"%s\" does not exist", songCreateRequest.getSongMoodId())));
+        Band band = bandRepository.findById(songCreateRequest.getBandId())
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=\"%s\" does not exist", songCreateRequest.getBandId())));
 
-        if (songRepository.existsByArtistIdAndName(songCreateUpdateRequest.getArtistId(), songCreateUpdateRequest.getName())) {
-            throw new SongAlreadyExistsException(String.format("Song with artistId=\"%s\" and name=\"%s\" already exists", songCreateUpdateRequest.getArtistId(), songCreateUpdateRequest.getName()));
+        if (songRepository.existsByArtistIdAndName(songCreateRequest.getArtistId(), songCreateRequest.getName())) {
+            throw new SongAlreadyExistsException(String.format("Song with artistId=\"%s\" and name=\"%s\" already exists", songCreateRequest.getArtistId(), songCreateRequest.getName()));
         }
 
         // TODO: Add check if songCategory and added song have the same band
         // TODO: Add check if songMood and added song have the same band
 
         Song song = Song.builder()
-                .mediaURL(songCreateUpdateRequest.getMediaURL())
-                .name(songCreateUpdateRequest.getName())
-                .bpm(songCreateUpdateRequest.getBpm())
+                .mediaURL(songCreateRequest.getMediaURL())
+                .name(songCreateRequest.getName())
+                .bpm(songCreateRequest.getBpm())
                 .key(key)
                 .artist(artist)
                 .timeSignature(timeSignature)
                 .songCategory(songCategory)
                 .songMood(songMood)
+                .band(band)
                 .build();
 
         return songMapper.mapToSongDTO(songRepository.save(song));
@@ -89,30 +98,30 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDTO modifySongById(UUID songId, SongCreateUpdateRequest songCreateUpdateRequest) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException, NoSuchSongCategoryException, NoSuchSongMoodException {
+    public SongDTO modifySongById(UUID songId, SongUpdateRequest songUpdateRequest) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, NoSuchSongCategoryException, NoSuchSongMoodException, SongAlreadyExistsException {
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=\"%s\" does not exist", songId)));
-        Key key = keyRepository.findById(songCreateUpdateRequest.getKeyId())
-                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", songCreateUpdateRequest.getKeyId())));
-        Artist artist = artistRepository.findById(songCreateUpdateRequest.getArtistId())
-                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=\"%s\" does not exist", songCreateUpdateRequest.getArtistId())));
-        TimeSignature timeSignature = timeSignatureRepository.findById(songCreateUpdateRequest.getTimeSignatureId())
-                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=\"%s\" does not exist", songCreateUpdateRequest.getTimeSignatureId())));
-        SongCategory songCategory = songCategoryRepository.findById(songCreateUpdateRequest.getSongCategoryId())
-                .orElseThrow(() -> new NoSuchSongCategoryException(String.format("Song category with id=\"%s\" does not exist", songCreateUpdateRequest.getSongCategoryId())));
-        SongMood songMood = songMoodRepository.findById(songCreateUpdateRequest.getSongMoodId())
-                .orElseThrow(() -> new NoSuchSongMoodException(String.format("Song mood with id=\"%s\" does not exist", songCreateUpdateRequest.getSongMoodId())));
+        Key key = keyRepository.findById(songUpdateRequest.getKeyId())
+                .orElseThrow(() -> new NoSuchKeyException(String.format("Key with id=\"%s\" does not exist", songUpdateRequest.getKeyId())));
+        Artist artist = artistRepository.findById(songUpdateRequest.getArtistId())
+                .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=\"%s\" does not exist", songUpdateRequest.getArtistId())));
+        TimeSignature timeSignature = timeSignatureRepository.findById(songUpdateRequest.getTimeSignatureId())
+                .orElseThrow(() -> new NoSuchTimeSignatureException(String.format("Time signature with id=\"%s\" does not exist", songUpdateRequest.getTimeSignatureId())));
+        SongCategory songCategory = songCategoryRepository.findById(songUpdateRequest.getSongCategoryId())
+                .orElseThrow(() -> new NoSuchSongCategoryException(String.format("Song category with id=\"%s\" does not exist", songUpdateRequest.getSongCategoryId())));
+        SongMood songMood = songMoodRepository.findById(songUpdateRequest.getSongMoodId())
+                .orElseThrow(() -> new NoSuchSongMoodException(String.format("Song mood with id=\"%s\" does not exist", songUpdateRequest.getSongMoodId())));
 
-        if ((!songCreateUpdateRequest.getArtistId().equals(song.getArtist().getId()) || !songCreateUpdateRequest.getName().equals(song.getName())) && songRepository.existsByArtistIdAndName(songCreateUpdateRequest.getArtistId(), songCreateUpdateRequest.getName())) {
-            throw new SongAlreadyExistsException(String.format("Song with artistId=\"%s\" and name=\"%s\" already exists", songCreateUpdateRequest.getArtistId(), songCreateUpdateRequest.getName()));
+        if ((!songUpdateRequest.getArtistId().equals(song.getArtist().getId()) || !songUpdateRequest.getName().equals(song.getName())) && songRepository.existsByArtistIdAndName(songUpdateRequest.getArtistId(), songUpdateRequest.getName())) {
+            throw new SongAlreadyExistsException(String.format("Song with artistId=\"%s\" and name=\"%s\" already exists", songUpdateRequest.getArtistId(), songUpdateRequest.getName()));
         }
 
         // TODO: Add check if songCategory and modified song have the same band
         // TODO: Add check if songMood and modified song have the same band
 
-        song.setMediaURL(songCreateUpdateRequest.getMediaURL());
-        song.setName(songCreateUpdateRequest.getName());
-        song.setBpm(songCreateUpdateRequest.getBpm());
+        song.setMediaURL(songUpdateRequest.getMediaURL());
+        song.setName(songUpdateRequest.getName());
+        song.setBpm(songUpdateRequest.getBpm());
         song.setKey(key);
         song.setArtist(artist);
         song.setTimeSignature(timeSignature);

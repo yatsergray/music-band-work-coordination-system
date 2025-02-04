@@ -9,5 +9,5 @@ import java.util.UUID;
 @Repository
 public interface ArtistRepository extends JpaRepository<Artist, UUID> {
 
-    boolean existsByName(String artistName);
+    boolean existsByBandIdAndName(UUID bandId, String artistName);
 }
