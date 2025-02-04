@@ -5,4 +5,5 @@ HELP.md
 .mvn/
 mvnw
 mvnw.cmd
+.gitattributes
 task.txt
