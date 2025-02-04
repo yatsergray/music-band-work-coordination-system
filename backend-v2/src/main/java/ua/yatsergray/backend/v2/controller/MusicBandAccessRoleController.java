@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/band-access-roles")
+@RequestMapping("/api/v1/music-band-access-roles")
 public class MusicBandAccessRoleController {
     private final MusicBandAccessRoleServiceImpl musicBandAccessRoleService;
 
