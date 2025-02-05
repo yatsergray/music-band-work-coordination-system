@@ -54,7 +54,7 @@ public class User {
     @Builder.Default
     private Set<BandUserAccessRole> bandUserAccessRoles = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "user",  cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @Builder.Default
     private Set<ChatUserAccessRole> chatUserAccessRoles = new LinkedHashSet<>();
 

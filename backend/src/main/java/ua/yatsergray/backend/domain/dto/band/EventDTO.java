@@ -3,11 +3,12 @@ package ua.yatsergray.backend.domain.dto.band;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,6 +29,12 @@ public class EventDTO {
 
     @JsonProperty("eventCategory")
     private EventCategoryDTO eventCategoryDTO;
+
+    @JsonProperty("room")
+    private RoomDTO roomDTO;
+
+    @JsonProperty("eventStatus")
+    private EventStatusDTO eventStatusDTO;
 
     @JsonProperty("eventUsers")
     private List<EventUserDTO> eventUserDTOList = new ArrayList<>();

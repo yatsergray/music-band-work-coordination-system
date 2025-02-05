@@ -1,8 +1,10 @@
 package ua.yatsergray.backend.service.song;
 
 import ua.yatsergray.backend.domain.dto.song.SongDTO;
-import ua.yatsergray.backend.domain.request.song.SongCreateUpdateRequest;
+import ua.yatsergray.backend.domain.request.song.SongCreateRequest;
 import ua.yatsergray.backend.domain.request.song.SongKeyCreateRequest;
+import ua.yatsergray.backend.domain.request.song.SongUpdateRequest;
+import ua.yatsergray.backend.exception.band.NoSuchBandException;
 import ua.yatsergray.backend.exception.song.*;
 
 import java.util.List;
@@ -11,13 +13,13 @@ import java.util.UUID;
 
 public interface SongService {
 
-    SongDTO addSong(SongCreateUpdateRequest songCreateUpdateRequest) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException;
+    SongDTO addSong(SongCreateRequest songCreateRequest) throws NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException, NoSuchSongCategoryException, NoSuchSongMoodException, NoSuchBandException;
 
     Optional<SongDTO> getSongById(UUID songId);
 
     List<SongDTO> getAllSongs();
 
-    SongDTO modifySongById(UUID songId, SongCreateUpdateRequest songCreateUpdateRequest) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, SongAlreadyExistsException;
+    SongDTO modifySongById(UUID songId, SongUpdateRequest songUpdateRequest) throws NoSuchSongException, NoSuchKeyException, NoSuchArtistException, NoSuchTimeSignatureException, NoSuchSongCategoryException, NoSuchSongMoodException, SongAlreadyExistsException;
 
     void removeSongById(UUID songId) throws NoSuchSongException;
 

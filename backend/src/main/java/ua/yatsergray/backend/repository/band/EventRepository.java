@@ -21,4 +21,8 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     boolean existsOverlappingEvent(@Param("eventBandId") UUID eventBandId, @Param("eventDate") LocalDate eventDate, @Param("eventStartTime") LocalTime eventStartTime, @Param("eventEndTime") LocalTime eventEndTime);
 
     long countByEventCategoryId(UUID eventCategoryId);
+
+    long countByRoomId(UUID roomId);
+
+    long countByEventStatusId(UUID eventStatusId);
 }

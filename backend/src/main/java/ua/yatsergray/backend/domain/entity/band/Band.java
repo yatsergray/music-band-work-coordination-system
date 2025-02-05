@@ -3,6 +3,10 @@ package ua.yatsergray.backend.domain.entity.band;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
+import ua.yatsergray.backend.domain.entity.song.Artist;
+import ua.yatsergray.backend.domain.entity.song.Song;
+import ua.yatsergray.backend.domain.entity.song.SongCategory;
+import ua.yatsergray.backend.domain.entity.song.SongMood;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -38,6 +42,18 @@ public class Band {
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     @Builder.Default
+    private Set<Room> rooms = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private Set<SongCategory> songCategories = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private Set<SongMood> songMoods = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
     private Set<Invitation> invitations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
@@ -51,6 +67,14 @@ public class Band {
     @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
     @Builder.Default
     private Set<BandUserAccessRole> bandUserAccessRoles = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private Set<Song> songs = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "band", cascade = CascadeType.REMOVE)
+    @Builder.Default
+    private Set<Artist> artists = new LinkedHashSet<>();
 
     @Override
     public final boolean equals(Object o) {

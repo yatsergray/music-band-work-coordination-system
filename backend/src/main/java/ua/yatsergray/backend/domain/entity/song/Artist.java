@@ -2,6 +2,7 @@ package ua.yatsergray.backend.domain.entity.song;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ua.yatsergray.backend.domain.entity.band.Band;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -25,6 +26,10 @@ public class Artist {
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_band", nullable = false)
+    private Band band;
 
     @OneToMany(mappedBy = "artist")
     @Builder.Default

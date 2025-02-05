@@ -8,7 +8,7 @@ import ua.yatsergray.backend.domain.entity.song.Song;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = {KeyMapper.class, ArtistMapper.class, TimeSignatureMapper.class, SongPartMapper.class, SongPartDetailsMapper.class, SongInstrumentalPartMapper.class})
+@Mapper(componentModel = "spring", uses = {KeyMapper.class, ArtistMapper.class, TimeSignatureMapper.class, SongCategoryMapper.class, SongMoodMapper.class, SongPartMapper.class, SongPartDetailsMapper.class, SongInstrumentalPartMapper.class})
 public interface SongMapper {
 
     SongMapper INSTANCE = Mappers.getMapper(SongMapper.class);
@@ -16,6 +16,8 @@ public interface SongMapper {
     @Mapping(source = "key", target = "keyDTO")
     @Mapping(source = "artist", target = "artistDTO")
     @Mapping(source = "timeSignature", target = "timeSignatureDTO")
+    @Mapping(source = "songCategory", target = "songCategoryDTO")
+    @Mapping(source = "songMood", target = "songMoodDTO")
     @Mapping(source = "songParts", target = "songPartDTOList")
     @Mapping(source = "songPartDetailsSet", target = "songPartDetailsDTOList")
     @Mapping(source = "songInstrumentalParts", target = "songInstrumentalPartDTOList")

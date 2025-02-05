@@ -1,4 +1,4 @@
-package ua.yatsergray.backend.domain.request.song;
+package ua.yatsergray.backend.v2.domain.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class ArtistCreateUpdateRequest {
+public class ChatUpdateRequest {
 
     @NotBlank(message = "Name is mandatory")
     private String name;

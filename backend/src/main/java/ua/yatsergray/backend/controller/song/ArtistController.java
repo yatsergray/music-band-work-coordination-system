@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.domain.dto.song.ArtistDTO;
-import ua.yatsergray.backend.domain.request.song.ArtistCreateUpdateRequest;
+import ua.yatsergray.backend.domain.request.song.ArtistCreateRequest;
+import ua.yatsergray.backend.domain.request.song.ArtistUpdateRequest;
 import ua.yatsergray.backend.service.song.impl.ArtistServiceImpl;
 
 import java.util.List;
@@ -24,8 +25,8 @@ public class ArtistController {
 
     @SneakyThrows
     @PostMapping
-    public ResponseEntity<ArtistDTO> createArtist(@Valid @RequestBody ArtistCreateUpdateRequest artistCreateUpdateRequest) {
-        return ResponseEntity.ok(artistService.addArtist(artistCreateUpdateRequest));
+    public ResponseEntity<ArtistDTO> createArtist(@Valid @RequestBody ArtistCreateRequest artistCreateRequest) {
+        return ResponseEntity.ok(artistService.addArtist(artistCreateRequest));
     }
 
     @GetMapping("/{artistId}")
@@ -42,8 +43,8 @@ public class ArtistController {
 
     @SneakyThrows
     @PutMapping("/{artistId}")
-    public ResponseEntity<ArtistDTO> updateArtistById(@PathVariable("artistId") UUID artistId, @Valid @RequestBody ArtistCreateUpdateRequest artistCreateUpdateRequest) {
-        return ResponseEntity.ok(artistService.modifyArtistById(artistId, artistCreateUpdateRequest));
+    public ResponseEntity<ArtistDTO> updateArtistById(@PathVariable("artistId") UUID artistId, @Valid @RequestBody ArtistUpdateRequest artistUpdateRequest) {
+        return ResponseEntity.ok(artistService.modifyArtistById(artistId, artistUpdateRequest));
     }
 
     @SneakyThrows

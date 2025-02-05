@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class SongCreateUpdateRequest {
+public class SongUpdateRequest {
 
     @Pattern(regexp = "^(http|https)://.*$", message = "Media URL must be a valid URL")
     private String mediaURL;
@@ -33,4 +33,10 @@ public class SongCreateUpdateRequest {
 
     @NotNull(message = "Time signature id is mandatory")
     private UUID timeSignatureId;
+
+    @NotNull(message = "Song category id is mandatory")
+    private UUID songCategoryId;
+
+    @NotNull(message = "Song mood id is mandatory")
+    private UUID songMoodId;
 }

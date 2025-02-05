@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-    public class SongPartCreateRequest {
+public class SongPartCreateRequest {
 
     @NotBlank(message = "Text is mandatory")
     private String text;

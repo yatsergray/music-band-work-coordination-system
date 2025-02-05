@@ -4,12 +4,16 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.domain.dto.song.ArtistDTO;
+import ua.yatsergray.backend.domain.entity.band.Band;
 import ua.yatsergray.backend.domain.entity.song.Artist;
-import ua.yatsergray.backend.domain.request.song.ArtistCreateUpdateRequest;
+import ua.yatsergray.backend.domain.request.song.ArtistCreateRequest;
+import ua.yatsergray.backend.domain.request.song.ArtistUpdateRequest;
 import ua.yatsergray.backend.exception.ChildEntityExistsException;
+import ua.yatsergray.backend.exception.band.NoSuchBandException;
 import ua.yatsergray.backend.exception.song.ArtistAlreadyExistsException;
 import ua.yatsergray.backend.exception.song.NoSuchArtistException;
 import ua.yatsergray.backend.mapper.song.ArtistMapper;
+import ua.yatsergray.backend.repository.band.BandRepository;
 import ua.yatsergray.backend.repository.song.ArtistRepository;
 import ua.yatsergray.backend.repository.song.SongRepository;
 import ua.yatsergray.backend.service.song.ArtistService;
@@ -24,22 +28,28 @@ public class ArtistServiceImpl implements ArtistService {
     private final ArtistMapper artistMapper;
     private final ArtistRepository artistRepository;
     private final SongRepository songRepository;
+    private final BandRepository bandRepository;
 
     @Autowired
-    public ArtistServiceImpl(ArtistMapper artistMapper, ArtistRepository artistRepository, SongRepository songRepository) {
+    public ArtistServiceImpl(ArtistMapper artistMapper, ArtistRepository artistRepository, SongRepository songRepository, BandRepository bandRepository) {
         this.artistMapper = artistMapper;
         this.artistRepository = artistRepository;
         this.songRepository = songRepository;
+        this.bandRepository = bandRepository;
     }
 
     @Override
-    public ArtistDTO addArtist(ArtistCreateUpdateRequest artistCreateUpdateRequest) throws ArtistAlreadyExistsException {
-        if (artistRepository.existsByName(artistCreateUpdateRequest.getName())) {
-            throw new ArtistAlreadyExistsException(String.format("Artist with name=\"%s\" already exists", artistCreateUpdateRequest.getName()));
+    public ArtistDTO addArtist(ArtistCreateRequest artistCreateRequest) throws ArtistAlreadyExistsException, NoSuchBandException {
+        Band band = bandRepository.findById(artistCreateRequest.getBandId())
+                .orElseThrow(() -> new NoSuchBandException(String.format("Band with id=\"%s\" does not exist", artistCreateRequest.getBandId())));
+
+        if (artistRepository.existsByBandIdAndName(artistCreateRequest.getBandId(), artistCreateRequest.getName())) {
+            throw new ArtistAlreadyExistsException(String.format("Artist with bandId=\"%s\" and name=\"%s\" already exists", artistCreateRequest.getBandId(), artistCreateRequest.getName()));
         }
 
         Artist artist = Artist.builder()
-                .name(artistCreateUpdateRequest.getName())
+                .name(artistCreateRequest.getName())
+                .band(band)
                 .build();
 
         return artistMapper.mapToArtistDTO(artistRepository.save(artist));
@@ -56,15 +66,15 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     @Override
-    public ArtistDTO modifyArtistById(UUID artistId, ArtistCreateUpdateRequest artistCreateUpdateRequest) throws NoSuchArtistException, ArtistAlreadyExistsException {
+    public ArtistDTO modifyArtistById(UUID artistId, ArtistUpdateRequest artistUpdateRequest) throws NoSuchArtistException, ArtistAlreadyExistsException {
         Artist artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new NoSuchArtistException(String.format("Artist with id=\"%s\" does not exist", artistId)));
 
-        if (!artistCreateUpdateRequest.getName().equals(artist.getName()) && artistRepository.existsByName(artistCreateUpdateRequest.getName())) {
-            throw new ArtistAlreadyExistsException(String.format("Artist with name=\"%s\" already exists", artistCreateUpdateRequest.getName()));
+        if (!artistUpdateRequest.getName().equals(artist.getName()) && artistRepository.existsByBandIdAndName(artist.getBand().getId(), artistUpdateRequest.getName())) {
+            throw new ArtistAlreadyExistsException(String.format("Artist with bandId=\"%s\" and name=\"%s\" already exists", artist.getBand().getId(), artistUpdateRequest.getName()));
         }
 
-        artist.setName(artistCreateUpdateRequest.getName());
+        artist.setName(artistUpdateRequest.getName());
 
         return artistMapper.mapToArtistDTO(artistRepository.save(artist));
     }
