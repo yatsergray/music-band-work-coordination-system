@@ -21,20 +21,21 @@ import java.util.UUID;
 @RequestMapping("/api/v1/music-bands")
 public class MusicBandController {
     private final MusicBandServiceImpl musicBandService;
-    private final InvitationServiceImpl invitationServiceImpl;
-    private final JwtServiceImpl jwtServiceImpl;
-    private final ParticipationStatusServiceImpl participationStatusServiceImpl;
-    private final UserServiceImpl userServiceImpl;
+    private final InvitationServiceImpl invitationService;
+    private final JwtServiceImpl jwtService;
+    private final ParticipationStatusServiceImpl participationStatusService;
+    private final UserServiceImpl userService;
 
     @Autowired
-    public MusicBandController(MusicBandServiceImpl musicBandService, InvitationServiceImpl invitationServiceImpl, JwtServiceImpl jwtServiceImpl, ParticipationStatusServiceImpl participationStatusServiceImpl, UserServiceImpl userServiceImpl) {
+    public MusicBandController(MusicBandServiceImpl musicBandService, InvitationServiceImpl invitationService, JwtServiceImpl jwtService, ParticipationStatusServiceImpl participationStatusService, UserServiceImpl userService) {
         this.musicBandService = musicBandService;
-        this.invitationServiceImpl = invitationServiceImpl;
-        this.jwtServiceImpl = jwtServiceImpl;
-        this.participationStatusServiceImpl = participationStatusServiceImpl;
-        this.userServiceImpl = userServiceImpl;
+        this.invitationService = invitationService;
+        this.jwtService = jwtService;
+        this.participationStatusService = participationStatusService;
+        this.userService = userService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<MusicBandDTO> createMusicBand(@Valid @RequestBody MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) {
         return ResponseEntity.ok(musicBandService.addMusicBand(musicBandCreateUpdateRequest));
@@ -111,16 +112,16 @@ public class MusicBandController {
     @SneakyThrows
     @GetMapping("/invite")
     public ResponseEntity<MusicBandUserDTO> inviteUserToMusicBand(@RequestParam("token") String token) {
-        InvitationDTO invitationDTO = invitationServiceImpl.getInvitationByToken(token)
+        InvitationDTO invitationDTO = invitationService.getInvitationByToken(token)
                 .orElseThrow(() -> new NoSuchInvitationException(String.format("Invitation with token=\"%s\" does not exist", token)));
 
-        if (!jwtServiceImpl.isUserToMusicBandInvitationTokenValid(token, invitationDTO.getEmail(), invitationDTO.getMusicBandId())) {
+        if (!jwtService.isUserToMusicBandInvitationTokenValid(token, invitationDTO.getEmail(), invitationDTO.getMusicBandId())) {
             throw new InvalidInvitationException(String.format("Invitation token=\"%s\" is invalid", token));
         }
 
-        ParticipationStatusDTO participationStatusDTO = participationStatusServiceImpl.getParticipationStatusByType(ParticipationStatusType.ACCEPTED)
+        ParticipationStatusDTO participationStatusDTO = participationStatusService.getParticipationStatusByType(ParticipationStatusType.ACCEPTED)
                 .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status with type=\"%s\" does not exist", ParticipationStatusType.ACCEPTED)));
-        UserDTO userDTO = userServiceImpl.getUserByEmail(invitationDTO.getEmail())
+        UserDTO userDTO = userService.getUserByEmail(invitationDTO.getEmail())
                 .orElseThrow(() -> new NoSuchUserException(String.format("User with email=\"%s\" does not exist", invitationDTO.getEmail())));
 
         InvitationUpdateRequest invitationUpdateRequest = InvitationUpdateRequest.builder()
@@ -130,7 +131,7 @@ public class MusicBandController {
                 .userId(userDTO.getId())
                 .build();
 
-        invitationServiceImpl.modifyInvitationById(invitationDTO.getId(), invitationUpdateRequest);
+        invitationService.modifyInvitationById(invitationDTO.getId(), invitationUpdateRequest);
 
         return ResponseEntity.ok(musicBandService.addMusicBandUser(invitationDTO.getMusicBandId(), musicBandUserCreateRequest));
     }
