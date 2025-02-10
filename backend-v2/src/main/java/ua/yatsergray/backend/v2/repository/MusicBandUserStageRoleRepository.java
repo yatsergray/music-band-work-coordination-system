@@ -9,11 +9,9 @@ import java.util.UUID;
 @Repository
 public interface MusicBandUserStageRoleRepository extends JpaRepository<MusicBandUserStageRole, UUID> {
 
-    boolean existsByMusicBandIdAndUserIdAndStageRoleId(UUID musicBandId, UUID userId, UUID stageRoleId);
-
     void deleteByMusicBandIdAndUserId(UUID musicBandId, UUID userId);
 
     void deleteByMusicBandIdAndUserIdAndStageRoleId(UUID musicBandId, UUID userId, UUID stageRoleId);
 
-    long countByStageRoleId(UUID stageRoleId);
+    boolean existsByMusicBandIdAndUserIdAndStageRoleId(UUID musicBandId, UUID userId, UUID stageRoleId);
 }

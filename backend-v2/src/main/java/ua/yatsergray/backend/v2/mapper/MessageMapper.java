@@ -15,6 +15,7 @@ public interface MessageMapper {
 
     MessageMapper INSTANCE = Mappers.getMapper(MessageMapper.class);
 
+    @Mapping(source = "chat.id", target = "chatId")
     @Mapping(target = "chatUserDTO", expression = "java(mapMessageToChatUserDTO(message))")
     MessageDTO mapToMessageDTO(Message message);
 

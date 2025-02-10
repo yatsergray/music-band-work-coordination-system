@@ -23,6 +23,7 @@ public class MessageDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime time;
     private Boolean edited;
+    private UUID chatId;
 
     @JsonProperty("chatUser")
     private ChatUserDTO chatUserDTO;

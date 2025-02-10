@@ -20,5 +20,6 @@ public class UserDTO {
     private String password;
 
     @JsonProperty("roles")
+    @Builder.Default
     private List<RoleDTO> roleDTOList = new ArrayList<>();
 }

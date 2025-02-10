@@ -17,5 +17,6 @@ public class ChatUserDTO {
     private UserDTO userDTO;
 
     @JsonProperty("chatAccessRoles")
+    @Builder.Default
     private List<ChatAccessRoleDTO> chatAccessRoleDTOList = new ArrayList<>();
 }

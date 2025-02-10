@@ -11,9 +11,5 @@ import java.util.UUID;
 @Repository
 public interface ChatAccessRoleRepository extends JpaRepository<ChatAccessRole, UUID> {
 
-    boolean existsByName(String chatAccessRoleName);
-
-    boolean existsByType(ChatAccessRoleType chatAccessRoleType);
-
     Optional<ChatAccessRole> findByType(ChatAccessRoleType chatAccessRoleType);
 }

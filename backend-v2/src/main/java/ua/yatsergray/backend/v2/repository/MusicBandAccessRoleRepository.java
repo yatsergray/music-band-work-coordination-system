@@ -11,9 +11,5 @@ import java.util.UUID;
 @Repository
 public interface MusicBandAccessRoleRepository extends JpaRepository<MusicBandAccessRole, UUID> {
 
-    boolean existsByName(String musicBandAccessRoleName);
-
-    boolean existsByType(MusicBandAccessRoleType musicBandAccessRoleType);
-
     Optional<MusicBandAccessRole> findByType(MusicBandAccessRoleType musicBandAccessRoleType);
 }

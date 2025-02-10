@@ -13,6 +13,7 @@ import java.util.UUID;
 public class EventSongDTO {
     private UUID id;
     private Integer sequenceNumber;
+    private UUID eventId;
 
     @JsonProperty("song")
     private SongDTO songDTO;
