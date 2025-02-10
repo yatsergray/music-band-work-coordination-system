@@ -24,7 +24,7 @@ public class Invitation {
     private String email;
 
     @Column(name = "token", unique = true, nullable = false)
-    private UUID token;
+    private String token;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "music_band_id", nullable = false)

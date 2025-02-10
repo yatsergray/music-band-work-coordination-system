@@ -101,7 +101,7 @@ public class MusicBandServiceImpl implements MusicBandService {
                 .orElseThrow(() -> new NoSuchMusicBandAccessRoleException(String.format("Music band access role with type=\"%s\" does not exist", MusicBandAccessRoleType.MEMBER)));
 
         if (musicBandUserAccessRoleRepository.existsByMusicBandIdAndUserId(musicBandId, musicBandUserCreateRequest.getUserId())) {
-            throw new MusicBandUserConflictException(String.format("User with id=%s already belongs to the Music band with id=\"%s\"", musicBandUserCreateRequest.getUserId(), musicBandId));
+            throw new MusicBandUserConflictException(String.format("User with id=\"%s\" already belongs to the Music band with id=\"%s\"", musicBandUserCreateRequest.getUserId(), musicBandId));
         }
 
         MusicBandUserAccessRole musicBandUserAccessRole = MusicBandUserAccessRole.builder()
@@ -112,6 +112,7 @@ public class MusicBandServiceImpl implements MusicBandService {
 
         musicBandUserAccessRoleRepository.save(musicBandUserAccessRole);
 
+        entityManager.flush();
         entityManager.refresh(musicBand);
         entityManager.refresh(user);
 
@@ -162,6 +163,7 @@ public class MusicBandServiceImpl implements MusicBandService {
 
         musicBandUserAccessRoleRepository.save(musicBandUserAccessRole);
 
+        entityManager.flush();
         entityManager.refresh(musicBand);
         entityManager.refresh(user);
 
@@ -221,6 +223,7 @@ public class MusicBandServiceImpl implements MusicBandService {
 
         musicBandUserStageRoleRepository.save(musicBandUserStageRole);
 
+        entityManager.flush();
         entityManager.refresh(musicBand);
         entityManager.refresh(user);
 

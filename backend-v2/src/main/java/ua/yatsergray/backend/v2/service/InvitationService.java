@@ -15,6 +15,8 @@ public interface InvitationService {
 
     Optional<InvitationDTO> getInvitationById(UUID invitationId);
 
+    Optional<InvitationDTO> getInvitationByToken(String token);
+
     List<InvitationDTO> getAllInvitations();
 
     InvitationDTO modifyInvitationById(UUID invitationId, InvitationUpdateRequest invitationUpdateRequest) throws NoSuchInvitationException, NoSuchParticipationStatusException;

@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.ParticipationStatusDTO;
+import ua.yatsergray.backend.v2.domain.type.ParticipationStatusType;
 import ua.yatsergray.backend.v2.mapper.ParticipationStatusMapper;
 import ua.yatsergray.backend.v2.repository.ParticipationStatusRepository;
 import ua.yatsergray.backend.v2.service.ParticipationStatusService;
@@ -27,6 +28,11 @@ public class ParticipationStatusServiceImpl implements ParticipationStatusServic
     @Override
     public Optional<ParticipationStatusDTO> getParticipationStatusById(UUID participationStatusId) {
         return participationStatusRepository.findById(participationStatusId).map(participationStatusMapper::mapToParticipationStatusDTO);
+    }
+
+    @Override
+    public Optional<ParticipationStatusDTO> getParticipationStatusByType(ParticipationStatusType participationStatusType) {
+        return participationStatusRepository.findByType(participationStatusType).map(participationStatusMapper::mapToParticipationStatusDTO);
     }
 
     @Override

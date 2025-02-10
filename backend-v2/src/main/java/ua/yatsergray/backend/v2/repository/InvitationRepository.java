@@ -4,12 +4,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ua.yatsergray.backend.v2.domain.entity.Invitation;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface InvitationRepository extends JpaRepository<Invitation, UUID> {
 
-    boolean existsByMusicBandIdAndEmail(UUID invitationMusicBandId, String invitationEmail);
+    Optional<Invitation> findByToken(String token);
 
-    long countByParticipationStatusId(UUID participationStatusId);
+    boolean existsByMusicBandIdAndEmail(UUID invitationMusicBandId, String invitationEmail);
 }

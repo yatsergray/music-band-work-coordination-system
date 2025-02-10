@@ -12,8 +12,4 @@ import java.util.UUID;
 public interface ParticipationStatusRepository extends JpaRepository<ParticipationStatus, UUID> {
 
     Optional<ParticipationStatus> findByType(ParticipationStatusType participationStatusType);
-
-    boolean existsByName(String participationStatusName);
-
-    boolean existsByType(ParticipationStatusType participationStatusType);
 }

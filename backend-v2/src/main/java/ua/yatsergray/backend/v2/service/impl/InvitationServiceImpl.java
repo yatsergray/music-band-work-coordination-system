@@ -15,6 +15,7 @@ import ua.yatsergray.backend.v2.exception.*;
 import ua.yatsergray.backend.v2.mapper.InvitationMapper;
 import ua.yatsergray.backend.v2.repository.*;
 import ua.yatsergray.backend.v2.service.InvitationService;
+import ua.yatsergray.backend.v2.service.JwtService;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,15 +30,17 @@ public class InvitationServiceImpl implements InvitationService {
     private final ParticipationStatusRepository participationStatusRepository;
     private final UserRepository userRepository;
     private final MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository;
+    private final JwtService jwtService;
 
     @Autowired
-    public InvitationServiceImpl(InvitationMapper invitationMapper, InvitationRepository invitationRepository, MusicBandRepository musicBandRepository, ParticipationStatusRepository participationStatusRepository, UserRepository userRepository, MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository) {
+    public InvitationServiceImpl(InvitationMapper invitationMapper, InvitationRepository invitationRepository, MusicBandRepository musicBandRepository, ParticipationStatusRepository participationStatusRepository, UserRepository userRepository, MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository, JwtService jwtService) {
         this.invitationMapper = invitationMapper;
         this.invitationRepository = invitationRepository;
         this.musicBandRepository = musicBandRepository;
         this.participationStatusRepository = participationStatusRepository;
         this.userRepository = userRepository;
         this.musicBandUserAccessRoleRepository = musicBandUserAccessRoleRepository;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -57,11 +60,9 @@ public class InvitationServiceImpl implements InvitationService {
             throw new InvitationAlreadyExistsException(String.format("Invitation with bandId=\"%s\" and email=\"%s\" already exists", invitationCreateRequest.getMusicBandId(), invitationCreateRequest.getEmail()));
         }
 
-        // TODO: Generate token based on the email
-
         Invitation invitation = Invitation.builder()
                 .email(invitationCreateRequest.getEmail())
-                .token(UUID.randomUUID())
+                .token(jwtService.generateUserToMusicBandInvitationToken(invitationCreateRequest.getEmail(), invitationCreateRequest.getMusicBandId()))
                 .musicBand(musicBand)
                 .participationStatus(participationStatus)
                 .build();
@@ -72,6 +73,11 @@ public class InvitationServiceImpl implements InvitationService {
     @Override
     public Optional<InvitationDTO> getInvitationById(UUID invitationId) {
         return invitationRepository.findById(invitationId).map(invitationMapper::mapToInvitationDTO);
+    }
+
+    @Override
+    public Optional<InvitationDTO> getInvitationByToken(String token) {
+        return invitationRepository.findByToken(token).map(invitationMapper::mapToInvitationDTO);
     }
 
     @Override
