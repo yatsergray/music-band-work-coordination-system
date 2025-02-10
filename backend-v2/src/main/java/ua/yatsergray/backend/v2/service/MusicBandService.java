@@ -14,13 +14,13 @@ import java.util.UUID;
 
 public interface MusicBandService {
 
-    MusicBandDTO addMusicBand(MusicBandCreateUpdateRequest musicBandCreateUpdateRequest);
+    MusicBandDTO addMusicBand(MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws MusicBandAlreadyExists;
 
     Optional<MusicBandDTO> getMusicBandById(UUID musicBandId);
 
     List<MusicBandDTO> getAllMusicBands();
 
-    MusicBandDTO modifyMusicBandById(UUID musicBandId, MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws NoSuchMusicBandException;
+    MusicBandDTO modifyMusicBandById(UUID musicBandId, MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws NoSuchMusicBandException, MusicBandAlreadyExists;
 
     void removeMusicBandById(UUID musicBandId) throws NoSuchMusicBandException;
 

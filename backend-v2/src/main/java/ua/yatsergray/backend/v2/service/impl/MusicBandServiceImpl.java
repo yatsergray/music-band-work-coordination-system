@@ -53,7 +53,11 @@ public class MusicBandServiceImpl implements MusicBandService {
     }
 
     @Override
-    public MusicBandDTO addMusicBand(MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) {
+    public MusicBandDTO addMusicBand(MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws MusicBandAlreadyExists {
+        if (musicBandRepository.existsByName(musicBandCreateUpdateRequest.getName())) {
+            throw new MusicBandAlreadyExists(String.format("Music band with name=\"%s\" already exists", musicBandCreateUpdateRequest.getName()));
+        }
+
         MusicBand musicBand = MusicBand.builder()
                 .name(musicBandCreateUpdateRequest.getName())
                 .build();
@@ -72,9 +76,13 @@ public class MusicBandServiceImpl implements MusicBandService {
     }
 
     @Override
-    public MusicBandDTO modifyMusicBandById(UUID musicBandId, MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws NoSuchMusicBandException {
+    public MusicBandDTO modifyMusicBandById(UUID musicBandId, MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws NoSuchMusicBandException, MusicBandAlreadyExists {
         MusicBand musicBand = musicBandRepository.findById(musicBandId)
                 .orElseThrow(() -> new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandId)));
+
+        if (!musicBandCreateUpdateRequest.getName().equals(musicBand.getName()) && musicBandRepository.existsByName(musicBandCreateUpdateRequest.getName())) {
+            throw new MusicBandAlreadyExists(String.format("Music band with name=\"%s\" already exists", musicBandCreateUpdateRequest.getName()));
+        }
 
         musicBand.setName(musicBandCreateUpdateRequest.getName());
 
