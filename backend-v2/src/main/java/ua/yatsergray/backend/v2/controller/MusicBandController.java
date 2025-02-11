@@ -11,6 +11,8 @@ import ua.yatsergray.backend.v2.domain.request.MusicBandCreateUpdateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserAccessRoleCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserStageRoleCreateRequest;
+import ua.yatsergray.backend.v2.domain.type.ParticipationStatusType;
+import ua.yatsergray.backend.v2.service.InvitationService;
 import ua.yatsergray.backend.v2.service.MusicBandService;
 import ua.yatsergray.backend.v2.service.impl.InvitationServiceImpl;
 import ua.yatsergray.backend.v2.service.impl.JwtServiceImpl;
@@ -24,10 +26,12 @@ import java.util.UUID;
 @RequestMapping("/api/v1/music-bands")
 public class MusicBandController {
     private final MusicBandService musicBandService;
+    private final InvitationService invitationService;
 
     @Autowired
-    public MusicBandController(MusicBandService musicBandService, InvitationServiceImpl invitationService, ParticipationStatusServiceImpl participationStatusService, UserServiceImpl userService, JwtServiceImpl jwtService) {
+    public MusicBandController(MusicBandService musicBandService, InvitationServiceImpl invitationService, ParticipationStatusServiceImpl participationStatusService, UserServiceImpl userService, JwtServiceImpl jwtService, InvitationService invitationService1) {
         this.musicBandService = musicBandService;
+        this.invitationService = invitationService1;
     }
 
     @SneakyThrows
@@ -107,6 +111,10 @@ public class MusicBandController {
     @SneakyThrows
     @GetMapping("/join")
     public ResponseEntity<MusicBandUserDTO> joinUserToMusicBand(@RequestParam("invitationToken") String invitationToken) {
-        return ResponseEntity.ok(musicBandService.addMusicBandUserByInvitationToken(invitationToken));
+        MusicBandUserDTO musicBandUserDTO = musicBandService.addMusicBandUserByInvitationToken(invitationToken);
+
+        invitationService.changeInvitationParticipationStatusByInvitationToken(invitationToken, ParticipationStatusType.ACCEPTED);
+
+        return ResponseEntity.ok(musicBandUserDTO);
     }
 }

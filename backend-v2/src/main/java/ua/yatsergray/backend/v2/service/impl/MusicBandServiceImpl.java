@@ -44,9 +44,7 @@ public class MusicBandServiceImpl implements MusicBandService {
     private final JwtService jwtService;
 
     @Autowired
-    public MusicBandServiceImpl(MusicBandMapper musicBandMapper, MusicBandRepository musicBandRepository, UserRepository userRepository, MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository, MusicBandAccessRoleRepository musicBandAccessRoleRepository, StageRoleRepository stageRoleRepository, MusicBandUserStageRoleRepository musicBandUserStageRoleRepository, ChatUserAccessRoleRepository chatUserAccessRoleRepository,
-                                InvitationRepository invitationRepository, JwtService jwtService,
-                                ParticipationStatusRepository participationStatusRepository) {
+    public MusicBandServiceImpl(MusicBandMapper musicBandMapper, MusicBandRepository musicBandRepository, UserRepository userRepository, MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository, MusicBandAccessRoleRepository musicBandAccessRoleRepository, StageRoleRepository stageRoleRepository, MusicBandUserStageRoleRepository musicBandUserStageRoleRepository, ChatUserAccessRoleRepository chatUserAccessRoleRepository, InvitationRepository invitationRepository, JwtService jwtService) {
         this.musicBandMapper = musicBandMapper;
         this.musicBandRepository = musicBandRepository;
         this.userRepository = userRepository;
