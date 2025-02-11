@@ -31,11 +31,6 @@ public class ParticipationStatusServiceImpl implements ParticipationStatusServic
     }
 
     @Override
-    public Optional<ParticipationStatusDTO> getParticipationStatusByType(ParticipationStatusType participationStatusType) {
-        return participationStatusRepository.findByType(participationStatusType).map(participationStatusMapper::mapToParticipationStatusDTO);
-    }
-
-    @Override
     public List<ParticipationStatusDTO> getAllParticipationStatuses() {
         return participationStatusMapper.mapAllToParticipationStatusDTOList(participationStatusRepository.findAll());
     }

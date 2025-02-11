@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public interface JwtService {
 
-    String generateUserToMusicBandInvitationToken(String userEmail, UUID musicBandId);
+    String generateInvitationToken(String userEmail, UUID musicBandId);
 
-    boolean isUserToMusicBandInvitationTokenValid(String token, String userEmail, UUID musicBandId);
+    boolean isInvitationTokenValid(String invitationToken, String userEmail, UUID musicBandId);
 }

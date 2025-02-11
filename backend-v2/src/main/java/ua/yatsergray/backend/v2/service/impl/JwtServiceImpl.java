@@ -19,7 +19,7 @@ public class JwtServiceImpl implements JwtService {
     private String secretKey;
 
     @Override
-    public String generateUserToMusicBandInvitationToken(String userEmail, UUID musicBandId) {
+    public String generateInvitationToken(String userEmail, UUID musicBandId) {
         return JWT.create()
                 .withSubject(userEmail)
                 .withClaim("musicBandId", musicBandId.toString())
@@ -28,10 +28,10 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public boolean isUserToMusicBandInvitationTokenValid(String token, String userEmail, UUID musicBandId) {
-        return !isTokenExpired(token) &&
-                decodeToken(token).getSubject().equals(userEmail) &&
-                decodeToken(token).getClaim("musicBandId").asString().equals(musicBandId.toString());
+    public boolean isInvitationTokenValid(String invitationToken, String userEmail, UUID musicBandId) {
+        return !isTokenExpired(invitationToken) &&
+                decodeToken(invitationToken).getSubject().equals(userEmail) &&
+                decodeToken(invitationToken).getClaim("musicBandId").asString().equals(musicBandId.toString());
     }
 
     private boolean isTokenExpired(String token) {

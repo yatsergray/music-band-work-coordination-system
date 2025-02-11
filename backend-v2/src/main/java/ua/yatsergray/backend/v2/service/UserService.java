@@ -19,8 +19,6 @@ public interface UserService {
 
     Optional<UserDTO> getUserById(UUID userId);
 
-    Optional<UserDTO> getUserByEmail(String userEmail);
-
     List<UserDTO> getAllUsers();
 
     UserDTO modifyUserById(UUID userId, UserUpdateRequest userUpdateRequest) throws NoSuchUserException;
