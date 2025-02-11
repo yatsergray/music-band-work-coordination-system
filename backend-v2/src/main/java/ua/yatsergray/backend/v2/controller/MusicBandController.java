@@ -14,10 +14,6 @@ import ua.yatsergray.backend.v2.domain.request.MusicBandUserStageRoleCreateReque
 import ua.yatsergray.backend.v2.domain.type.ParticipationStatusType;
 import ua.yatsergray.backend.v2.service.InvitationService;
 import ua.yatsergray.backend.v2.service.MusicBandService;
-import ua.yatsergray.backend.v2.service.impl.InvitationServiceImpl;
-import ua.yatsergray.backend.v2.service.impl.JwtServiceImpl;
-import ua.yatsergray.backend.v2.service.impl.ParticipationStatusServiceImpl;
-import ua.yatsergray.backend.v2.service.impl.UserServiceImpl;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +25,7 @@ public class MusicBandController {
     private final InvitationService invitationService;
 
     @Autowired
-    public MusicBandController(MusicBandService musicBandService, InvitationServiceImpl invitationService, ParticipationStatusServiceImpl participationStatusService, UserServiceImpl userService, JwtServiceImpl jwtService, InvitationService invitationService1) {
+    public MusicBandController(MusicBandService musicBandService, InvitationService invitationService1) {
         this.musicBandService = musicBandService;
         this.invitationService = invitationService1;
     }

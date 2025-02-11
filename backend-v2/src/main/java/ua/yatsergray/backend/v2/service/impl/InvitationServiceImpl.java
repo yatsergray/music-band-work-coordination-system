@@ -14,7 +14,6 @@ import ua.yatsergray.backend.v2.domain.type.ParticipationStatusType;
 import ua.yatsergray.backend.v2.exception.*;
 import ua.yatsergray.backend.v2.mapper.InvitationMapper;
 import ua.yatsergray.backend.v2.repository.*;
-import ua.yatsergray.backend.v2.service.EmailService;
 import ua.yatsergray.backend.v2.service.InvitationService;
 
 import java.util.List;
@@ -33,7 +32,7 @@ public class InvitationServiceImpl implements InvitationService {
     private final JwtServiceImpl jwtService;
 
     @Autowired
-    public InvitationServiceImpl(InvitationMapper invitationMapper, InvitationRepository invitationRepository, MusicBandRepository musicBandRepository, ParticipationStatusRepository participationStatusRepository, UserRepository userRepository, MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository, JwtServiceImpl jwtService, EmailService emailService) {
+    public InvitationServiceImpl(InvitationMapper invitationMapper, InvitationRepository invitationRepository, MusicBandRepository musicBandRepository, ParticipationStatusRepository participationStatusRepository, UserRepository userRepository, MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository, JwtServiceImpl jwtService) {
         this.invitationMapper = invitationMapper;
         this.invitationRepository = invitationRepository;
         this.musicBandRepository = musicBandRepository;
