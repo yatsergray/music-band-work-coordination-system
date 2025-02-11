@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.yatsergray.backend.v2.domain.dto.ParticipationStatusDTO;
-import ua.yatsergray.backend.v2.service.impl.ParticipationStatusServiceImpl;
+import ua.yatsergray.backend.v2.service.ParticipationStatusService;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,10 +15,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/participation-statuses")
 public class ParticipationStatusController {
-    private final ParticipationStatusServiceImpl participationStatusService;
+    private final ParticipationStatusService participationStatusService;
 
     @Autowired
-    public ParticipationStatusController(ParticipationStatusServiceImpl participationStatusService) {
+    public ParticipationStatusController(ParticipationStatusService participationStatusService) {
         this.participationStatusService = participationStatusService;
     }
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.EventUserDTO;
 import ua.yatsergray.backend.v2.domain.request.EventUserCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.EventUserUpdateRequest;
-import ua.yatsergray.backend.v2.service.impl.EventUserServiceImpl;
+import ua.yatsergray.backend.v2.service.EventUserService;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,10 +16,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/event-users")
 public class EventUserController {
-    private final EventUserServiceImpl eventUserService;
+    private final EventUserService eventUserService;
 
     @Autowired
-    public EventUserController(EventUserServiceImpl eventUserService) {
+    public EventUserController(EventUserService eventUserService) {
         this.eventUserService = eventUserService;
     }
 

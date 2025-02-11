@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.yatsergray.backend.v2.domain.dto.StageRoleDTO;
-import ua.yatsergray.backend.v2.service.impl.StageRoleServiceImpl;
+import ua.yatsergray.backend.v2.service.StageRoleService;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,10 +15,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/stage-roles")
 public class StageRoleController {
-    private final StageRoleServiceImpl stageRoleService;
+    private final StageRoleService stageRoleService;
 
     @Autowired
-    public StageRoleController(StageRoleServiceImpl stageRoleService) {
+    public StageRoleController(StageRoleService stageRoleService) {
         this.stageRoleService = stageRoleService;
     }
 

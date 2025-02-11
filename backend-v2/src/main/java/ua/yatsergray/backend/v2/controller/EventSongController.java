@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.EventSongDTO;
 import ua.yatsergray.backend.v2.domain.request.EventSongCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.EventSongUpdateRequest;
-import ua.yatsergray.backend.v2.service.impl.EventSongServiceImpl;
+import ua.yatsergray.backend.v2.service.EventSongService;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,10 +16,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/event-songs")
 public class EventSongController {
-    private final EventSongServiceImpl eventSongService;
+    private final EventSongService eventSongService;
 
     @Autowired
-    public EventSongController(EventSongServiceImpl eventSongService) {
+    public EventSongController(EventSongService eventSongService) {
         this.eventSongService = eventSongService;
     }
 

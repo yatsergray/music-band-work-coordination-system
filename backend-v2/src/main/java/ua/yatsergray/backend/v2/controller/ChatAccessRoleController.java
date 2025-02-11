@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.yatsergray.backend.v2.domain.dto.ChatAccessRoleDTO;
-import ua.yatsergray.backend.v2.service.impl.ChatAccessRoleServiceImpl;
+import ua.yatsergray.backend.v2.service.ChatAccessRoleService;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,10 +15,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/chat-access-roles")
 public class ChatAccessRoleController {
-    private final ChatAccessRoleServiceImpl chatAccessRoleService;
+    private final ChatAccessRoleService chatAccessRoleService;
 
     @Autowired
-    public ChatAccessRoleController(ChatAccessRoleServiceImpl chatAccessRoleService) {
+    public ChatAccessRoleController(ChatAccessRoleService chatAccessRoleService) {
         this.chatAccessRoleService = chatAccessRoleService;
     }
 

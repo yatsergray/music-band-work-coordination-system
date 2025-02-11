@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.InvitationDTO;
 import ua.yatsergray.backend.v2.domain.request.InvitationCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.InvitationUpdateRequest;
-import ua.yatsergray.backend.v2.service.impl.InvitationServiceImpl;
+import ua.yatsergray.backend.v2.service.InvitationService;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,10 +16,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/invitations")
 public class InvitationController {
-    private final InvitationServiceImpl invitationService;
+    private final InvitationService invitationService;
 
     @Autowired
-    public InvitationController(InvitationServiceImpl invitationService) {
+    public InvitationController(InvitationService invitationService) {
         this.invitationService = invitationService;
     }
 

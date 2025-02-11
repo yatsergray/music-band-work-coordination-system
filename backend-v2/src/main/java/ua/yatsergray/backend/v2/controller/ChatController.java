@@ -11,7 +11,7 @@ import ua.yatsergray.backend.v2.domain.request.ChatCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.ChatUpdateRequest;
 import ua.yatsergray.backend.v2.domain.request.ChatUserAccessRoleCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.ChatUserCreateRequest;
-import ua.yatsergray.backend.v2.service.impl.ChatServiceImpl;
+import ua.yatsergray.backend.v2.service.ChatService;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,10 +19,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/chats")
 public class ChatController {
-    private final ChatServiceImpl chatService;
+    private final ChatService chatService;
 
     @Autowired
-    public ChatController(ChatServiceImpl chatService) {
+    public ChatController(ChatService chatService) {
         this.chatService = chatService;
     }
 

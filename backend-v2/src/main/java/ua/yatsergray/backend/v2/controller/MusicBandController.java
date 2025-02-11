@@ -11,7 +11,11 @@ import ua.yatsergray.backend.v2.domain.request.MusicBandCreateUpdateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserAccessRoleCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserStageRoleCreateRequest;
-import ua.yatsergray.backend.v2.service.impl.*;
+import ua.yatsergray.backend.v2.service.MusicBandService;
+import ua.yatsergray.backend.v2.service.impl.InvitationServiceImpl;
+import ua.yatsergray.backend.v2.service.impl.JwtServiceImpl;
+import ua.yatsergray.backend.v2.service.impl.ParticipationStatusServiceImpl;
+import ua.yatsergray.backend.v2.service.impl.UserServiceImpl;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,10 +23,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/music-bands")
 public class MusicBandController {
-    private final MusicBandServiceImpl musicBandService;
+    private final MusicBandService musicBandService;
 
     @Autowired
-    public MusicBandController(MusicBandServiceImpl musicBandService, InvitationServiceImpl invitationService, ParticipationStatusServiceImpl participationStatusService, UserServiceImpl userService, JwtServiceImpl jwtService) {
+    public MusicBandController(MusicBandService musicBandService, InvitationServiceImpl invitationService, ParticipationStatusServiceImpl participationStatusService, UserServiceImpl userService, JwtServiceImpl jwtService) {
         this.musicBandService = musicBandService;
     }
 

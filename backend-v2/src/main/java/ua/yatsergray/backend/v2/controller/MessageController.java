@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.MessageDTO;
 import ua.yatsergray.backend.v2.domain.request.MessageCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MessageUpdateRequest;
-import ua.yatsergray.backend.v2.service.impl.MessageServiceImpl;
+import ua.yatsergray.backend.v2.service.MessageService;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,10 +16,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/messages")
 public class MessageController {
-    private final MessageServiceImpl messageService;
+    private final MessageService messageService;
 
     @Autowired
-    public MessageController(MessageServiceImpl messageService) {
+    public MessageController(MessageService messageService) {
         this.messageService = messageService;
     }
 
