@@ -107,6 +107,8 @@ public class MusicBandController {
     @SneakyThrows
     @GetMapping("/join")
     public ResponseEntity<MusicBandUserDTO> joinUserToMusicBand(@RequestParam("invitationToken") String invitationToken) {
+        // TODO: Check if invitation token was created for authenticated user
+
         MusicBandUserDTO musicBandUserDTO = musicBandService.addMusicBandUserByInvitationToken(invitationToken);
 
         invitationService.changeInvitationParticipationStatusByInvitationToken(invitationToken, ParticipationStatusType.ACCEPTED);
