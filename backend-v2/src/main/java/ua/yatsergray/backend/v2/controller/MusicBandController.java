@@ -25,9 +25,9 @@ public class MusicBandController {
     private final InvitationService invitationService;
 
     @Autowired
-    public MusicBandController(MusicBandService musicBandService, InvitationService invitationService1) {
+    public MusicBandController(MusicBandService musicBandService, InvitationService invitationService) {
         this.musicBandService = musicBandService;
-        this.invitationService = invitationService1;
+        this.invitationService = invitationService;
     }
 
     @SneakyThrows
