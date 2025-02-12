@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.yatsergray.backend.v2.domain.dto.EventCategoryDTO;
-import ua.yatsergray.backend.v2.service.impl.EventCategoryServiceImpl;
+import ua.yatsergray.backend.v2.service.EventCategoryService;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,10 +15,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/event-categories")
 public class EventCategoryController {
-    private final EventCategoryServiceImpl eventCategoryService;
+    private final EventCategoryService eventCategoryService;
 
     @Autowired
-    public EventCategoryController(EventCategoryServiceImpl eventCategoryService) {
+    public EventCategoryController(EventCategoryService eventCategoryService) {
         this.eventCategoryService = eventCategoryService;
     }
 

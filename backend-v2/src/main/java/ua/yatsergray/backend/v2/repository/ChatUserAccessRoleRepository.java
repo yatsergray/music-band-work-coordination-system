@@ -13,15 +13,9 @@ import java.util.UUID;
 @Repository
 public interface ChatUserAccessRoleRepository extends JpaRepository<ChatUserAccessRole, UUID> {
 
-    boolean existsByChatIdAndUserIdAndChatAccessRoleId(UUID chatId, UUID userId, UUID chatAccessRoleId);
-
     void deleteByChatIdAndUserIdAndChatAccessRoleId(UUID chatId, UUID userId, UUID chatAccessRoleId);
 
-    boolean existsByChatIdAndUserId(UUID chatId, UUID userId);
-
     void deleteByChatIdAndUserId(UUID chatId, UUID userId);
-
-    long countByChatAccessRoleId(UUID chatAccessRoleId);
 
     @Modifying
     @Transactional
@@ -35,4 +29,8 @@ public interface ChatUserAccessRoleRepository extends JpaRepository<ChatUserAcce
             )
             """, nativeQuery = true)
     void deleteByMusicBandIdAndUserId(@Param("musicBandId") UUID musicBandId, @Param("userId") UUID userId);
+
+    boolean existsByChatIdAndUserIdAndChatAccessRoleId(UUID chatId, UUID userId, UUID chatAccessRoleId);
+
+    boolean existsByChatIdAndUserId(UUID chatId, UUID userId);
 }

@@ -3,6 +3,7 @@ package ua.yatsergray.backend.v2.handler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ua.yatsergray.backend.v2.exception.InvalidInvitationException;
 import ua.yatsergray.backend.v2.exception.InvitationAlreadyExistsException;
 import ua.yatsergray.backend.v2.exception.InvitationConflictException;
 import ua.yatsergray.backend.v2.exception.NoSuchInvitationException;
@@ -22,6 +23,11 @@ public class InvitationExceptionHandler {
 
     @ExceptionHandler(NoSuchInvitationException.class)
     public ResponseEntity<String> handleNoSuchInvitationException(NoSuchInvitationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidInvitationException.class)
+    public ResponseEntity<String> handleInvalidInvitationException(InvalidInvitationException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

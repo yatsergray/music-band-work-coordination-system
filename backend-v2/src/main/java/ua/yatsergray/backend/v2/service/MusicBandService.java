@@ -14,17 +14,19 @@ import java.util.UUID;
 
 public interface MusicBandService {
 
-    MusicBandDTO addMusicBand(MusicBandCreateUpdateRequest musicBandCreateUpdateRequest);
+    MusicBandDTO addMusicBand(MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws MusicBandAlreadyExists;
 
     Optional<MusicBandDTO> getMusicBandById(UUID musicBandId);
 
     List<MusicBandDTO> getAllMusicBands();
 
-    MusicBandDTO modifyMusicBandById(UUID musicBandId, MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws NoSuchMusicBandException;
+    MusicBandDTO modifyMusicBandById(UUID musicBandId, MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws NoSuchMusicBandException, MusicBandAlreadyExists;
 
     void removeMusicBandById(UUID musicBandId) throws NoSuchMusicBandException;
 
     MusicBandUserDTO addMusicBandUser(UUID musicBandId, MusicBandUserCreateRequest musicBandUserCreateRequest) throws NoSuchMusicBandException, NoSuchUserException, NoSuchMusicBandAccessRoleException, MusicBandUserConflictException;
+
+    MusicBandUserDTO addMusicBandUserByInvitationToken(String invitationToken) throws NoSuchInvitationException, InvalidInvitationException, NoSuchUserException, MusicBandUserConflictException, NoSuchMusicBandException, NoSuchMusicBandAccessRoleException, NoSuchParticipationStatusException;
 
     void removeMusicBandUser(UUID musicBandId, UUID userId) throws NoSuchMusicBandException, NoSuchUserException, MusicBandUserConflictException;
 

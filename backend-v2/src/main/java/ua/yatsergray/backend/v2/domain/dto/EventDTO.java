@@ -26,13 +26,16 @@ public class EventDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime endTime;
+    private UUID musicBandId;
 
     @JsonProperty("eventCategory")
     private EventCategoryDTO eventCategoryDTO;
 
     @JsonProperty("eventSongs")
+    @Builder.Default
     private List<EventSongDTO> eventSongDTOList = new ArrayList<>();
 
     @JsonProperty("eventUsers")
+    @Builder.Default
     private List<EventUserDTO> eventUserDTOList = new ArrayList<>();
 }

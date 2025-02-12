@@ -11,7 +11,9 @@ import ua.yatsergray.backend.v2.domain.request.MusicBandCreateUpdateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserAccessRoleCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserStageRoleCreateRequest;
-import ua.yatsergray.backend.v2.service.impl.MusicBandServiceImpl;
+import ua.yatsergray.backend.v2.domain.type.ParticipationStatusType;
+import ua.yatsergray.backend.v2.service.InvitationService;
+import ua.yatsergray.backend.v2.service.MusicBandService;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,13 +21,16 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/music-bands")
 public class MusicBandController {
-    private final MusicBandServiceImpl musicBandService;
+    private final MusicBandService musicBandService;
+    private final InvitationService invitationService;
 
     @Autowired
-    public MusicBandController(MusicBandServiceImpl musicBandService) {
+    public MusicBandController(MusicBandService musicBandService, InvitationService invitationService) {
         this.musicBandService = musicBandService;
+        this.invitationService = invitationService;
     }
 
+    @SneakyThrows
     @PostMapping
     public ResponseEntity<MusicBandDTO> createMusicBand(@Valid @RequestBody MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) {
         return ResponseEntity.ok(musicBandService.addMusicBand(musicBandCreateUpdateRequest));
@@ -97,5 +102,17 @@ public class MusicBandController {
         musicBandService.removeMusicBandUserStageRole(musicBandId, userId, stageRoleId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @SneakyThrows
+    @GetMapping("/join")
+    public ResponseEntity<MusicBandUserDTO> joinUserToMusicBand(@RequestParam("invitationToken") String invitationToken) {
+        // TODO: Check if invitation token was created for authenticated user
+
+        MusicBandUserDTO musicBandUserDTO = musicBandService.addMusicBandUserByInvitationToken(invitationToken);
+
+        invitationService.changeInvitationParticipationStatusByInvitationToken(invitationToken, ParticipationStatusType.ACCEPTED);
+
+        return ResponseEntity.ok(musicBandUserDTO);
     }
 }

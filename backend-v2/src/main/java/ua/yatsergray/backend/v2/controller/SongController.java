@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.SongDTO;
 import ua.yatsergray.backend.v2.domain.request.SongCreateUpdateRequest;
-import ua.yatsergray.backend.v2.service.impl.SongServiceImpl;
+import ua.yatsergray.backend.v2.service.SongService;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,10 +15,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/songs")
 public class SongController {
-    private final SongServiceImpl songService;
+    private final SongService songService;
 
     @Autowired
-    public SongController(SongServiceImpl songService) {
+    public SongController(SongService songService) {
         this.songService = songService;
     }
 

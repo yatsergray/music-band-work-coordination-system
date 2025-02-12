@@ -17,6 +17,7 @@ public interface EventUserMapper {
 
     EventUserMapper INSTANCE = Mappers.getMapper(EventUserMapper.class);
 
+    @Mapping(source = "event.id", target = "eventId")
     @Mapping(target = "musicBandUserDTO", expression = "java(mapEventUserToMusicBandUserDTO(eventUser))")
     @Mapping(target = "stageRoleDTO", expression = "java(mapToStageRoleDTO(eventUser.getStageRole()))")
     @Mapping(source = "participationStatus", target = "participationStatusDTO")

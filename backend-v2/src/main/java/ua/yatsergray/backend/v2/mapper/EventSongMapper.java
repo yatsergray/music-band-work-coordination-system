@@ -13,6 +13,7 @@ public interface EventSongMapper {
 
     EventSongMapper INSTANCE = Mappers.getMapper(EventSongMapper.class);
 
+    @Mapping(source = "event.id", target = "eventId")
     @Mapping(source = "song", target = "songDTO")
     EventSongDTO mapToEventBandSongVersionDTO(EventSong eventSong);
 

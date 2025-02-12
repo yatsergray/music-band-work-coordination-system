@@ -19,6 +19,4 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
             WHERE e.music_band_id = :eventMusicBandId AND e.date = :eventDate AND (e.start_time < :eventEndTime AND e.end_time > :eventStartTime)
             """, nativeQuery = true)
     boolean existsOverlappingEvent(@Param("eventMusicBandId") UUID eventMusicBandId, @Param("eventDate") LocalDate eventDate, @Param("eventStartTime") LocalTime eventStartTime, @Param("eventEndTime") LocalTime eventEndTime);
-
-    long countByEventCategoryId(UUID eventCategoryId);
 }

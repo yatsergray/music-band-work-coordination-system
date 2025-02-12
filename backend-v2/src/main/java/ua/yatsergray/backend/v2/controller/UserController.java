@@ -9,7 +9,7 @@ import ua.yatsergray.backend.v2.domain.dto.UserDTO;
 import ua.yatsergray.backend.v2.domain.request.UserCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.UserRoleCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.UserUpdateRequest;
-import ua.yatsergray.backend.v2.service.impl.UserServiceImpl;
+import ua.yatsergray.backend.v2.service.UserService;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,10 +17,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserServiceImpl userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 

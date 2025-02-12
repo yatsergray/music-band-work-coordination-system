@@ -18,6 +18,7 @@ public interface MusicBandUserMapper {
 
     MusicBandUserMapper INSTANCE = Mappers.getMapper(MusicBandUserMapper.class);
 
+    @Mapping(target = "musicBandId", expression = "java(musicBand.getId())")
     @Mapping(target = "userDTO", expression = "java(mapToUserDTO(user))")
     @Mapping(target = "musicBandAccessRoleDTOList", expression = "java(mapAllToMusicBandAccessRoleDTOList(getMusicBandAccessRolesFromMusicBandAndUser(musicBand, user)))")
     @Mapping(target = "stageRoleDTOList", expression = "java(mapAllToStageRoleDTOList(getStageRolesFromMusicBandAndUser(musicBand, user)))")

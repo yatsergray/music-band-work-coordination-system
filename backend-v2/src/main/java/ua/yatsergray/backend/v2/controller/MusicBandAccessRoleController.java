@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.yatsergray.backend.v2.domain.dto.MusicBandAccessRoleDTO;
-import ua.yatsergray.backend.v2.service.impl.MusicBandAccessRoleServiceImpl;
+import ua.yatsergray.backend.v2.service.MusicBandAccessRoleService;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,10 +15,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/music-band-access-roles")
 public class MusicBandAccessRoleController {
-    private final MusicBandAccessRoleServiceImpl musicBandAccessRoleService;
+    private final MusicBandAccessRoleService musicBandAccessRoleService;
 
     @Autowired
-    public MusicBandAccessRoleController(MusicBandAccessRoleServiceImpl musicBandAccessRoleService) {
+    public MusicBandAccessRoleController(MusicBandAccessRoleService musicBandAccessRoleService) {
         this.musicBandAccessRoleService = musicBandAccessRoleService;
     }
 

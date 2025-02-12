@@ -29,15 +29,17 @@ public class InvitationServiceImpl implements InvitationService {
     private final ParticipationStatusRepository participationStatusRepository;
     private final UserRepository userRepository;
     private final MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository;
+    private final JwtServiceImpl jwtService;
 
     @Autowired
-    public InvitationServiceImpl(InvitationMapper invitationMapper, InvitationRepository invitationRepository, MusicBandRepository musicBandRepository, ParticipationStatusRepository participationStatusRepository, UserRepository userRepository, MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository) {
+    public InvitationServiceImpl(InvitationMapper invitationMapper, InvitationRepository invitationRepository, MusicBandRepository musicBandRepository, ParticipationStatusRepository participationStatusRepository, UserRepository userRepository, MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository, JwtServiceImpl jwtService) {
         this.invitationMapper = invitationMapper;
         this.invitationRepository = invitationRepository;
         this.musicBandRepository = musicBandRepository;
         this.participationStatusRepository = participationStatusRepository;
         this.userRepository = userRepository;
         this.musicBandUserAccessRoleRepository = musicBandUserAccessRoleRepository;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -57,11 +59,11 @@ public class InvitationServiceImpl implements InvitationService {
             throw new InvitationAlreadyExistsException(String.format("Invitation with bandId=\"%s\" and email=\"%s\" already exists", invitationCreateRequest.getMusicBandId(), invitationCreateRequest.getEmail()));
         }
 
-        // TODO: Generate token based on the email
+        String token = jwtService.generateInvitationToken(invitationCreateRequest.getEmail(), invitationCreateRequest.getMusicBandId());
 
         Invitation invitation = Invitation.builder()
                 .email(invitationCreateRequest.getEmail())
-                .token(UUID.randomUUID())
+                .token(token)
                 .musicBand(musicBand)
                 .participationStatus(participationStatus)
                 .build();
@@ -85,6 +87,18 @@ public class InvitationServiceImpl implements InvitationService {
                 .orElseThrow(() -> new NoSuchInvitationException(String.format("Invitation with id=\"%s\" does not exist", invitationId)));
         ParticipationStatus participationStatus = participationStatusRepository.findById(invitationUpdateRequest.getParticipationStatusId())
                 .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status with id=\"%s\" does not exist", invitationUpdateRequest.getParticipationStatusId())));
+
+        invitation.setParticipationStatus(participationStatus);
+
+        return invitationMapper.mapToInvitationDTO(invitationRepository.save(invitation));
+    }
+
+    @Override
+    public InvitationDTO changeInvitationParticipationStatusByInvitationToken(String invitationToken, ParticipationStatusType participationStatusType) throws NoSuchInvitationException, NoSuchParticipationStatusException {
+        Invitation invitation = invitationRepository.findByToken(invitationToken)
+                .orElseThrow(() -> new NoSuchInvitationException(String.format("Invitation with token=\"%s\" does not exist", invitationToken)));
+        ParticipationStatus participationStatus = participationStatusRepository.findByType(participationStatusType)
+                .orElseThrow(() -> new NoSuchParticipationStatusException(String.format("Participation status with type=\"%s\" does not exist", participationStatusType)));
 
         invitation.setParticipationStatus(participationStatus);
 

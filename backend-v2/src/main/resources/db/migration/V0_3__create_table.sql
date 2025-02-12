@@ -60,7 +60,7 @@ create table invitations
     id                      uuid         not null,
     music_band_id           uuid         not null,
     participation_status_id uuid         not null,
-    token                   uuid         not null unique,
+    token                   text         not null unique,
     email                   varchar(255) not null,
     primary key (id)
 );

@@ -12,6 +12,7 @@ import java.util.UUID;
 @Builder
 public class EventUserDTO {
     private UUID id;
+    private UUID eventId;
 
     @JsonProperty("musicBandUser")
     private MusicBandUserDTO musicBandUserDTO;

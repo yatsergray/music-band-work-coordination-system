@@ -15,10 +15,13 @@ import java.util.UUID;
 public class ChatDTO {
     private UUID id;
     private String name;
+    private UUID musicBandId;
 
     @JsonProperty("chatUsers")
+    @Builder.Default
     private List<ChatUserDTO> chatUserDTOList = new ArrayList<>();
 
     @JsonProperty("messages")
+    @Builder.Default
     private List<MessageDTO> messageDTOList = new ArrayList<>();
 }

@@ -14,4 +14,5 @@ public class SongDTO {
     private String name;
     private String artistName;
     private String youtubeId;
+    private UUID musicBandId;
 }

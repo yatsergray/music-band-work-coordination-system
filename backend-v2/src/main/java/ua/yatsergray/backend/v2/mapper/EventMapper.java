@@ -13,6 +13,7 @@ public interface EventMapper {
 
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
+    @Mapping(source = "musicBand.id", target = "musicBandId")
     @Mapping(source = "eventCategory", target = "eventCategoryDTO")
     @Mapping(source = "eventSongs", target = "eventSongDTOList")
     @Mapping(source = "eventUsers", target = "eventUserDTOList")

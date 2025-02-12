@@ -16,6 +16,7 @@ public interface ChatMapper {
 
     ChatMapper INSTANCE = Mappers.getMapper(ChatMapper.class);
 
+    @Mapping(source = "musicBand.id", target = "musicBandId")
     @Mapping(target = "chatUserDTOList", expression = "java(mapChatToChatUserDTOList(chat))")
     @Mapping(source = "messages", target = "messageDTOList")
     ChatDTO mapToChatDTO(Chat chat);
