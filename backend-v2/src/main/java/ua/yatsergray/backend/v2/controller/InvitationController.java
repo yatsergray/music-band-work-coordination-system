@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.InvitationDTO;
 import ua.yatsergray.backend.v2.domain.request.InvitationCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.InvitationUpdateRequest;
-import ua.yatsergray.backend.v2.service.EmailService;
+import ua.yatsergray.backend.v2.property.RabbitMQPropertyProvider;
 import ua.yatsergray.backend.v2.service.InvitationService;
+import ua.yatsergray.backend.v2.service.RabbitMQProducerService;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,12 +19,14 @@ import java.util.UUID;
 @RequestMapping("/api/v1/invitations")
 public class InvitationController {
     private final InvitationService invitationService;
-    private final EmailService emailService;
+    private final RabbitMQPropertyProvider rabbitMQPropertyProvider;
+    private final RabbitMQProducerService<InvitationDTO> emailInvitationRabbitMQProviderService;
 
     @Autowired
-    public InvitationController(InvitationService invitationService, EmailService emailService) {
+    public InvitationController(InvitationService invitationService, RabbitMQPropertyProvider rabbitMQPropertyProvider, RabbitMQProducerService<InvitationDTO> emailInvitationRabbitMQProviderService) {
         this.invitationService = invitationService;
-        this.emailService = emailService;
+        this.rabbitMQPropertyProvider = rabbitMQPropertyProvider;
+        this.emailInvitationRabbitMQProviderService = emailInvitationRabbitMQProviderService;
     }
 
     @SneakyThrows
@@ -31,7 +34,7 @@ public class InvitationController {
     public ResponseEntity<InvitationDTO> createInvitation(@Valid @RequestBody InvitationCreateRequest invitationCreateRequest) {
         InvitationDTO invitationDTO = invitationService.addInvitation(invitationCreateRequest);
 
-        emailService.sendInvitationEmail(invitationCreateRequest.getEmail(), invitationDTO.getToken());
+        emailInvitationRabbitMQProviderService.sendMessage(rabbitMQPropertyProvider.getEmailInvitationRoutingKeyName(), invitationDTO);
 
         return ResponseEntity.ok(invitationDTO);
     }
