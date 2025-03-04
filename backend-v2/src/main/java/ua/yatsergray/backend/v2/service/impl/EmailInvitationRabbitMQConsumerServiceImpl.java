@@ -10,16 +10,16 @@ import ua.yatsergray.backend.v2.service.RabbitMQConsumerService;
 
 @Service
 @EnableRabbit
-public class InvitationRabbitMQConsumerServiceImpl implements RabbitMQConsumerService<InvitationDTO> {
+public class EmailInvitationRabbitMQConsumerServiceImpl implements RabbitMQConsumerService<InvitationDTO> {
     private final EmailService emailService;
 
     @Autowired
-    public InvitationRabbitMQConsumerServiceImpl(EmailService emailService) {
+    public EmailInvitationRabbitMQConsumerServiceImpl(EmailService emailService) {
         this.emailService = emailService;
     }
 
-    @RabbitListener(queues = {"${rabbitmq.email.invitation.queue.name}"})
     @Override
+    @RabbitListener(queues = {"${rabbitmq.email.invitation.queue.name}"})
     public void receiveMessage(InvitationDTO message) {
         emailService.sendInvitationEmail(message.getEmail(), message.getToken());
     }
