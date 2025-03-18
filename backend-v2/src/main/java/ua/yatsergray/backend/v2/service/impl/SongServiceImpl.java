@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.SongDTO;
 import ua.yatsergray.backend.v2.domain.entity.MusicBand;
 import ua.yatsergray.backend.v2.domain.entity.Song;
-import ua.yatsergray.backend.v2.domain.request.SongCreateUpdateRequest;
+import ua.yatsergray.backend.v2.domain.request.SongCreateRequest;
+import ua.yatsergray.backend.v2.domain.request.SongUpdateRequest;
 import ua.yatsergray.backend.v2.exception.NoSuchMusicBandException;
 import ua.yatsergray.backend.v2.exception.NoSuchSongException;
 import ua.yatsergray.backend.v2.mapper.SongMapper;
@@ -33,9 +34,9 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDTO addSong(SongCreateUpdateRequest songCreateUpdateRequest) throws NoSuchMusicBandException {
-        MusicBand musicBand = musicBandRepository.findById(songCreateUpdateRequest.getBandId())
-                .orElseThrow(() -> new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", songCreateUpdateRequest.getBandId())));
+    public SongDTO addSong(SongCreateRequest songCreateRequest) throws NoSuchMusicBandException {
+        MusicBand musicBand = musicBandRepository.findById(songCreateRequest.getBandId())
+                .orElseThrow(() -> new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", songCreateRequest.getBandId())));
 
         // TODO: Add check if songCategory and added song have the same band
         // TODO: Add check if songMood and added song have the same band
@@ -59,7 +60,7 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public SongDTO modifySongById(UUID songId, SongCreateUpdateRequest songCreateUpdateRequest) throws NoSuchSongException {
+    public SongDTO modifySongById(UUID songId, SongUpdateRequest songUpdateRequest) throws NoSuchSongException {
         Song song = songRepository.findById(songId)
                 .orElseThrow(() -> new NoSuchSongException(String.format("Song with id=\"%s\" does not exist", songId)));
 
