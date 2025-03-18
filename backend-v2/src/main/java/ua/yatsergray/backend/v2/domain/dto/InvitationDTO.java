@@ -14,7 +14,6 @@ public class InvitationDTO {
     private UUID id;
     private String email;
     private String token;
-    private UUID musicBandId;
 
     @JsonProperty("participationStatus")
     private ParticipationStatusDTO participationStatusDTO;

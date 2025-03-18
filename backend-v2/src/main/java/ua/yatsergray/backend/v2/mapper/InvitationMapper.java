@@ -13,7 +13,6 @@ public interface InvitationMapper {
 
     InvitationMapper INSTANCE = Mappers.getMapper(InvitationMapper.class);
 
-    @Mapping(source = "musicBand.id", target = "musicBandId")
     @Mapping(source = "participationStatus", target = "participationStatusDTO")
     InvitationDTO mapToInvitationDTO(Invitation invitation);
 
