@@ -1,4 +1,4 @@
-package ua.yatsergray.backend.v2.property;
+package ua.yatsergray.backend.v2.provider;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

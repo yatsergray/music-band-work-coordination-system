@@ -3,7 +3,7 @@ package ua.yatsergray.backend.v2.service.impl;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.yatsergray.backend.v2.property.RabbitMQPropertyProvider;
+import ua.yatsergray.backend.v2.provider.RabbitMQPropertyProvider;
 import ua.yatsergray.backend.v2.service.RabbitMQProducerService;
 
 @Service

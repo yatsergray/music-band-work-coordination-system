@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.InvitationDTO;
 import ua.yatsergray.backend.v2.domain.request.InvitationCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.InvitationUpdateRequest;
-import ua.yatsergray.backend.v2.property.RabbitMQPropertyProvider;
+import ua.yatsergray.backend.v2.provider.RabbitMQPropertyProvider;
 import ua.yatsergray.backend.v2.service.InvitationService;
 import ua.yatsergray.backend.v2.service.RabbitMQProducerService;
 

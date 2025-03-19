@@ -9,7 +9,7 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ua.yatsergray.backend.v2.property.RabbitMQPropertyProvider;
+import ua.yatsergray.backend.v2.provider.RabbitMQPropertyProvider;
 
 @Configuration
 public class RabbitMQConfig {
