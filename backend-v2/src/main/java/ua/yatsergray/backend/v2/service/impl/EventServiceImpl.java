@@ -19,6 +19,7 @@ import ua.yatsergray.backend.v2.repository.EventRepository;
 import ua.yatsergray.backend.v2.repository.MusicBandRepository;
 import ua.yatsergray.backend.v2.service.EventService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -62,6 +63,7 @@ public class EventServiceImpl implements EventService {
                 .date(eventCreateRequest.getDate())
                 .startTime(eventCreateRequest.getStartTime())
                 .endTime(eventCreateRequest.getEndTime())
+                .createdAt(LocalDateTime.now())
                 .musicBand(musicBand)
                 .eventCategory(eventCategory)
                 .build();

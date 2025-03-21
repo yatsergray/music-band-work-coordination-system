@@ -15,6 +15,7 @@ import ua.yatsergray.backend.v2.repository.MusicBandRepository;
 import ua.yatsergray.backend.v2.repository.SongRepository;
 import ua.yatsergray.backend.v2.service.SongService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,6 +44,7 @@ public class SongServiceImpl implements SongService {
 
         Song song = Song.builder()
                 .name("PASS")
+                .createdAt(LocalDateTime.now())
                 .musicBand(musicBand)
                 .build();
 

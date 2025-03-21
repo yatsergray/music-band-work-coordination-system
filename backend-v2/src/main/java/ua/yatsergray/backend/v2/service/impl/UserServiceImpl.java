@@ -19,6 +19,7 @@ import ua.yatsergray.backend.v2.repository.RoleRepository;
 import ua.yatsergray.backend.v2.repository.UserRepository;
 import ua.yatsergray.backend.v2.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,6 +50,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(userCreateRequest.getLastName())
                 .email(userCreateRequest.getEmail())
                 .password(userCreateRequest.getPassword())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         user.getRoles().add(role);

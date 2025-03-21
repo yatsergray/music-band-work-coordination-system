@@ -16,6 +16,7 @@ import ua.yatsergray.backend.v2.mapper.InvitationMapper;
 import ua.yatsergray.backend.v2.repository.*;
 import ua.yatsergray.backend.v2.service.InvitationService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,6 +65,7 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = Invitation.builder()
                 .email(invitationCreateRequest.getEmail())
                 .token(token)
+                .createdAt(LocalDateTime.now())
                 .musicBand(musicBand)
                 .participationStatus(participationStatus)
                 .build();

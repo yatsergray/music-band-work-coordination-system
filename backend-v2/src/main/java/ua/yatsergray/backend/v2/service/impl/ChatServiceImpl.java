@@ -19,6 +19,7 @@ import ua.yatsergray.backend.v2.mapper.ChatUserMapper;
 import ua.yatsergray.backend.v2.repository.*;
 import ua.yatsergray.backend.v2.service.ChatService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -60,6 +61,7 @@ public class ChatServiceImpl implements ChatService {
 
         Chat chat = Chat.builder()
                 .name(chatCreateRequest.getName())
+                .createdAt(LocalDateTime.now())
                 .musicBand(musicBand)
                 .build();
 
