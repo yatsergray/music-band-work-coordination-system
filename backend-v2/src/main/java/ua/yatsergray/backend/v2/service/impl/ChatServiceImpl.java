@@ -4,6 +4,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.ChatDTO;
 import ua.yatsergray.backend.v2.domain.dto.ChatUserDTO;
@@ -20,7 +23,6 @@ import ua.yatsergray.backend.v2.repository.*;
 import ua.yatsergray.backend.v2.service.ChatService;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -73,9 +75,15 @@ public class ChatServiceImpl implements ChatService {
         return chatRepository.findById(chatId).map(chatMapper::mapToChatDTO);
     }
 
+//    @Override
+//    public List<ChatDTO> getAllChats() {
+//        return chatMapper.mapAllToChatDTOList(chatRepository.findAll());
+//    }
+
+
     @Override
-    public List<ChatDTO> getAllChats() {
-        return chatMapper.mapAllToChatDTOList(chatRepository.findAll());
+    public Page<ChatDTO> getAllChatsByPageAndSize(int page, int size) {
+        return chatRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(chatMapper::mapToChatDTO);
     }
 
     @Override

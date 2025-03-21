@@ -2,6 +2,9 @@ package ua.yatsergray.backend.v2.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.UserDTO;
 import ua.yatsergray.backend.v2.domain.entity.Role;
@@ -20,7 +23,6 @@ import ua.yatsergray.backend.v2.repository.UserRepository;
 import ua.yatsergray.backend.v2.service.UserService;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -63,9 +65,15 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userId).map(UserMapper.INSTANCE::mapToUserDTO);
     }
 
+//    @Override
+//    public List<UserDTO> getAllUsers() {
+//        return UserMapper.INSTANCE.mapAllToUserDTOList(userRepository.findAll());
+//    }
+
+
     @Override
-    public List<UserDTO> getAllUsers() {
-        return UserMapper.INSTANCE.mapAllToUserDTOList(userRepository.findAll());
+    public Page<UserDTO> getAllUsersByPageAndSize(int page, int size) {
+        return userRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(UserMapper.INSTANCE::mapToUserDTO);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.v2.service;
 
+import org.springframework.data.domain.Page;
 import ua.yatsergray.backend.v2.domain.dto.UserDTO;
 import ua.yatsergray.backend.v2.domain.request.UserCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.UserRoleCreateRequest;
@@ -9,7 +10,6 @@ import ua.yatsergray.backend.v2.exception.NoSuchUserException;
 import ua.yatsergray.backend.v2.exception.UserAlreadyExistsException;
 import ua.yatsergray.backend.v2.exception.UserRoleConflictException;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,7 +19,9 @@ public interface UserService {
 
     Optional<UserDTO> getUserById(UUID userId);
 
-    List<UserDTO> getAllUsers();
+//    List<UserDTO> getAllUsers();
+
+    Page<UserDTO> getAllUsersByPageAndSize(int page, int size);
 
     UserDTO modifyUserById(UUID userId, UserUpdateRequest userUpdateRequest) throws NoSuchUserException;
 

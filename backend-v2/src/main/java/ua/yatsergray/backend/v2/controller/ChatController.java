@@ -3,6 +3,7 @@ package ua.yatsergray.backend.v2.controller;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.ChatDTO;
@@ -13,7 +14,6 @@ import ua.yatsergray.backend.v2.domain.request.ChatUserAccessRoleCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.ChatUserCreateRequest;
 import ua.yatsergray.backend.v2.service.ChatService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -39,9 +39,14 @@ public class ChatController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<ChatDTO>> readAllChats() {
+//        return ResponseEntity.ok(chatService.getAllChats());
+//    }
+
     @GetMapping
-    public ResponseEntity<List<ChatDTO>> readAllChats() {
-        return ResponseEntity.ok(chatService.getAllChats());
+    public ResponseEntity<Page<ChatDTO>> readAllChatsByPageAndSize(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(chatService.getAllChatsByPageAndSize(page, size));
     }
 
     @SneakyThrows

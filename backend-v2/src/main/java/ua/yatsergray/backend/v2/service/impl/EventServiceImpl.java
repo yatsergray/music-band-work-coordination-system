@@ -2,6 +2,9 @@ package ua.yatsergray.backend.v2.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.EventDTO;
 import ua.yatsergray.backend.v2.domain.entity.Event;
@@ -20,7 +23,6 @@ import ua.yatsergray.backend.v2.repository.MusicBandRepository;
 import ua.yatsergray.backend.v2.service.EventService;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -76,9 +78,15 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(eventId).map(eventMapper::mapToEventDTO);
     }
 
+//    @Override
+//    public List<EventDTO> getAllEvents() {
+//        return eventMapper.mapAllToEventDTOList(eventRepository.findAll());
+//    }
+
+
     @Override
-    public List<EventDTO> getAllEvents() {
-        return eventMapper.mapAllToEventDTOList(eventRepository.findAll());
+    public Page<EventDTO> getAllEventsByPageAndSize(int page, int size) {
+        return eventRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(eventMapper::mapToEventDTO);
     }
 
     @Override

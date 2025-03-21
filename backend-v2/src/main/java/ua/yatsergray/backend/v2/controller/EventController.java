@@ -3,6 +3,7 @@ package ua.yatsergray.backend.v2.controller;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.EventDTO;
@@ -10,7 +11,6 @@ import ua.yatsergray.backend.v2.domain.request.EventCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.EventUpdateRequest;
 import ua.yatsergray.backend.v2.service.EventService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,10 +36,16 @@ public class EventController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<EventDTO>> readAllEvents() {
+//        return ResponseEntity.ok(eventService.getAllEvents());
+//    }
+
     @GetMapping
-    public ResponseEntity<List<EventDTO>> readAllEvents() {
-        return ResponseEntity.ok(eventService.getAllEvents());
+    public ResponseEntity<Page<EventDTO>> readAllEventsByPageAndSize(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(eventService.getAllEventsByPageAndSize(page, size));
     }
+
 
     @SneakyThrows
     @PutMapping("/{eventId}")
