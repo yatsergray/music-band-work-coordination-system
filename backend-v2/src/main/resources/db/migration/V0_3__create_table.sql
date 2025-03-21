@@ -100,8 +100,9 @@ create table music_band_user_stage_roles
 );
 create table music_bands
 (
-    id   uuid         not null,
-    name varchar(255) not null,
+    id         uuid         not null,
+    name       varchar(255) not null,
+    created_at timestamp(6) not null,
     primary key (id)
 );
 create table participation_statuses

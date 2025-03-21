@@ -4,6 +4,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.MusicBandDTO;
 import ua.yatsergray.backend.v2.domain.dto.MusicBandUserDTO;
@@ -21,7 +24,7 @@ import ua.yatsergray.backend.v2.repository.*;
 import ua.yatsergray.backend.v2.service.JwtService;
 import ua.yatsergray.backend.v2.service.MusicBandService;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -65,6 +68,7 @@ public class MusicBandServiceImpl implements MusicBandService {
 
         MusicBand musicBand = MusicBand.builder()
                 .name(musicBandCreateUpdateRequest.getName())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         return musicBandMapper.mapToMusicBandDTO(musicBandRepository.save(musicBand));
@@ -75,9 +79,15 @@ public class MusicBandServiceImpl implements MusicBandService {
         return musicBandRepository.findById(musicBandId).map(musicBandMapper::mapToMusicBandDTO);
     }
 
+//    @Override
+//    public List<MusicBandDTO> getAllMusicBands() {
+//        return musicBandMapper.mapAllToMusicBandDTOList(musicBandRepository.findAll());
+//    }
+
     @Override
-    public List<MusicBandDTO> getAllMusicBands() {
-        return musicBandMapper.mapAllToMusicBandDTOList(musicBandRepository.findAll());
+    public Page<MusicBandDTO> getAllMusicBandsByPageAndSize(int page, int size) {
+        return musicBandRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(musicBandMapper::mapToMusicBandDTO);
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package ua.yatsergray.backend.v2.controller;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.MusicBandDTO;
@@ -15,7 +16,6 @@ import ua.yatsergray.backend.v2.domain.type.ParticipationStatusType;
 import ua.yatsergray.backend.v2.service.InvitationService;
 import ua.yatsergray.backend.v2.service.MusicBandService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -43,9 +43,14 @@ public class MusicBandController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<MusicBandDTO>> readAllMusicBands() {
+//        return ResponseEntity.ok(musicBandService.getAllMusicBands());
+//    }
+
     @GetMapping
-    public ResponseEntity<List<MusicBandDTO>> readAllMusicBands() {
-        return ResponseEntity.ok(musicBandService.getAllMusicBands());
+    public ResponseEntity<Page<MusicBandDTO>> readAllMusicBandsByPageAndSize(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "size", defaultValue = "10") int size) {
+        return ResponseEntity.ok(musicBandService.getAllMusicBandsByPageAndSize(page, size));
     }
 
     @SneakyThrows

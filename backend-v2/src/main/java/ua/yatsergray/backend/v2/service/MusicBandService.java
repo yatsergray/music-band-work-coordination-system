@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.v2.service;
 
+import org.springframework.data.domain.Page;
 import ua.yatsergray.backend.v2.domain.dto.MusicBandDTO;
 import ua.yatsergray.backend.v2.domain.dto.MusicBandUserDTO;
 import ua.yatsergray.backend.v2.domain.request.MusicBandCreateUpdateRequest;
@@ -8,7 +9,6 @@ import ua.yatsergray.backend.v2.domain.request.MusicBandUserCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserStageRoleCreateRequest;
 import ua.yatsergray.backend.v2.exception.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,7 +18,9 @@ public interface MusicBandService {
 
     Optional<MusicBandDTO> getMusicBandById(UUID musicBandId);
 
-    List<MusicBandDTO> getAllMusicBands();
+//    List<MusicBandDTO> getAllMusicBands();
+
+    Page<MusicBandDTO> getAllMusicBandsByPageAndSize(int page, int size);
 
     MusicBandDTO modifyMusicBandById(UUID musicBandId, MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws NoSuchMusicBandException, MusicBandAlreadyExists;
 
