@@ -59,15 +59,9 @@ public class SongServiceImpl implements SongService {
         return songRepository.findById(songId).map(songMapper::mapToSongDTO);
     }
 
-//    @Override
-//    public List<SongDTO> getAllSongs() {
-//        return songMapper.mapAllToSongDTOList(songRepository.findAll());
-//    }
-
-
     @Override
-    public Page<SongDTO> getAllSongsByPageAndSize(int page, int size) {
-        return songRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(songMapper::mapToSongDTO);
+    public Page<SongDTO> getAllSongsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size) {
+        return songRepository.findAllByMusicBandId(musicBandId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(songMapper::mapToSongDTO);
     }
 
     @Override

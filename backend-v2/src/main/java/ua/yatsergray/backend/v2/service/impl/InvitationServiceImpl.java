@@ -80,15 +80,9 @@ public class InvitationServiceImpl implements InvitationService {
         return invitationRepository.findById(invitationId).map(invitationMapper::mapToInvitationDTO);
     }
 
-//    @Override
-//    public List<InvitationDTO> getAllInvitations() {
-//        return invitationMapper.mapAllToInvitationDTOList(invitationRepository.findAll());
-//    }
-
-
     @Override
-    public Page<InvitationDTO> getAllInvitationsByPageAndSize(int page, int size) {
-        return invitationRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(invitationMapper::mapToInvitationDTO);
+    public Page<InvitationDTO> getAllInvitationsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size) {
+        return invitationRepository.findAllByMusicBandId(musicBandId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(invitationMapper::mapToInvitationDTO);
     }
 
     @Override

@@ -3,6 +3,7 @@ package ua.yatsergray.backend.v2.controller;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.EventSongDTO;
@@ -10,7 +11,6 @@ import ua.yatsergray.backend.v2.domain.request.EventSongCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.EventSongUpdateRequest;
 import ua.yatsergray.backend.v2.service.EventSongService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,9 +36,9 @@ public class EventSongController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping
-    public ResponseEntity<List<EventSongDTO>> readAllEventSongs() {
-        return ResponseEntity.ok(eventSongService.getAllEventSongs());
+    @GetMapping("/event/{eventId}")
+    public ResponseEntity<Page<EventSongDTO>> readAllEventSongsByEventIdAndPageAndSize(@PathVariable("eventId") UUID eventId, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "size", defaultValue = "10") int size) {
+        return ResponseEntity.ok(eventSongService.getAllEventSongsByEventIdAndPageAndSize(eventId, page, size));
     }
 
     @SneakyThrows

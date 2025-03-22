@@ -22,6 +22,8 @@ public interface MusicBandService {
 
     Page<MusicBandDTO> getAllMusicBandsByPageAndSize(int page, int size);
 
+    Page<MusicBandDTO> getAllMusicBandsByUserIdAndPageAndSize(UUID userId, int page, int size);
+
     MusicBandDTO modifyMusicBandById(UUID musicBandId, MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws NoSuchMusicBandException, MusicBandAlreadyExists;
 
     void removeMusicBandById(UUID musicBandId) throws NoSuchMusicBandException;

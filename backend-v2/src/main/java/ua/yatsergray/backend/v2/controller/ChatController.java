@@ -39,14 +39,9 @@ public class ChatController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<ChatDTO>> readAllChats() {
-//        return ResponseEntity.ok(chatService.getAllChats());
-//    }
-
-    @GetMapping
-    public ResponseEntity<Page<ChatDTO>> readAllChatsByPageAndSize(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(chatService.getAllChatsByPageAndSize(page, size));
+    @GetMapping("/music-band/{musicBandId}")
+    public ResponseEntity<Page<ChatDTO>> readAllChatsByMusicBandIdAndPageAndSize(@PathVariable("musicBandId") UUID musicBandId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(chatService.getAllChatsByMusicBandIdAndPageAndSize(musicBandId, page, size));
     }
 
     @SneakyThrows

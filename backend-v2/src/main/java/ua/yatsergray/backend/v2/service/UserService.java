@@ -23,6 +23,8 @@ public interface UserService {
 
     Page<UserDTO> getAllUsersByPageAndSize(int page, int size);
 
+    Page<UserDTO> getAllUsersByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size);
+
     UserDTO modifyUserById(UUID userId, UserUpdateRequest userUpdateRequest) throws NoSuchUserException;
 
     void removeUserById(UUID id) throws NoSuchUserException;

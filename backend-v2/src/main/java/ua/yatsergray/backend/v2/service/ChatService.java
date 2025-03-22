@@ -20,7 +20,9 @@ public interface ChatService {
 
 //    List<ChatDTO> getAllChats();
 
-    Page<ChatDTO> getAllChatsByPageAndSize(int page, int size);
+//    Page<ChatDTO> getAllChatsByPageAndSize(int page, int size);
+
+    Page<ChatDTO> getAllChatsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size);
 
     ChatDTO modifyChatById(UUID chatId, ChatUpdateRequest chatUpdateRequest) throws NoSuchChatException, ChatAlreadyExistsException;
 

@@ -78,15 +78,9 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(eventId).map(eventMapper::mapToEventDTO);
     }
 
-//    @Override
-//    public List<EventDTO> getAllEvents() {
-//        return eventMapper.mapAllToEventDTOList(eventRepository.findAll());
-//    }
-
-
     @Override
-    public Page<EventDTO> getAllEventsByPageAndSize(int page, int size) {
-        return eventRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(eventMapper::mapToEventDTO);
+    public Page<EventDTO> getAllEventsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size) {
+        return eventRepository.findAllByMusicBandId(musicBandId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(eventMapper::mapToEventDTO);
     }
 
     @Override

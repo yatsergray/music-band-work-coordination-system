@@ -18,7 +18,9 @@ public interface InvitationService {
 
 //    List<InvitationDTO> getAllInvitations();
 
-    Page<InvitationDTO> getAllInvitationsByPageAndSize(int page, int size);
+//    Page<InvitationDTO> getAllInvitationsByPageAndSize(int page, int size);
+
+    Page<InvitationDTO> getAllInvitationsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size);
 
     InvitationDTO modifyInvitationById(UUID invitationId, InvitationUpdateRequest invitationUpdateRequest) throws NoSuchInvitationException, NoSuchParticipationStatusException;
 

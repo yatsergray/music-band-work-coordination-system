@@ -36,14 +36,9 @@ public class SongController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<SongDTO>> readAllSongs() {
-//        return ResponseEntity.ok(songService.getAllSongs());
-//    }
-
-    @GetMapping
-    public ResponseEntity<Page<SongDTO>> readAllSongsByPageAndSize(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(songService.getAllSongsByPageAndSize(page, size));
+    @GetMapping("/music-band/{musicBandId}")
+    public ResponseEntity<Page<SongDTO>> readAllSongsByMusicBandIdAndPageAndSize(@PathVariable("musicBandId") UUID musicBandId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(songService.getAllSongsByMusicBandIdAndPageAndSize(musicBandId, page, size));
     }
 
     @SneakyThrows

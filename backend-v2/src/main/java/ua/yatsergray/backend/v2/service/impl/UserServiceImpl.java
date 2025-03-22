@@ -65,15 +65,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userId).map(UserMapper.INSTANCE::mapToUserDTO);
     }
 
-//    @Override
-//    public List<UserDTO> getAllUsers() {
-//        return UserMapper.INSTANCE.mapAllToUserDTOList(userRepository.findAll());
-//    }
-
-
     @Override
     public Page<UserDTO> getAllUsersByPageAndSize(int page, int size) {
         return userRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(UserMapper.INSTANCE::mapToUserDTO);
+    }
+
+    @Override
+    public Page<UserDTO> getAllUsersByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size) {
+        return userRepository.findAllByMusicBandId(musicBandId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(UserMapper.INSTANCE::mapToUserDTO);
     }
 
     @Override
@@ -121,6 +120,10 @@ public class UserServiceImpl implements UserService {
 
         if (!user.getRoles().contains(role)) {
             throw new UserRoleConflictException(String.format("User with id=\"%s\" does not have role with id=\"%s\"", userId, roleId));
+        }
+
+        if (role.getType().equals(RoleType.USER)) {
+            throw new UserRoleConflictException(String.format("Role with type=\"%s\" cannot be removed from User with id=\"%s\"", RoleType.USER, userId));
         }
 
         user.getRoles().remove(role);

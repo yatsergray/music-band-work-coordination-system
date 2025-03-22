@@ -38,14 +38,14 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<UserDTO>> readAllUsers() {
-//        return ResponseEntity.ok(userService.getAllUsers());
-//    }
-
     @GetMapping
     public ResponseEntity<Page<UserDTO>> readAllUsersByPageAndSize(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(userService.getAllUsersByPageAndSize(page, size));
+    }
+
+    @GetMapping("/music-band/{musicBandId}")
+    public ResponseEntity<Page<UserDTO>> readAllUsersByMusicBandIdPageAndSize(@PathVariable("musicBandId") UUID musicBandId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(userService.getAllUsersByMusicBandIdAndPageAndSize(musicBandId, page, size));
     }
 
     @SneakyThrows

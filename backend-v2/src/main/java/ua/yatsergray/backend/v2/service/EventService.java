@@ -20,7 +20,9 @@ public interface EventService {
 
 //    List<EventDTO> getAllEvents();
 
-    Page<EventDTO> getAllEventsByPageAndSize(int page, int size);
+//    Page<EventDTO> getAllEventsByPageAndSize(int page, int size);
+
+    Page<EventDTO> getAllEventsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size);
 
     EventDTO modifyEventById(UUID eventId, EventUpdateRequest eventUpdateRequest) throws NoSuchEventException, EventConflictException, NoSuchEventCategoryException;
 

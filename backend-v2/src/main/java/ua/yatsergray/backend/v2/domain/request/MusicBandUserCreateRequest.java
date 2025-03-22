@@ -12,6 +12,9 @@ import java.util.UUID;
 @Builder
 public class MusicBandUserCreateRequest {
 
+    @NotNull(message = "Music band id is mandatory")
+    private UUID musicBandId;
+
     @NotNull(message = "User id is mandatory")
     private UUID userId;
 }

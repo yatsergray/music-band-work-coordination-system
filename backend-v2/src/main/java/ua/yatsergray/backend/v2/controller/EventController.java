@@ -36,16 +36,10 @@ public class EventController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<EventDTO>> readAllEvents() {
-//        return ResponseEntity.ok(eventService.getAllEvents());
-//    }
-
-    @GetMapping
-    public ResponseEntity<Page<EventDTO>> readAllEventsByPageAndSize(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(eventService.getAllEventsByPageAndSize(page, size));
+    @GetMapping("/music-band/{musicBandId}")
+    public ResponseEntity<Page<EventDTO>> readAllEventsByMusicBandIdAndPageAndSize(@PathVariable("musicBandId") UUID musicBandId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(eventService.getAllEventsByMusicBandIdAndPageAndSize(musicBandId, page, size));
     }
-
 
     @SneakyThrows
     @PutMapping("/{eventId}")

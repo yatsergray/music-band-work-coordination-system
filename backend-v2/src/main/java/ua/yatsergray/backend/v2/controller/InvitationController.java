@@ -46,14 +46,9 @@ public class InvitationController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<InvitationDTO>> readAllInvitations() {
-//        return ResponseEntity.ok(invitationService.getAllInvitations());
-//    }
-
-    @GetMapping
-    public ResponseEntity<Page<InvitationDTO>> readAllInvitationsByPageAndSize(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(invitationService.getAllInvitationsByPageAndSize(page, size));
+    @GetMapping("/music-band/{musicBandId}")
+    public ResponseEntity<Page<InvitationDTO>> readAllInvitationsByMusicBandIdAndPageAndSize(@PathVariable("musicBandId") UUID musicBandId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(invitationService.getAllInvitationsByMusicBandIdAndPageAndSize(musicBandId, page, size));
     }
 
     @SneakyThrows

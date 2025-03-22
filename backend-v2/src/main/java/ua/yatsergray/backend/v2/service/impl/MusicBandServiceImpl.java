@@ -71,6 +71,8 @@ public class MusicBandServiceImpl implements MusicBandService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
+        // TODO: get user from security context, add it to music band with member, admin and owner roles
+
         return musicBandMapper.mapToMusicBandDTO(musicBandRepository.save(musicBand));
     }
 
@@ -79,15 +81,14 @@ public class MusicBandServiceImpl implements MusicBandService {
         return musicBandRepository.findById(musicBandId).map(musicBandMapper::mapToMusicBandDTO);
     }
 
-//    @Override
-//    public List<MusicBandDTO> getAllMusicBands() {
-//        return musicBandMapper.mapAllToMusicBandDTOList(musicBandRepository.findAll());
-//    }
-
     @Override
     public Page<MusicBandDTO> getAllMusicBandsByPageAndSize(int page, int size) {
         return musicBandRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(musicBandMapper::mapToMusicBandDTO);
+    }
 
+    @Override
+    public Page<MusicBandDTO> getAllMusicBandsByUserIdAndPageAndSize(UUID userId, int page, int size) {
+        return musicBandRepository.findAllByUserId(userId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(musicBandMapper::mapToMusicBandDTO);
     }
 
     @Override

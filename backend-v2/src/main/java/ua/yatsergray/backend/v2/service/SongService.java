@@ -18,7 +18,9 @@ public interface SongService {
 
 //    List<SongDTO> getAllSongs();
 
-    Page<SongDTO> getAllSongsByPageAndSize(int page, int size);
+//    Page<SongDTO> getAllSongsByPageAndSize(int page, int size);
+
+    Page<SongDTO> getAllSongsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size);
 
     SongDTO modifySongById(UUID songId, SongUpdateRequest songUpdateRequest) throws NoSuchSongException;
 

@@ -43,14 +43,14 @@ public class MusicBandController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<MusicBandDTO>> readAllMusicBands() {
-//        return ResponseEntity.ok(musicBandService.getAllMusicBands());
-//    }
-
     @GetMapping
     public ResponseEntity<Page<MusicBandDTO>> readAllMusicBandsByPageAndSize(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "size", defaultValue = "10") int size) {
         return ResponseEntity.ok(musicBandService.getAllMusicBandsByPageAndSize(page, size));
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Page<MusicBandDTO>> readAllMusicBandsByUserIdPageAndSize(@PathVariable("userId") UUID userId, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "size", defaultValue = "10") int size) {
+        return ResponseEntity.ok(musicBandService.getAllMusicBandsByUserIdAndPageAndSize(userId, page, size));
     }
 
     @SneakyThrows

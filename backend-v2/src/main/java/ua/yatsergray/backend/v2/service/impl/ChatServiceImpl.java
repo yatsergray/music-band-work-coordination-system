@@ -67,6 +67,8 @@ public class ChatServiceImpl implements ChatService {
                 .musicBand(musicBand)
                 .build();
 
+        // TODO: get user from security context, add it to chat with member, admin and owner roles
+
         return chatMapper.mapToChatDTO(chatRepository.save(chat));
     }
 
@@ -75,15 +77,9 @@ public class ChatServiceImpl implements ChatService {
         return chatRepository.findById(chatId).map(chatMapper::mapToChatDTO);
     }
 
-//    @Override
-//    public List<ChatDTO> getAllChats() {
-//        return chatMapper.mapAllToChatDTOList(chatRepository.findAll());
-//    }
-
-
     @Override
-    public Page<ChatDTO> getAllChatsByPageAndSize(int page, int size) {
-        return chatRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(chatMapper::mapToChatDTO);
+    public Page<ChatDTO> getAllChatsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size) {
+        return chatRepository.findAllByMusicBandId(musicBandId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(chatMapper::mapToChatDTO);
     }
 
     @Override
