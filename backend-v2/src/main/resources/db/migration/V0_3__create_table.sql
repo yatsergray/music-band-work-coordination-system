@@ -8,18 +8,11 @@ create table chat_access_roles
 
 create table chat_user_access_roles
 (
-    chat_access_role_id uuid not null,
-    chat_id             uuid not null,
-    id                  uuid not null,
-    user_id             uuid not null,
-    primary key (id)
-);
-
-create table event_participation_statuses
-(
-    id   uuid         not null,
-    name varchar(255) not null unique,
-    type varchar(255) not null unique check (type in ('APPROVED', 'PENDING', 'REJECTED')),
+    created_at          timestamp(6) not null,
+    chat_access_role_id uuid         not null,
+    chat_id             uuid         not null,
+    id                  uuid         not null,
+    user_id             uuid         not null,
     primary key (id)
 );
 
@@ -43,19 +36,21 @@ create table event_categories
 
 create table event_songs
 (
-    sequence_number integer not null,
-    event_id        uuid    not null,
-    id              uuid    not null,
+    sequence_number integer      not null,
+    created_at      timestamp(6) not null,
+    event_id        uuid         not null,
+    id              uuid         not null,
     song_id         uuid,
     primary key (id)
 );
 
 create table event_users
 (
-    event_id                uuid not null,
-    id                      uuid not null,
-    participation_status_id uuid not null,
-    stage_role_id           uuid not null,
+    created_at              timestamp(6) not null,
+    event_id                uuid         not null,
+    id                      uuid         not null,
+    participation_status_id uuid         not null,
+    stage_role_id           uuid         not null,
     user_id                 uuid,
     primary key (id)
 );
@@ -105,19 +100,21 @@ create table music_band_access_roles
 
 create table music_band_user_access_roles
 (
-    id                        uuid not null,
-    music_band_access_role_id uuid not null,
-    music_band_id             uuid not null,
-    user_id                   uuid not null,
+    created_at                timestamp(6) not null,
+    id                        uuid         not null,
+    music_band_access_role_id uuid         not null,
+    music_band_id             uuid         not null,
+    user_id                   uuid         not null,
     primary key (id)
 );
 
 create table music_band_user_stage_roles
 (
-    id            uuid not null,
-    music_band_id uuid not null,
-    stage_role_id uuid not null,
-    user_id       uuid not null,
+    created_at    timestamp(6) not null,
+    id            uuid         not null,
+    music_band_id uuid         not null,
+    stage_role_id uuid         not null,
+    user_id       uuid         not null,
     primary key (id)
 );
 
