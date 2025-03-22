@@ -20,6 +20,7 @@ public interface ChatUserMapper {
 
     ChatUserMapper INSTANCE = Mappers.getMapper(ChatUserMapper.class);
 
+    @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "userDTO", expression = "java(mapToUserDTO(user))")
     @Mapping(target = "chatAccessRoleDTOList", expression = "java(mapChatAccessRolesToChatAccessRoleDTOList(getChatAccessRolesFromChatAndUser(chat, user)))")
     ChatUserDTO mapToChatUserDTO(Chat chat, User user);

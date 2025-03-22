@@ -4,6 +4,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.ChatDTO;
 import ua.yatsergray.backend.v2.domain.dto.ChatUserDTO;
@@ -19,7 +22,7 @@ import ua.yatsergray.backend.v2.mapper.ChatUserMapper;
 import ua.yatsergray.backend.v2.repository.*;
 import ua.yatsergray.backend.v2.service.ChatService;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,8 +63,11 @@ public class ChatServiceImpl implements ChatService {
 
         Chat chat = Chat.builder()
                 .name(chatCreateRequest.getName())
+                .createdAt(LocalDateTime.now())
                 .musicBand(musicBand)
                 .build();
+
+        // TODO: get user from security context, add it to chat with member, admin and owner roles
 
         return chatMapper.mapToChatDTO(chatRepository.save(chat));
     }
@@ -72,8 +78,8 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public List<ChatDTO> getAllChats() {
-        return chatMapper.mapAllToChatDTOList(chatRepository.findAll());
+    public Page<ChatDTO> getAllChatsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size) {
+        return chatRepository.findAllByMusicBandId(musicBandId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(chatMapper::mapToChatDTO);
     }
 
     @Override

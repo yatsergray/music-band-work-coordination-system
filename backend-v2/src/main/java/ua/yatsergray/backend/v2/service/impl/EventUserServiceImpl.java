@@ -2,6 +2,9 @@ package ua.yatsergray.backend.v2.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.EventUserDTO;
 import ua.yatsergray.backend.v2.domain.entity.*;
@@ -79,8 +82,8 @@ public class EventUserServiceImpl implements EventUserService {
     }
 
     @Override
-    public List<EventUserDTO> getAllEventUsers() {
-        return eventUserMapper.mapAllToEventUserDTOList(eventUserRepository.findAll());
+    public Page<EventUserDTO> getAllEventUsersByEventIdAndPageAndSize(UUID eventId, int page, int size) {
+        return eventUserRepository.findAllByEventId(eventId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(eventUserMapper::mapToEventUserDTO);
     }
 
     @Override

@@ -15,7 +15,7 @@ public interface EventSongMapper {
 
     @Mapping(source = "event.id", target = "eventId")
     @Mapping(source = "song", target = "songDTO")
-    EventSongDTO mapToEventBandSongVersionDTO(EventSong eventSong);
+    EventSongDTO mapToEventSongDTO(EventSong eventSong);
 
-    List<EventSongDTO> mapAllToEventBandSongVersionDTOList(List<EventSong> eventSongs);
+    List<EventSongDTO> mapAllToEventSongDTOList(List<EventSong> eventSongs);
 }

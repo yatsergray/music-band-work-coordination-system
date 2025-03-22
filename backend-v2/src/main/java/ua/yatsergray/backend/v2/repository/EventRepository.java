@@ -1,5 +1,7 @@
 package ua.yatsergray.backend.v2.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +21,6 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
             WHERE e.music_band_id = :eventMusicBandId AND e.date = :eventDate AND (e.start_time < :eventEndTime AND e.end_time > :eventStartTime)
             """, nativeQuery = true)
     boolean existsOverlappingEvent(@Param("eventMusicBandId") UUID eventMusicBandId, @Param("eventDate") LocalDate eventDate, @Param("eventStartTime") LocalTime eventStartTime, @Param("eventEndTime") LocalTime eventEndTime);
+
+    Page<Event> findAllByMusicBandId(UUID musicBandId, Pageable pageable);
 }

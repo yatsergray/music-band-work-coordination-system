@@ -2,6 +2,9 @@ package ua.yatsergray.backend.v2.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.InvitationDTO;
 import ua.yatsergray.backend.v2.domain.entity.Invitation;
@@ -16,7 +19,7 @@ import ua.yatsergray.backend.v2.mapper.InvitationMapper;
 import ua.yatsergray.backend.v2.repository.*;
 import ua.yatsergray.backend.v2.service.InvitationService;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,6 +67,7 @@ public class InvitationServiceImpl implements InvitationService {
         Invitation invitation = Invitation.builder()
                 .email(invitationCreateRequest.getEmail())
                 .token(token)
+                .createdAt(LocalDateTime.now())
                 .musicBand(musicBand)
                 .participationStatus(participationStatus)
                 .build();
@@ -77,8 +81,8 @@ public class InvitationServiceImpl implements InvitationService {
     }
 
     @Override
-    public List<InvitationDTO> getAllInvitations() {
-        return invitationMapper.mapAllToInvitationDTOList(invitationRepository.findAll());
+    public Page<InvitationDTO> getAllInvitationsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size) {
+        return invitationRepository.findAllByMusicBandId(musicBandId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(invitationMapper::mapToInvitationDTO);
     }
 
     @Override

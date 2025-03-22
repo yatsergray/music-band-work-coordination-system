@@ -1,7 +1,7 @@
 package ua.yatsergray.backend.v2.domain.dto;
 
 import lombok.*;
-import ua.yatsergray.backend.domain.type.band.BandAccessRoleType;
+import ua.yatsergray.backend.v2.domain.type.MusicBandAccessRoleType;
 
 import java.util.UUID;
 
@@ -13,5 +13,5 @@ import java.util.UUID;
 public class MusicBandAccessRoleDTO {
     private UUID id;
     private String name;
-    private BandAccessRoleType type;
+    private MusicBandAccessRoleType type;
 }

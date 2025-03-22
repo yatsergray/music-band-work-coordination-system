@@ -3,7 +3,9 @@ package ua.yatsergray.backend.v2.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,6 +24,10 @@ public class EventSong {
 
     @Column(name = "sequence_number", nullable = false)
     private Integer sequenceNumber;
+
+    @DateTimeFormat(pattern = "yyyy/MM/dd'T'HH:mm:ss")
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id", nullable = false)

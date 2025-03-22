@@ -3,26 +3,22 @@ package ua.yatsergray.backend.v2.service.impl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ua.yatsergray.backend.v2.domain.dto.MusicBandDTO;
 import ua.yatsergray.backend.v2.domain.dto.MusicBandUserDTO;
 import ua.yatsergray.backend.v2.domain.entity.*;
-import ua.yatsergray.backend.v2.domain.request.MusicBandCreateUpdateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserAccessRoleCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MusicBandUserStageRoleCreateRequest;
 import ua.yatsergray.backend.v2.domain.type.ChatAccessRoleType;
 import ua.yatsergray.backend.v2.domain.type.MusicBandAccessRoleType;
 import ua.yatsergray.backend.v2.exception.*;
-import ua.yatsergray.backend.v2.mapper.MusicBandMapper;
 import ua.yatsergray.backend.v2.mapper.MusicBandUserMapper;
 import ua.yatsergray.backend.v2.repository.*;
 import ua.yatsergray.backend.v2.service.JwtService;
-import ua.yatsergray.backend.v2.service.MusicBandService;
+import ua.yatsergray.backend.v2.service.MusicBandUserService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -30,121 +26,68 @@ import java.util.UUID;
 
 @Transactional
 @Service
-public class MusicBandServiceImpl implements MusicBandService {
+public class MusicBandUserServiceImpl implements MusicBandUserService {
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    private final MusicBandMapper musicBandMapper;
-    private final MusicBandRepository musicBandRepository;
-    private final UserRepository userRepository;
-    private final MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository;
-    private final MusicBandAccessRoleRepository musicBandAccessRoleRepository;
-    private final StageRoleRepository stageRoleRepository;
+    private final InvitationRepository invitationRepository;
     private final MusicBandUserStageRoleRepository musicBandUserStageRoleRepository;
     private final ChatUserAccessRoleRepository chatUserAccessRoleRepository;
-    private final InvitationRepository invitationRepository;
+    private final StageRoleRepository stageRoleRepository;
+    private final MusicBandRepository musicBandRepository;
+    private final UserRepository userRepository;
+    private final MusicBandAccessRoleRepository musicBandAccessRoleRepository;
+    private final MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository;
     private final JwtService jwtService;
 
-    @Autowired
-    public MusicBandServiceImpl(MusicBandMapper musicBandMapper, MusicBandRepository musicBandRepository, UserRepository userRepository, MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository, MusicBandAccessRoleRepository musicBandAccessRoleRepository, StageRoleRepository stageRoleRepository, MusicBandUserStageRoleRepository musicBandUserStageRoleRepository, ChatUserAccessRoleRepository chatUserAccessRoleRepository, InvitationRepository invitationRepository, JwtService jwtService) {
-        this.musicBandMapper = musicBandMapper;
+    public MusicBandUserServiceImpl(MusicBandRepository musicBandRepository, UserRepository userRepository, MusicBandAccessRoleRepository musicBandAccessRoleRepository, MusicBandUserAccessRoleRepository musicBandUserAccessRoleRepository, InvitationRepository invitationRepository, JwtService jwtService, MusicBandUserStageRoleRepository musicBandUserStageRoleRepository, ChatUserAccessRoleRepository chatUserAccessRoleRepository, StageRoleRepository stageRoleRepository) {
         this.musicBandRepository = musicBandRepository;
         this.userRepository = userRepository;
-        this.musicBandUserAccessRoleRepository = musicBandUserAccessRoleRepository;
         this.musicBandAccessRoleRepository = musicBandAccessRoleRepository;
-        this.stageRoleRepository = stageRoleRepository;
-        this.musicBandUserStageRoleRepository = musicBandUserStageRoleRepository;
-        this.chatUserAccessRoleRepository = chatUserAccessRoleRepository;
+        this.musicBandUserAccessRoleRepository = musicBandUserAccessRoleRepository;
         this.invitationRepository = invitationRepository;
         this.jwtService = jwtService;
+        this.musicBandUserStageRoleRepository = musicBandUserStageRoleRepository;
+        this.chatUserAccessRoleRepository = chatUserAccessRoleRepository;
+        this.stageRoleRepository = stageRoleRepository;
     }
 
     @Override
-    public MusicBandDTO addMusicBand(MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws MusicBandAlreadyExists {
-        if (musicBandRepository.existsByName(musicBandCreateUpdateRequest.getName())) {
-            throw new MusicBandAlreadyExists(String.format("Music band with name=\"%s\" already exists", musicBandCreateUpdateRequest.getName()));
-        }
-
-        MusicBand musicBand = MusicBand.builder()
-                .name(musicBandCreateUpdateRequest.getName())
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        // TODO: get user from security context, add it to music band with member, admin and owner roles
-
-        return musicBandMapper.mapToMusicBandDTO(musicBandRepository.save(musicBand));
-    }
-
-    @Override
-    public Optional<MusicBandDTO> getMusicBandById(UUID musicBandId) {
-        return musicBandRepository.findById(musicBandId).map(musicBandMapper::mapToMusicBandDTO);
-    }
-
-    @Override
-    public Page<MusicBandDTO> getAllMusicBandsByPageAndSize(int page, int size) {
-        return musicBandRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(musicBandMapper::mapToMusicBandDTO);
-    }
-
-    @Override
-    public Page<MusicBandDTO> getAllMusicBandsByUserIdAndPageAndSize(UUID userId, int page, int size) {
-        return musicBandRepository.findAllByUserId(userId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(musicBandMapper::mapToMusicBandDTO);
-    }
-
-    @Override
-    public MusicBandDTO modifyMusicBandById(UUID musicBandId, MusicBandCreateUpdateRequest musicBandCreateUpdateRequest) throws NoSuchMusicBandException, MusicBandAlreadyExists {
-        MusicBand musicBand = musicBandRepository.findById(musicBandId)
-                .orElseThrow(() -> new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandId)));
-
-        if (!musicBandCreateUpdateRequest.getName().equals(musicBand.getName()) && musicBandRepository.existsByName(musicBandCreateUpdateRequest.getName())) {
-            throw new MusicBandAlreadyExists(String.format("Music band with name=\"%s\" already exists", musicBandCreateUpdateRequest.getName()));
-        }
-
-        musicBand.setName(musicBandCreateUpdateRequest.getName());
-
-        return musicBandMapper.mapToMusicBandDTO(musicBandRepository.save(musicBand));
-
-    }
-
-    @Override
-    public void removeMusicBandById(UUID musicBandId) throws NoSuchMusicBandException {
-        if (!musicBandRepository.existsById(musicBandId)) {
-            throw new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandId));
-        }
-
-        musicBandRepository.deleteById(musicBandId);
-    }
-
-    @Override
-    public MusicBandUserDTO addMusicBandUser(UUID musicBandId, MusicBandUserCreateRequest musicBandUserCreateRequest) throws NoSuchMusicBandException, NoSuchUserException, NoSuchMusicBandAccessRoleException, MusicBandUserConflictException {
-        MusicBand musicBand = musicBandRepository.findById(musicBandId)
-                .orElseThrow(() -> new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandId)));
+    public MusicBandUserDTO addMusicBandUser(MusicBandUserCreateRequest musicBandUserCreateRequest) throws NoSuchMusicBandException, NoSuchUserException, NoSuchMusicBandAccessRoleException, MusicBandUserConflictException {
+        MusicBand musicBand = musicBandRepository.findById(musicBandUserCreateRequest.getMusicBandId())
+                .orElseThrow(() -> new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandUserCreateRequest.getMusicBandId())));
         User user = userRepository.findById(musicBandUserCreateRequest.getUserId())
                 .orElseThrow(() -> new NoSuchUserException(String.format("User with id=\"%s\" does not exist", musicBandUserCreateRequest.getUserId())));
         MusicBandAccessRole musicBandAccessRole = musicBandAccessRoleRepository.findByType(MusicBandAccessRoleType.MEMBER)
                 .orElseThrow(() -> new NoSuchMusicBandAccessRoleException(String.format("Music band access role with type=\"%s\" does not exist", MusicBandAccessRoleType.MEMBER)));
 
-        if (musicBandUserAccessRoleRepository.existsByMusicBandIdAndUserId(musicBandId, musicBandUserCreateRequest.getUserId())) {
-            throw new MusicBandUserConflictException(String.format("User with id=\"%s\" already belongs to the Music band with id=\"%s\"", musicBandUserCreateRequest.getUserId(), musicBandId));
+        if (musicBandUserAccessRoleRepository.existsByMusicBandIdAndUserId(musicBandUserCreateRequest.getMusicBandId(), musicBandUserCreateRequest.getUserId())) {
+            throw new MusicBandUserConflictException(String.format("User with id=\"%s\" already belongs to the Music band with id=\"%s\"", musicBandUserCreateRequest.getUserId(), musicBandUserCreateRequest.getMusicBandId()));
         }
 
         MusicBandUserAccessRole musicBandUserAccessRole = MusicBandUserAccessRole.builder()
+                .createdAt(LocalDateTime.now())
                 .musicBand(musicBand)
                 .user(user)
                 .musicBandAccessRole(musicBandAccessRole)
                 .build();
 
-        musicBandUserAccessRoleRepository.save(musicBandUserAccessRole);
+        MusicBandUserAccessRole savedMusicBandUserAccessRole = musicBandUserAccessRoleRepository.save(musicBandUserAccessRole);
 
         entityManager.flush();
         entityManager.refresh(musicBand);
         entityManager.refresh(user);
 
-        return MusicBandUserMapper.INSTANCE.mapToMusicBandUserDTO(musicBand, user);
+        MusicBandUserDTO musicBandUserDTO = MusicBandUserMapper.INSTANCE.mapToMusicBandUserDTO(musicBand, user);
+
+        musicBandUserDTO.setCreatedAt(savedMusicBandUserAccessRole.getCreatedAt());
+
+        return musicBandUserDTO;
     }
 
     @Override
-    public MusicBandUserDTO addMusicBandUserByInvitationToken(String invitationToken) throws NoSuchInvitationException, InvalidInvitationException, NoSuchUserException, MusicBandUserConflictException, NoSuchMusicBandException, NoSuchMusicBandAccessRoleException, NoSuchParticipationStatusException {
+    public MusicBandUserDTO addMusicBandUserByInvitationToken(String invitationToken) throws NoSuchInvitationException, InvalidInvitationException, NoSuchUserException, MusicBandUserConflictException, NoSuchMusicBandException, NoSuchMusicBandAccessRoleException {
         Invitation invitation = invitationRepository.findByToken(invitationToken)
                 .orElseThrow(() -> new NoSuchInvitationException(String.format("Invitation with token=\"%s\" does not exist", invitationToken)));
 
@@ -168,38 +111,46 @@ public class MusicBandServiceImpl implements MusicBandService {
                 .musicBand(musicBand)
                 .user(user)
                 .musicBandAccessRole(musicBandAccessRole)
+                .createdAt(LocalDateTime.now())
                 .build();
 
-        musicBandUserAccessRoleRepository.save(musicBandUserAccessRole);
+        MusicBandUserAccessRole savedMusicBandUserAccessRole = musicBandUserAccessRoleRepository.save(musicBandUserAccessRole);
 
         entityManager.flush();
         entityManager.refresh(musicBand);
         entityManager.refresh(user);
 
-        return MusicBandUserMapper.INSTANCE.mapToMusicBandUserDTO(musicBand, user);
+        MusicBandUserDTO musicBandUserDTO = MusicBandUserMapper.INSTANCE.mapToMusicBandUserDTO(musicBand, user);
+
+        musicBandUserDTO.setCreatedAt(savedMusicBandUserAccessRole.getCreatedAt());
+
+        return musicBandUserDTO;
     }
 
     @Override
-    public void removeMusicBandUser(UUID musicBandId, UUID userId) throws NoSuchMusicBandException, NoSuchUserException, MusicBandUserConflictException {
-        if (!musicBandRepository.existsById(musicBandId)) {
-            throw new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandId));
-        }
+    public Optional<MusicBandUserDTO> getMusicBandUserByMusicBandIdAndUserId(UUID musicBandId, UUID userId) throws NoSuchMusicBandException, NoSuchUserException, MusicBandUserConflictException {
+        return musicBandUserAccessRoleRepository.findByMusicBandIdAndUserId(musicBandId, userId).map(musicBandUserAccessRole -> {
+            MusicBandUserDTO musicBandUserDTO = MusicBandUserMapper.INSTANCE.mapToMusicBandUserDTO(musicBandUserAccessRole.getMusicBand(), musicBandUserAccessRole.getUser());
 
-        if (!userRepository.existsById(userId)) {
-            throw new NoSuchUserException(String.format("User with id=\"%s\" does not exist", userId));
-        }
+            musicBandUserDTO.setCreatedAt(musicBandUserAccessRole.getCreatedAt());
 
-        if (!musicBandUserAccessRoleRepository.existsByMusicBandIdAndUserId(musicBandId, userId)) {
-            throw new MusicBandUserConflictException(String.format("User with id=\"%s\" does not belong to the Music band with id=\"%s\"", userId, musicBandId));
-        }
-
-        musicBandUserAccessRoleRepository.deleteByMusicBandIdAndUserId(musicBandId, userId);
-        musicBandUserStageRoleRepository.deleteByMusicBandIdAndUserId(musicBandId, userId);
-        chatUserAccessRoleRepository.deleteByMusicBandIdAndUserId(musicBandId, userId);
+            return musicBandUserDTO;
+        });
     }
 
     @Override
-    public MusicBandUserDTO addMusicBandUserAccessRole(UUID musicBandId, UUID userId, MusicBandUserAccessRoleCreateRequest musicBandUserAccessRoleCreateRequest) throws NoSuchMusicBandException, NoSuchUserException, NoSuchMusicBandAccessRoleException, MusicBandUserConflictException {
+    public Page<MusicBandUserDTO> getAllMusicBandUsersByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size) throws NoSuchMusicBandException {
+        return musicBandUserAccessRoleRepository.findDistinctByMusicBandId(musicBandId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(musicBandUserAccessRole -> {
+            MusicBandUserDTO musicBandUserDTO = MusicBandUserMapper.INSTANCE.mapToMusicBandUserDTO(musicBandUserAccessRole.getMusicBand(), musicBandUserAccessRole.getUser());
+
+            musicBandUserDTO.setCreatedAt(musicBandUserAccessRole.getCreatedAt());
+
+            return musicBandUserDTO;
+        });
+    }
+
+    @Override
+    public MusicBandUserDTO addMusicBandAccessRoleToMusicBandUserByMusicBandIdAndUserId(UUID musicBandId, UUID userId, MusicBandUserAccessRoleCreateRequest musicBandUserAccessRoleCreateRequest) throws NoSuchMusicBandException, NoSuchUserException, NoSuchMusicBandAccessRoleException, MusicBandUserConflictException {
         MusicBand musicBand = musicBandRepository.findById(musicBandId)
                 .orElseThrow(() -> new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandId)));
         User user = userRepository.findById(userId)
@@ -216,27 +167,32 @@ public class MusicBandServiceImpl implements MusicBandService {
         }
 
         MusicBandUserAccessRole musicBandUserAccessRole = MusicBandUserAccessRole.builder()
+                .createdAt(LocalDateTime.now())
                 .musicBand(musicBand)
                 .user(user)
                 .musicBandAccessRole(musicBandAccessRole)
                 .build();
 
-        musicBandUserAccessRoleRepository.save(musicBandUserAccessRole);
+        MusicBandUserAccessRole savedMusicBandUserAccessRole = musicBandUserAccessRoleRepository.save(musicBandUserAccessRole);
 
         entityManager.flush();
         entityManager.refresh(musicBand);
         entityManager.refresh(user);
 
-        return MusicBandUserMapper.INSTANCE.mapToMusicBandUserDTO(musicBand, user);
+        MusicBandUserDTO musicBandUserDTO = MusicBandUserMapper.INSTANCE.mapToMusicBandUserDTO(musicBand, user);
+
+        musicBandUserDTO.setCreatedAt(savedMusicBandUserAccessRole.getCreatedAt());
+
+        return musicBandUserDTO;
     }
 
     @Override
-    public void removeMusicBandUserAccessRole(UUID musicBandId, UUID userId, UUID musicBandAccessRoleId) throws NoSuchMusicBandException, NoSuchUserException, NoSuchMusicBandAccessRoleException, MusicBandUserConflictException {
-        if (musicBandRepository.existsById(musicBandId)) {
+    public void removeMusicBandAccessRoleFromMusicBandUserByMusicBandIdAndUserId(UUID musicBandId, UUID userId, UUID musicBandAccessRoleId) throws NoSuchMusicBandException, NoSuchUserException, NoSuchMusicBandAccessRoleException, MusicBandUserConflictException {
+        if (!musicBandRepository.existsById(musicBandId)) {
             throw new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandId));
         }
 
-        if (userRepository.existsById(userId)) {
+        if (!userRepository.existsById(userId)) {
             throw new NoSuchUserException(String.format("User with id=\"%s\" does not exist", userId));
         }
 
@@ -244,7 +200,7 @@ public class MusicBandServiceImpl implements MusicBandService {
                 .orElseThrow(() -> new NoSuchMusicBandAccessRoleException(String.format("Music band access role with id=\"%s\" does not exist", musicBandAccessRoleId)));
 
         if (!musicBandUserAccessRoleRepository.existsByMusicBandIdAndUserId(musicBandId, userId)) {
-            throw new MusicBandUserConflictException(String.format("User with id=\"%s\" already belongs to the Music band with id=\"%s\"", userId, musicBandId));
+            throw new MusicBandUserConflictException(String.format("User with id=\"%s\" does not belong to the Music band with id=\"%s\"", userId, musicBandId));
         }
 
         if (!musicBandUserAccessRoleRepository.existsByMusicBandIdAndUserIdAndMusicBandAccessRoleId(musicBandId, userId, musicBandAccessRoleId)) {
@@ -259,7 +215,7 @@ public class MusicBandServiceImpl implements MusicBandService {
     }
 
     @Override
-    public MusicBandUserDTO addMusicBandUserStageRole(UUID musicBandId, UUID userId, MusicBandUserStageRoleCreateRequest musicBandUserStageRoleCreateRequest) throws NoSuchMusicBandException, NoSuchUserException, NoSuchStageRoleException, MusicBandUserConflictException {
+    public MusicBandUserDTO addStageRoleToMusicBandUserByMusicBandIdAndUserId(UUID musicBandId, UUID userId, MusicBandUserStageRoleCreateRequest musicBandUserStageRoleCreateRequest) throws NoSuchMusicBandException, NoSuchUserException, NoSuchStageRoleException, MusicBandUserConflictException {
         MusicBand musicBand = musicBandRepository.findById(musicBandId)
                 .orElseThrow(() -> new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandId)));
         User user = userRepository.findById(userId)
@@ -276,22 +232,27 @@ public class MusicBandServiceImpl implements MusicBandService {
         }
 
         MusicBandUserStageRole musicBandUserStageRole = MusicBandUserStageRole.builder()
+                .createdAt(LocalDateTime.now())
                 .musicBand(musicBand)
                 .user(user)
                 .stageRole(stageRole)
                 .build();
 
-        musicBandUserStageRoleRepository.save(musicBandUserStageRole);
+        MusicBandUserStageRole savedMusicBandUserStageRole =  musicBandUserStageRoleRepository.save(musicBandUserStageRole);
 
         entityManager.flush();
         entityManager.refresh(musicBand);
         entityManager.refresh(user);
 
-        return MusicBandUserMapper.INSTANCE.mapToMusicBandUserDTO(musicBand, user);
+        MusicBandUserDTO musicBandUserDTO = MusicBandUserMapper.INSTANCE.mapToMusicBandUserDTO(musicBand, user);
+
+        musicBandUserDTO.setCreatedAt(savedMusicBandUserStageRole.getCreatedAt());
+
+        return musicBandUserDTO;
     }
 
     @Override
-    public void removeMusicBandUserStageRole(UUID musicBandId, UUID userId, UUID stageRoleId) throws NoSuchMusicBandException, NoSuchUserException, NoSuchStageRoleException, MusicBandUserConflictException {
+    public void removeStageRoleFromMusicBandUserByMusicBandIdAndUserId(UUID musicBandId, UUID userId, UUID stageRoleId) throws NoSuchMusicBandException, NoSuchUserException, NoSuchStageRoleException, MusicBandUserConflictException {
         if (!musicBandRepository.existsById(musicBandId)) {
             throw new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandId));
         }
@@ -313,5 +274,24 @@ public class MusicBandServiceImpl implements MusicBandService {
         }
 
         musicBandUserStageRoleRepository.deleteByMusicBandIdAndUserIdAndStageRoleId(musicBandId, userId, stageRoleId);
+    }
+
+    @Override
+    public void removeMusicBandUserByMusicBandIdAndUserId(UUID musicBandId, UUID userId) throws NoSuchMusicBandException, NoSuchUserException, MusicBandUserConflictException {
+        if (!musicBandRepository.existsById(musicBandId)) {
+            throw new NoSuchMusicBandException(String.format("Music band with id=\"%s\" does not exist", musicBandId));
+        }
+
+        if (!userRepository.existsById(userId)) {
+            throw new NoSuchUserException(String.format("User with id=\"%s\" does not exist", userId));
+        }
+
+        if (!musicBandUserAccessRoleRepository.existsByMusicBandIdAndUserId(musicBandId, userId)) {
+            throw new MusicBandUserConflictException(String.format("User with id=\"%s\" does not belong to the Music band with id=\"%s\"", userId, musicBandId));
+        }
+
+        musicBandUserAccessRoleRepository.deleteByMusicBandIdAndUserId(musicBandId, userId);
+        musicBandUserStageRoleRepository.deleteByMusicBandIdAndUserId(musicBandId, userId);
+        chatUserAccessRoleRepository.deleteByMusicBandIdAndUserId(musicBandId, userId);
     }
 }

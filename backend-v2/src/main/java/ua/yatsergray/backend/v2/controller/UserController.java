@@ -3,6 +3,7 @@ package ua.yatsergray.backend.v2.controller;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.UserDTO;
@@ -11,7 +12,6 @@ import ua.yatsergray.backend.v2.domain.request.UserRoleCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.UserUpdateRequest;
 import ua.yatsergray.backend.v2.service.UserService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -39,8 +39,13 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> readAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<Page<UserDTO>> readAllUsersByPageAndSize(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(userService.getAllUsersByPageAndSize(page, size));
+    }
+
+    @GetMapping("/music-band/{musicBandId}")
+    public ResponseEntity<Page<UserDTO>> readAllUsersByMusicBandIdPageAndSize(@PathVariable("musicBandId") UUID musicBandId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(userService.getAllUsersByMusicBandIdAndPageAndSize(musicBandId, page, size));
     }
 
     @SneakyThrows

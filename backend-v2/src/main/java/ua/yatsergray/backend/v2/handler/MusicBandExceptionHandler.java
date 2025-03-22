@@ -1,5 +1,6 @@
 package ua.yatsergray.backend.v2.handler;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,7 +13,7 @@ public class MusicBandExceptionHandler {
 
     @ExceptionHandler(MusicBandAlreadyExists.class)
     public ResponseEntity<String> handleMusicBandAlreadyExists(MusicBandAlreadyExists e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
     @ExceptionHandler(NoSuchMusicBandException.class)

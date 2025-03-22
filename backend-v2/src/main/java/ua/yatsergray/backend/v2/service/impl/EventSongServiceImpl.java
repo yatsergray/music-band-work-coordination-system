@@ -2,6 +2,9 @@ package ua.yatsergray.backend.v2.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.EventSongDTO;
 import ua.yatsergray.backend.v2.domain.entity.Event;
@@ -16,7 +19,6 @@ import ua.yatsergray.backend.v2.repository.EventSongRepository;
 import ua.yatsergray.backend.v2.repository.SongRepository;
 import ua.yatsergray.backend.v2.service.EventSongService;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,17 +59,17 @@ public class EventSongServiceImpl implements EventSongService {
                 .song(song)
                 .build();
 
-        return eventSongMapper.mapToEventBandSongVersionDTO(eventSongRepository.save(eventSong));
+        return eventSongMapper.mapToEventSongDTO(eventSongRepository.save(eventSong));
     }
 
     @Override
     public Optional<EventSongDTO> getEventSongById(UUID eventSongId) {
-        return eventSongRepository.findById(eventSongId).map(eventSongMapper::mapToEventBandSongVersionDTO);
+        return eventSongRepository.findById(eventSongId).map(eventSongMapper::mapToEventSongDTO);
     }
 
     @Override
-    public List<EventSongDTO> getAllEventSongs() {
-        return eventSongMapper.mapAllToEventBandSongVersionDTOList(eventSongRepository.findAll());
+    public Page<EventSongDTO> getAllEventSongsByEventIdAndPageAndSize(UUID eventId, int page, int size) {
+        return eventSongRepository.findAllByEventId(eventId, PageRequest.of(page, size, Sort.by("sequenceNumber").ascending())).map(eventSongMapper::mapToEventSongDTO);
     }
 
     @Override
@@ -81,7 +83,7 @@ public class EventSongServiceImpl implements EventSongService {
 
         eventSong.setSequenceNumber(eventSongUpdateRequest.getSequenceNumber());
 
-        return eventSongMapper.mapToEventBandSongVersionDTO(eventSongRepository.save(eventSong));
+        return eventSongMapper.mapToEventSongDTO(eventSongRepository.save(eventSong));
     }
 
     @Override

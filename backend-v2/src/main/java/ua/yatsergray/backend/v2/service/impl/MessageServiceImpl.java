@@ -2,6 +2,9 @@ package ua.yatsergray.backend.v2.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.MessageDTO;
 import ua.yatsergray.backend.v2.domain.entity.Chat;
@@ -73,8 +76,8 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<MessageDTO> getAllMessages() {
-        return messageMapper.mapAllToMessageDTOList(messageRepository.findAll());
+    public Page<MessageDTO> getAllMessagesByChatIdAndPageAndSize(UUID chatId, int page, int size) {
+        return messageRepository.findAllByChatId(chatId, PageRequest.of(page, size, Sort.by("date").descending().and(Sort.by("time").descending()))).map(messageMapper::mapToMessageDTO);
     }
 
     @Override

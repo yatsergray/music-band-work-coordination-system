@@ -3,6 +3,7 @@ package ua.yatsergray.backend.v2.controller;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.yatsergray.backend.v2.domain.dto.MessageDTO;
@@ -10,7 +11,6 @@ import ua.yatsergray.backend.v2.domain.request.MessageCreateRequest;
 import ua.yatsergray.backend.v2.domain.request.MessageUpdateRequest;
 import ua.yatsergray.backend.v2.service.MessageService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -36,9 +36,9 @@ public class MessageController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping
-    public ResponseEntity<List<MessageDTO>> readMessageAlls() {
-        return ResponseEntity.ok(messageService.getAllMessages());
+    @GetMapping("/chat/{chatId}")
+    public ResponseEntity<Page<MessageDTO>> readAllMessagesByChatIdAndPageAndSize(@PathVariable("chatId") UUID chatId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(messageService.getAllMessagesByChatIdAndPageAndSize(chatId, page, size));
     }
 
     @SneakyThrows

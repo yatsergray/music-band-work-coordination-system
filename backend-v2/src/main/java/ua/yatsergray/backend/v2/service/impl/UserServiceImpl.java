@@ -2,6 +2,9 @@ package ua.yatsergray.backend.v2.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.UserDTO;
 import ua.yatsergray.backend.v2.domain.entity.Role;
@@ -19,7 +22,7 @@ import ua.yatsergray.backend.v2.repository.RoleRepository;
 import ua.yatsergray.backend.v2.repository.UserRepository;
 import ua.yatsergray.backend.v2.service.UserService;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,6 +52,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(userCreateRequest.getLastName())
                 .email(userCreateRequest.getEmail())
                 .password(userCreateRequest.getPassword())
+                .createdAt(LocalDateTime.now())
                 .build();
 
         user.getRoles().add(role);
@@ -62,8 +66,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> getAllUsers() {
-        return UserMapper.INSTANCE.mapAllToUserDTOList(userRepository.findAll());
+    public Page<UserDTO> getAllUsersByPageAndSize(int page, int size) {
+        return userRepository.findAll(PageRequest.of(page, size, Sort.by("createdAt").descending())).map(UserMapper.INSTANCE::mapToUserDTO);
+    }
+
+    @Override
+    public Page<UserDTO> getAllUsersByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size) {
+        return userRepository.findAllByMusicBandId(musicBandId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(UserMapper.INSTANCE::mapToUserDTO);
     }
 
     @Override
@@ -111,6 +120,10 @@ public class UserServiceImpl implements UserService {
 
         if (!user.getRoles().contains(role)) {
             throw new UserRoleConflictException(String.format("User with id=\"%s\" does not have role with id=\"%s\"", userId, roleId));
+        }
+
+        if (role.getType().equals(RoleType.USER)) {
+            throw new UserRoleConflictException(String.format("Role with type=\"%s\" cannot be removed from User with id=\"%s\"", RoleType.USER, userId));
         }
 
         user.getRoles().remove(role);

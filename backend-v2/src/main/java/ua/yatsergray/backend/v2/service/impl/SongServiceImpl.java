@@ -2,6 +2,9 @@ package ua.yatsergray.backend.v2.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ua.yatsergray.backend.v2.domain.dto.SongDTO;
 import ua.yatsergray.backend.v2.domain.entity.MusicBand;
@@ -15,7 +18,7 @@ import ua.yatsergray.backend.v2.repository.MusicBandRepository;
 import ua.yatsergray.backend.v2.repository.SongRepository;
 import ua.yatsergray.backend.v2.service.SongService;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -43,6 +46,8 @@ public class SongServiceImpl implements SongService {
 
         Song song = Song.builder()
                 .name("PASS")
+                .artistName("PASS")
+                .createdAt(LocalDateTime.now())
                 .musicBand(musicBand)
                 .build();
 
@@ -55,8 +60,8 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public List<SongDTO> getAllSongs() {
-        return songMapper.mapAllToSongDTOList(songRepository.findAll());
+    public Page<SongDTO> getAllSongsByMusicBandIdAndPageAndSize(UUID musicBandId, int page, int size) {
+        return songRepository.findAllByMusicBandId(musicBandId, PageRequest.of(page, size, Sort.by("createdAt").descending())).map(songMapper::mapToSongDTO);
     }
 
     @Override
@@ -68,6 +73,7 @@ public class SongServiceImpl implements SongService {
         // TODO: Add check if songMood and modified song have the same band
 
         song.setName("PASS UPDATED");
+        song.setArtistName("PASS UPDATED");
 
         return songMapper.mapToSongDTO(songRepository.save(song));
     }
